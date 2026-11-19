@@ -12,10 +12,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after P0 verification, 2026-11-18 21:10 PST) |
+| Active AI editor | **Claude**: P1a in **dev place 103379930563763 only** (claimed 2026-11-18 21:20 PST; IDs verified in Studio) |
 | Last handoff author / time | **Claude / 2026-11-18 ~21:10 PST** (P0 verified complete) |
 | Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
-| Current task | **P0 ✅ COMPLETE.** Dev experience **Blade Forest - Island Dev**: universe **10777797608**, place **103379930563763**, PRIVATE, personal owner. Backup SHA-256 `e050c6c3…6ffd` re-verified. Production untouched |
+| Current task | **P1a island prototype** (owner approved): island registry, temporary pads at I2/I3, TravelService, island save fields. Dev place only |
 | Next action | Owner: put the backup on external media; review and merge `p0/script-export`; decide on P1. **P1 NOT authorized.** All future prototype work goes in the **dev place 103379930563763 only**, never production |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
