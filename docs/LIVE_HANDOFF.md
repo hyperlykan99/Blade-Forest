@@ -12,7 +12,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None.** Claude resumed 2026-11-18 23:40 PST for read-only checks only (no Studio edits, no playtests) and released at 23:50 PST |
+| Active AI editor | **Claude**: M-1 arrival-slot fix ONLY, dev place 103379930563763 (claimed 2026-11-18 23:50 PST; rollback checkpoint = dev v8, identical to v7) |
 | Last handoff author / time | **Claude / 2026-11-18 ~23:50 PST** (resume check; Codex made no changes) |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
 | Current task | **P1a code complete and verified** in dev place 103379930563763 (Studio code = branch `p1a/island-prototype` @ `3511a5c`, checksum-verified 23:45 PST). Only remaining: a **real two-device** multiplayer test (local multi-client is ruled out: too heavy for the MacBook). See `P1A_RESULTS.md` → Resume check |
