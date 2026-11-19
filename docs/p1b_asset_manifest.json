@@ -1,0 +1,391 @@
+{
+ "generated": "2026-11-19T08:40Z",
+ "place": {
+  "dev_place_id": 103379930563763,
+  "dev_universe_id": 10777797608,
+  "build": "dev v9 (P1a + M-1)"
+ },
+ "status": "P1b.1 planning only - no construction authorized",
+ "sources": {
+  "CrystalCanyon": {
+   "region": {
+    "x": [
+     188,
+     330
+    ],
+    "z": [
+     -136,
+     136
+    ]
+   },
+   "trees": {
+    "count": 400,
+    "parts": 3188,
+    "meshparts": 2788,
+    "lights": 48,
+    "particles": 118,
+    "mutated": 23,
+    "heavy_gt40": 0,
+    "pivot_bounds": {
+     "x": [
+      199,
+      298
+     ],
+     "z": [
+      -124,
+      123
+     ],
+     "y": [
+      0.7,
+      23.4
+     ]
+    },
+    "types": {
+     "Crystal_Common": 215,
+     "Crystal_Uncommon": 90,
+     "Crystal_Rare": 60,
+     "Crystal_Epic": 22,
+     "Crystal_Legendary": 8,
+     "Crystal_Mythic": 4,
+     "Crystal_Secret": 1
+    },
+    "scales": {
+     "0.2": 31,
+     "0.3": 268,
+     "0.4": 80,
+     "0.5": 13,
+     "0.6": 3,
+     "1.0": 1,
+     "2.3": 3,
+     "2.6": 1
+    }
+   },
+   "templates": {
+    "Crystal_Common_1": 8,
+    "Crystal_Uncommon_1": 8,
+    "Crystal_Rare_1": 8,
+    "Crystal_Epic_1": 8,
+    "Crystal_Legendary_1": 8,
+    "Crystal_Mythic_1": 3,
+    "Crystal_Secret_1": 16,
+    "_scripts_in_templates": 0
+   },
+   "terrain": {
+    "sample_box": {
+     "x": [
+      188,
+      360
+     ],
+     "z": [
+      -136,
+      136
+     ]
+    },
+    "y": [
+     0.9,
+     46.8
+    ],
+    "mean_y": 12.3,
+    "flat_pct": 62,
+    "materials_samples": {
+     "Grass": 314,
+     "Rock": 286,
+     "Basalt": 168,
+     "Ground": 2
+    }
+   },
+   "collision": {
+    "CanyonWalls": {
+     "parts": 46,
+     "colliding": 46
+    },
+    "Gate_CrystalCanyon": {
+     "parts": 5,
+     "barrier_required_power": 250
+    },
+    "Border_in_region": 5,
+    "ClimbBlockers_in_region": 49
+   },
+   "npcs": {
+    "GoldenSlime_zone": {
+     "x": [
+      215,
+      305
+     ],
+     "z": [
+      -100,
+      100
+     ],
+     "max": 4,
+     "source": "WorldServer SLIME_ZONES L91"
+    },
+    "avoidEast_rule": "WorldServer ringPoint L71"
+   },
+   "altar": {
+    "Config.Altars.CrystalCanyon": [
+     232,
+     0,
+     16
+    ],
+    "range": 22
+   }
+  },
+  "FrostPeaks": {
+   "region": {
+    "x": [
+     -660,
+     -345
+    ],
+    "z": [
+     -175,
+     175
+    ]
+   },
+   "trees": {
+    "count": 921,
+    "parts": 5606,
+    "meshparts": 3209,
+    "lights": 80,
+    "particles": 211,
+    "mutated": 27,
+    "heavy_gt40": 4,
+    "pivot_bounds": {
+     "x": [
+      -633,
+      -379
+     ],
+     "z": [
+      -152,
+      151
+     ],
+     "y": [
+      1.7,
+      4.1
+     ]
+    },
+    "types": {
+     "Frost_Common": 511,
+     "Frost_Uncommon": 226,
+     "Frost_Rare": 115,
+     "Frost_Epic": 49,
+     "Frost_Legendary": 15,
+     "Frost_Mythic": 4,
+     "Frost_Secret": 1
+    },
+    "scales": {
+     "0.4": 146,
+     "0.5": 108,
+     "0.6": 21,
+     "0.7": 106,
+     "0.8": 170,
+     "0.9": 114,
+     "1.0": 100,
+     "1.1": 98,
+     "1.2": 51,
+     "1.3": 2,
+     "1.4": 5
+    }
+   },
+   "templates": {
+    "Frost_Common_1": 3,
+    "Frost_Common_2": 3,
+    "Frost_Common_3": 3,
+    "Frost_Uncommon_1": 8,
+    "Frost_Rare_1": 3,
+    "Frost_Epic_1": 8,
+    "Frost_Legendary_1": 3,
+    "Frost_Mythic_1": 370,
+    "Frost_Secret_1": 3,
+    "_scripts_in_templates": 0
+   },
+   "terrain": {
+    "sample_box": {
+     "x": [
+      -690,
+      -345
+     ],
+     "z": [
+      -180,
+      180
+     ]
+    },
+    "y": [
+     -4.0,
+     54.3
+    ],
+    "mean_y": 15.6,
+    "flat_pct": 56,
+    "materials_samples": {
+     "Snow": 1443,
+     "Rock": 437,
+     "Grass": 144
+    }
+   },
+   "collision": {
+    "Gate_FrostPeaks": {
+     "parts": 5,
+     "barrier_required_power": 2000
+    },
+    "Border_annex": 5,
+    "ClimbBlockers_in_region": 3
+   },
+   "npcs": null,
+   "altar": null
+  }
+ },
+ "items": [
+  {
+   "id": "A1",
+   "asset": "Crystal trees",
+   "qty": 400,
+   "action": "keep on I1; reconstruct ~620 via TreeKit.Build",
+   "target": "CrystalWilds",
+   "stage": "P1b.2"
+  },
+  {
+   "id": "A2",
+   "asset": "Crystal templates",
+   "qty": 7,
+   "action": "reuse in place",
+   "stage": null
+  },
+  {
+   "id": "A3",
+   "asset": "Crystal terrain core",
+   "qty": "172x272x96 studs",
+   "action": "CopyRegion->PasteRegion + seeded extension",
+   "target_center": [
+    3030,
+    0,
+    0
+   ],
+   "stage": "P1b.2"
+  },
+  {
+   "id": "A4",
+   "asset": "CanyonWalls + Gate_CrystalCanyon",
+   "qty": 51,
+   "action": "not migrated",
+   "stage": "P1b.4 decision"
+  },
+  {
+   "id": "A5",
+   "asset": "Border + ClimbBlockers (wedge)",
+   "qty": 54,
+   "action": "not migrated",
+   "stage": "P1b.4"
+  },
+  {
+   "id": "A6",
+   "asset": "GoldenSlime zone",
+   "qty": 1,
+   "action": "config move",
+   "target": {
+    "x": [
+     3080,
+     3220
+    ],
+    "z": [
+     -180,
+     -60
+    ]
+   },
+   "stage": "P1b.2"
+  },
+  {
+   "id": "A7",
+   "asset": "Crystal roll altar point",
+   "qty": 1,
+   "action": "config move",
+   "target": [
+    2850,
+    0,
+    -40
+   ],
+   "stage": "P1b.2"
+  },
+  {
+   "id": "B1",
+   "asset": "Frost trees",
+   "qty": 921,
+   "action": "keep on I1; reconstruct ~830 via TreeKit.Build",
+   "target": "FrostboundReach",
+   "stage": "P1b.3"
+  },
+  {
+   "id": "B2",
+   "asset": "Frost templates",
+   "qty": 9,
+   "action": "reuse; Frost_Mythic_1 (370 parts) needs cap/replacement decision",
+   "stage": "P1b.3"
+  },
+  {
+   "id": "B3",
+   "asset": "Frost terrain core",
+   "qty": "348x360x96 studs",
+   "action": "CopyRegion->PasteRegion + seeded extension",
+   "target_center": [
+    6020,
+    0,
+    0
+   ],
+   "stage": "P1b.3"
+  },
+  {
+   "id": "B4",
+   "asset": "Gate_FrostPeaks + annex Border + ClimbBlockers",
+   "qty": 13,
+   "action": "not migrated",
+   "stage": "P1b.4"
+  },
+  {
+   "id": "C1",
+   "asset": "P1a CrystalWilds test model",
+   "qty": 8,
+   "action": "replace (floor->terrain, pad relocate, EdgeWalls removed after rim walls)",
+   "stage": "P1b.2"
+  },
+  {
+   "id": "C2",
+   "asset": "P1a FrostboundReach test model",
+   "qty": 8,
+   "action": "replace",
+   "stage": "P1b.3"
+  },
+  {
+   "id": "C3",
+   "asset": "P1a TimberHaven pads",
+   "qty": 2,
+   "action": "keep",
+   "stage": null
+  },
+  {
+   "id": "D1",
+   "asset": "Config.Islands Arrival",
+   "qty": 2,
+   "action": "CrystalWilds -> (2790,5,0); FrostboundReach -> (5750,5,0)",
+   "stage": "P1b.2/P1b.3"
+  },
+  {
+   "id": "D2",
+   "asset": "Config.Altars",
+   "qty": 1,
+   "action": "add CrystalWilds entry",
+   "stage": "P1b.2"
+  },
+  {
+   "id": "D3",
+   "asset": "WorldServer SLIME_ZONES GoldenSlime",
+   "qty": 1,
+   "action": "move/duplicate to CrystalWilds",
+   "stage": "P1b.2"
+  }
+ ],
+ "budgets_per_island": {
+  "tree_baseparts_max": 7000,
+  "other_baseparts_max": 300,
+  "lights_max": 40,
+  "particle_emitters_max": 150,
+  "max_parts_per_tree": 40
+ }
+}

@@ -2,6 +2,11 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-19 — P1b.1 migration blueprint (docs only)
+- Read-only inventory of Crystal Canyon and Frost Peaks.
+- Island plans, build methodology, mobile budgets, asset manifest, conflicts, staged plan and rollback.
+- No Studio changes.
+
 ## 2026-11-19 — Dev v9 published to the PRIVATE dev experience (iPhone testing)
 - Studio File → Publish on place 103379930563763.
 - The experience stays private. Production unchanged.

@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after the dev-only publish attempt, 2026-11-19 00:15 PST) |
-| Last handoff author / time | **Claude / 2026-11-19 ~00:15 PST** (dev publish for iPhone) |
+| Active AI editor | **None** (Claude P1b.1 read-only inspection 2026-11-19 00:20–00:45 PST; no Studio writes; released) |
+| Last handoff author / time | **Claude / 2026-11-19 ~00:45 PST** (P1b.1 blueprint) |
 | Last confirmed gameplay edit | **Dev place only:** v9 (M-1, TravelService). Production: none since the P0 baseline (`updateTime` 15:12:30Z, re-checked 2026-11-19 00:25 PST) |
-| Current task | Dev v9 **published (File → Publish) to the PRIVATE dev experience** for iPhone solo testing; publish not confirmable via Open Cloud, so confirm in-game (travel pads present). Experience stays PRIVATE. **Two-player test remains UNVERIFIED** |
-| Next action | Owner: open https://www.roblox.com/games/103379930563763 on iPhone (owner account) and run the iPhone solo checklist in `P1A_RESULTS.md`. If the pads are missing, press **File → Publish** in the Island Dev Studio window. **P1b NOT authorized** |
+| Current task | **P1b.1 blueprint delivered** (`docs/P1B_MIGRATION_BLUEPRINT.md` + `docs/p1b_asset_manifest.json`). Dev place v9 verified (P1a + M-1). **No construction done** |
+| Next action | Owner: review the blueprint §11 decisions (P1b.2 approval, B1 glow cap, B2 Frost Mythic, altar, P1b.4). **P1b.2 construction NOT authorized until explicit approval.** iPhone solo check of dev v9 still pending |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
