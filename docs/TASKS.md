@@ -30,3 +30,10 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [ ] Trading (pets/weapons) with server-side validation.
 - [ ] A new area after the current final zone, with its own tree set and boss.
 - [ ] Group-only perks and an update-log board in the hub.
+
+## Proposed island map redesign (design only; no Studio changes approved)
+- [ ] Design a Starter Island and teleport-based progression to other islands; future updates add more islands. [ChatGPT planning / Owner review]
+- [ ] Decide same-place island travel versus multi-place `TeleportService` travel after evaluating load times, mobile performance, shared bosses, and persistence. [Design review]
+- [ ] Map current Starter Grove, Pine Forest, Crystal Canyon, and Frost Peaks into the proposed island structure without losing existing unlocks or saves. [Design review]
+- [ ] Link island unlocks and content pacing to the economy/monetization audit, especially early-area burn-through, the Frost power wall, and paid/free parity. [ChatGPT planning]
+- [ ] Produce island blueprint, future-island template, migration/rollback plan, and playtest checklist **before requesting any construction**. [Owner approval required]
