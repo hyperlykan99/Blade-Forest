@@ -12,7 +12,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after the M-1 fix, 2026-11-19 00:30 PST) |
+| Active AI editor | **Claude**: owner-approved **publish of dev v9 to the PRIVATE dev experience only** (claimed 2026-11-19 00:05 PST) |
 | Last handoff author / time | **Claude / 2026-11-19 ~00:30 PST** (M-1 fix) |
 | Last confirmed gameplay edit | **Dev place only:** v9 (M-1, TravelService). Production: none since the P0 baseline (`updateTime` 15:12:30Z, re-checked 2026-11-19 00:25 PST) |
 | Current task | **M-1 fixed** in dev place **v9** (checkpoint v8 = v7). TravelService only, 9,388 B; branch `p1a/m1-arrival-slot-fix` @ `7f925b4` (Studio = GitHub). Harness H0–H7 and single-client B1–B8 pass. Two-player gameplay **not** verified |
