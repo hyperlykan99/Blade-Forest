@@ -31,9 +31,13 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [ ] A new area after the current final zone, with its own tree set and boss.
 - [ ] Group-only perks and an update-log board in the hub.
 
-## Proposed island map redesign (design only; no Studio changes approved)
-- [ ] Design a Starter Island and teleport-based progression to other islands; future updates add more islands. [ChatGPT planning / Owner review]
-- [ ] Decide same-place island travel versus multi-place `TeleportService` travel after evaluating load times, mobile performance, shared bosses, and persistence. [Design review]
+## Island world redesign (architecture approved; construction not authorized)
+- [x] Approve single-place Starter Island and teleport-connected future-island architecture. [Owner, 2026-11-18]
+- [x] Choose one Roblox place with server-validated in-place teleportation (not `TeleportService` for island travel). [Owner]
 - [ ] Map current Starter Grove, Pine Forest, Crystal Canyon, and Frost Peaks into the proposed island structure without losing existing unlocks or saves. [Design review]
 - [ ] Link island unlocks and content pacing to the economy/monetization audit, especially early-area burn-through, the Frost power wall, and paid/free parity. [ChatGPT planning]
-- [ ] Produce island blueprint, future-island template, migration/rollback plan, and playtest checklist **before requesting any construction**. [Owner approval required]
+- [x] Record initial island blueprint and migration/rollback requirements in `docs/ISLAND_BLUEPRINT.md`. [ChatGPT]
+- [ ] M2: Read-only Studio inventory and measured island layout/blockout; evaluate streaming, mobile memory and portal anchor placements. [Claude/Codex, owner approval before Studio access]
+- [ ] M2: Simulate proposed new unlock goals and costs for free/paid users at equal playtime, including unlucky cases. [ChatGPT/Claude]
+- [ ] M2: Create old-area migration matrix, asset manifest and test/rollback checklist. [Design review]
+- [ ] Owner to approve M2 technical blueprint and separately authorize a reversible build in a fresh development place. [Owner]
