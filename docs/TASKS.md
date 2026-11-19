@@ -5,7 +5,7 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 ## Repo sync
 - [x] Create the repo skeleton, docs and Rojo project. [Claude]
 - [ ] Link GitHub to Claude (claude.ai → Settings → Connectors → GitHub) so Claude can push. [Owner]
-- [ ] Save the place locally as `BladeForest.rbxl`, then run `rojo syncback --input BladeForest.rbxl` to fill `src/`. [Owner or Claude, once a local folder is connected]
+- [x] Scripts exported from the backup (branch `p0/script-export`). [Claude]
 - [ ] Commit `src/` and verify that `rojo serve` round-trips with no diffs. [Claude]
 
 ## Security

@@ -12,14 +12,14 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | `73142469975141` (Team Create) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude**: P0 isolation and backup (claimed 2026-11-18 20:15 PST) |
-| Last handoff author / time | **Claude / 2026-11-18 ~20:05 PST** (M2 technical validation, read-only) |
+| Active AI editor | **None.** Claude paused P0 (partial) 2026-11-18 ~21:10 PST; the owner performs the P0-B publish step |
+| Last handoff author / time | **Claude / 2026-11-18 ~21:10 PST** (P0 partial) |
 | Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
-| Current task | **P0 only** (per `P0_ISOLATION_AND_BACKUP.md`): offline backup, separate private dev experience, isolation check, script export. Production must not be saved or published |
-| Next action | Owner and ChatGPT: review M2 §8. Approve or revise the island coordinates, the Island 1 reuse mapping and the candidate gates. Construction (P0 dev copy) needs explicit owner approval |
+| Current task | **P0 PARTIAL.** ✅ Offline backup (3,292,481 B, SHA-256 `e050c6c3…6ffd`), ✅ counts verified, ✅ isolation code review, ✅ script export on branch `p0/script-export` (`bb354a6`). ❌ Dev experience not created (owner step) |
+| Next action | Owner: do the 'Owner step to finish P0-B' in `P0_ISOLATION_AND_BACKUP.md`, then ask Claude to verify the dev IDs. Review and merge `p0/script-export`. **P1 not authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
-| Working scripts in GitHub? | **Not yet**, per `CURRENT_STATUS.md`; recheck before relying on this |
+| Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
 | Blockers | Script export outstanding; owner-managed commerce/API setup; suspicious unused imported scripts awaiting review |
 
 ## Who is responsible

@@ -2,6 +2,12 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — P0 isolation and backup (partial)
+- Offline backup of the production place saved to the owner's Mac and verified.
+- Scripts exported to branch `p0/script-export`.
+- Dev experience pending an owner step.
+- Production unchanged.
+
 ## 2026-11-18 — M2 technical validation (docs only)
 - Added `docs/M2_TECHNICAL_VALIDATION.md`, `docs/m2_island_sim.py` and `docs/m2_sim_results.txt`.
 - Read-only Studio survey; no Studio, script, terrain, monetization or data changes.
