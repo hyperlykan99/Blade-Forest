@@ -1,0 +1,244 @@
+{
+ "Z1": {
+  "n": 155,
+  "bbox": [
+   2831,
+   2943,
+   -32,
+   58
+  ],
+  "centroid": [
+   2883.6,
+   21.2
+  ],
+  "y": [
+   3.18,
+   4.86
+  ],
+  "types": {
+   "Mythic": 1,
+   "Legendary": 1,
+   "Epic": 6,
+   "Rare": 19,
+   "Uncommon": 36,
+   "Common": 92
+  },
+  "muts": {
+   "Frozen": 4,
+   "Golden": 2
+  },
+  "hull": 7651,
+  "density_per_1000": 20.3,
+  "nn_mean": 5.23,
+  "nn_min": 4.17
+ },
+ "Z2": {
+  "n": 155,
+  "bbox": [
+   2971,
+   3028,
+   -62,
+   34
+  ],
+  "centroid": [
+   2999.5,
+   -15.6
+  ],
+  "y": [
+   1.1,
+   2.0
+  ],
+  "types": {
+   "Secret": 1,
+   "Legendary": 1,
+   "Epic": 6,
+   "Rare": 18,
+   "Uncommon": 37,
+   "Common": 92
+  },
+  "muts": {
+   "Golden": 2,
+   "Frozen": 2,
+   "Shadow": 1,
+   "Rainbow": 1
+  },
+  "hull": 4465,
+  "density_per_1000": 34.7,
+  "nn_mean": 5.2,
+  "nn_min": 4.41
+ },
+ "Z3": {
+  "n": 150,
+  "bbox": [
+   2840,
+   2944,
+   92,
+   168
+  ],
+  "centroid": [
+   2888.1,
+   132.6
+  ],
+  "y": [
+   3.21,
+   6.27
+  ],
+  "types": {
+   "Mythic": 1,
+   "Legendary": 1,
+   "Epic": 5,
+   "Rare": 19,
+   "Uncommon": 35,
+   "Common": 89
+  },
+  "muts": {
+   "Frozen": 3,
+   "Golden": 5,
+   "Shadow": 1
+  },
+  "hull": 5873,
+  "density_per_1000": 25.5,
+  "nn_mean": 5.17,
+  "nn_min": 4.16
+ },
+ "Z4": {
+  "n": 140,
+  "bbox": [
+   2982,
+   3078,
+   -221,
+   -168
+  ],
+  "centroid": [
+   3032.8,
+   -193.2
+  ],
+  "y": [
+   3.14,
+   4.81
+  ],
+  "types": {
+   "Mythic": 1,
+   "Epic": 6,
+   "Rare": 17,
+   "Uncommon": 33,
+   "Common": 83
+  },
+  "muts": {
+   "Frozen": 5,
+   "Golden": 2
+  },
+  "hull": 4204,
+  "density_per_1000": 33.3,
+  "nn_mean": 5.18,
+  "nn_min": 4.39
+ },
+ "P1": {
+  "n": 5,
+  "bbox": [
+   2930,
+   2939,
+   70,
+   74
+  ],
+  "centroid": [
+   2934.1,
+   71.7
+  ],
+  "y": [
+   4.02,
+   4.02
+  ],
+  "types": {
+   "Legendary": 1,
+   "Uncommon": 2,
+   "Common": 2
+  },
+  "muts": {},
+  "hull": 23,
+  "density_per_1000": 217.8,
+  "nn_mean": 3.69,
+  "nn_min": 3.35
+ },
+ "P2": {
+  "n": 5,
+  "bbox": [
+   2901,
+   2908,
+   -79,
+   -71
+  ],
+  "centroid": [
+   2905.0,
+   -75.5
+  ],
+  "y": [
+   4.02,
+   4.02
+  ],
+  "types": {
+   "Legendary": 1,
+   "Uncommon": 2,
+   "Common": 2
+  },
+  "muts": {},
+  "hull": 33,
+  "density_per_1000": 151.2,
+  "nn_mean": 4.13,
+  "nn_min": 3.8
+ },
+ "P3": {
+  "n": 5,
+  "bbox": [
+   2987,
+   2995,
+   -101,
+   -96
+  ],
+  "centroid": [
+   2992.0,
+   -98.9
+  ],
+  "y": [
+   1.89,
+   2.0
+  ],
+  "types": {
+   "Legendary": 1,
+   "Uncommon": 2,
+   "Common": 2
+  },
+  "muts": {},
+  "hull": 28,
+  "density_per_1000": 181.0,
+  "nn_mean": 4.04,
+  "nn_min": 3.63
+ },
+ "P4": {
+  "n": 5,
+  "bbox": [
+   2981,
+   2989,
+   -131,
+   -125
+  ],
+  "centroid": [
+   2984.9,
+   -128.1
+  ],
+  "y": [
+   2.0,
+   2.0
+  ],
+  "types": {
+   "Legendary": 1,
+   "Uncommon": 2,
+   "Common": 2
+  },
+  "muts": {},
+  "hull": 29,
+  "density_per_1000": 173.2,
+  "nn_mean": 3.71,
+  "nn_min": 3.59
+ }
+}
