@@ -15,8 +15,8 @@
 | Active AI editor | **None** (Claude paused 2026-11-18 21:55 PST; waiting on the owner to confirm the API toggle is saved and to start a 2-client test) |
 | Last handoff author / time | **Claude / 2026-11-18 ~22:35 PST** (P1a verification) |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
-| Current task | **P1a verified** (dev place **v7**). Prompts, death mid-travel, streaming failure and regressions ✅; **2 defects found and fixed** (V-1 unlock/gate conflict, V-2 fall on unstreamed arrival). ⚠️ Rejoin persistence and 2-player not run (owner toggles needed). See `P1A_RESULTS.md` § Verification round |
-| Next action | Owner: (1) re-check Experience Settings → Security → Enable Studio Access to API Services is **on and saved** for *Blade Forest - Island Dev*, then **reopen the place** (File → Close Place → reopen from Roblox); (2) start Server & Clients with **2** clients. Then Claude runs persistence + 2-player. **P1b NOT authorized** |
+| Current task | **P1a verified except 2-player.** Persistence and rejoin ✅ (dev DataStore, 2026-11-18 22:10); prompts, death mid-travel, streaming fix and regressions ✅. Remaining: 2-client simultaneous travel |
+| Next action | Owner: start **Server & Clients** with **2** clients in the Island Dev window and tell Claude; Claude drives the 2-player travel test. **P1b NOT authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |

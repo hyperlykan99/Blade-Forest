@@ -123,3 +123,13 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 - **Studio API access: ❌ still rejected** in place 103379930563763 (`502 … Error code: 7 … Studio access to APIs`; the session loaded with `_NoSave = true`). **Persistence test not run.**
 - **2-client session: not detected.** MCP saw only the dev place in Edit mode (no Play server or client DataModels), so the two-player test was not run.
 - Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`).
+
+### Final-test attempt 3 (2026-11-18 ~22:10 PST, place reopened; Studio instance `b6c1…`)
+- **Studio API access: ✅ active** in place 103379930563763 (direct `GetAsync` on `BladeForest_v3` succeeded; session loaded with `_NoSave = nil`).
+- **Persistence and rejoin: ✅ PASS** (dev DataStore, test account 394034825):
+  1. Session 1: granted the Void weapon to the dev save (Power 1,834) and travelled to Crystal Wilds through the real `Remotes.Travel` → landed at (3000, 5.8, 0).
+  2. Explicit `DataService.Save`, then a raw `GetAsync` read back: `{"UnlockedIslands":{"TimberHaven":true,"CrystalWilds":true},"LastIsland":"CrystalWilds","IslandProgress":[],"Equipped":"Void","BestArea":"CrystalCanyon"}`.
+  3. Stopped the playtest (leave), started a new one (rejoin): loaded `Unlocked={CrystalWilds, TimberHaven}`, `LastIsland = CrystalWilds`, Power 1834. **The player was placed on Crystal Wilds at (3000, 5.8, 0)**, stable for 2+ s; `CurrentIsland` = CrystalWilds, `CurrentArea` = CrystalCanyon.
+  - Note: the dev test account's save now holds the Void weapon and a Crystal unlock (dev data only).
+- **Two-player test: ⏳ not run.** No Server & Clients session was running (MCP saw only the dev place in Edit mode).
+- Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`).
