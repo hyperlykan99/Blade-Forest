@@ -2,6 +2,11 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — P0 verified complete
+- Dev experience "Blade Forest - Island Dev" (universe 10777797608, place 103379930563763) is private and isolated, with contents identical to production.
+- Backup re-verified.
+- Production unchanged.
+
 ## 2026-11-18 — P0 isolation and backup (partial)
 - Offline backup of the production place saved to the owner's Mac and verified.
 - Scripts exported to branch `p0/script-export`.
