@@ -11,6 +11,13 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 ## Security
 - [ ] Delete the unused `ServerStorage.*Imports` and `BoardTemplate` folders, or strip their scripts. They contain suspected backdoor modules (see AI_HANDOFF). Waiting for owner approval. [Claude]
 
+## Economy and monetization (proposals from the audit; not approved or implemented)
+- [ ] Fix `ProcessReceipt`: grant only after a confirmed save; move to `UpdateAsync` with a session lock or ProfileStore. [Claude, needs approval]
+- [ ] Fill in the developer `ProductId`s after creating the products. [Owner, then Claude]
+- [ ] Server-side `ArePaidRandomItemsRestricted` gating for Logs-paid crates and eggs, and for purchased free crates. [Claude, needs approval]
+- [ ] Rebalance luck stacking and area gates; plan a 5th area and recurring Logs sinks. [ChatGPT to plan]
+- [ ] Correct the weapon odds display (rarest-first cascade); remove or implement Pity; fix the FastRoll auto interval. [Claude, needs approval]
+
 ## Owner action items
 - [ ] Create the 9 developer products in the Creator Dashboard and send Claude the IDs.
 - [ ] Put the 5 game passes on sale and set prices.

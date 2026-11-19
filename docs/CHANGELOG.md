@@ -2,6 +2,10 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — Economy and monetization audit (docs only)
+- Added `docs/ECONOMY_MONETIZATION_AUDIT.md` and the model `docs/economy_sim.py`.
+- Read-only; no gameplay, price or script changes.
+
 ## 2026-11-18 — Repository setup
 - Created the GitHub repo structure: README, docs, Rojo project and `.gitignore`.
 - Kept the original `# Blade-Forest` README title.
