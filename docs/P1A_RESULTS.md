@@ -159,3 +159,46 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 4. Independent states: send client A to `FrostboundReach` and keep B on `CrystalWilds`; check each `CurrentIsland` attribute and that A's cooldown doesn't affect B.
 5. Both `TimberHaven` → both at or near (0, 5, 22), not stacked.
 6. Record results here and in `LIVE_HANDOFF.md`; release the editor row.
+
+
+---
+
+## Resume check and lightweight multiplayer review (2026-11-18 23:45 PST, Claude)
+
+**Verified (read-only, no Studio edits, no playtests, no local multi-client):**
+- Studio target: `game.PlaceId` 103379930563763 and `GameId` 10777797608 asserted; Edit mode; no other AI claimed in `LIVE_HANDOFF`; Codex made no changes (GitHub `main` still `7525ef7`).
+- Code: `BladeConfig` 55,586:3426233414, `DataService` 19,574:676054173, `TravelService` 7,991:1354999541 (length:Adler-32). **Identical to branch `p1a/island-prototype` @ `3511a5c` (P1a v7).** Totals: 35 game scripts / 403,968 B; `Workspace.Islands` 18 parts, all Persistent; trees 4,401.
+- Dev place cloud `updateTime` 2026-11-19T06:02:45Z (22:02 PST), after the v7 save. Consistent with a Team Create autosave around the owner's API toggle and reopen; script content is unchanged from v7.
+- Production 73142469975141 `updateTime` still `2026-11-18T15:12:30.520Z`.
+
+### Multiplayer risk review (code inspection)
+| # | Area | Finding | Risk |
+|---|---|---|---|
+| M-1 | **Arrival slot race** | `freeSpot()` picks the slot **before** `RequestStreamAroundAsync` yields (TravelService L72 → L74) and pivots **after** it (L82). Two players arriving within the same streaming wait both see slot 0 as free and land on the same spot | **Low–medium.** Characters overlap, then physics separates them; no data impact. Proposed fix (needs approval): reserve the chosen slot in a server table until the pivot completes, or re-pick the slot after the yield |
+| M-2 | Per-player travel state | `busy`, `lastTravel`, cooldown, combat lock, unlock check, `CurrentIsland`/`LastIsland` and the sync loop are keyed per player; PlayerRemoving clears them | None found |
+| M-3 | Prompts | `PromptTriggered` passes the triggering player; the server validates distance per player | None found |
+| M-4 | AreaService | `lastSafe` per player; island gate per player's own Power | None found. A low-Power player on I1 and a high-Power player on I2 stay independent |
+| M-5 | Server-wide content | Treant (0, 2, 205), Blade King arena (0, −270) and events are on Island 1 and announced to everyone | **Design gap, not a bug:** players on I2/I3 get the notice but can't see the boss. Decide in P1c (per-island bosses, or "travel to boss" prompt) |
+| M-6 | Spawn | Respawn and rejoin first spawn at the Island 1 SpawnLocations, then pivot to the current island | Cosmetic flash; with many simultaneous deaths several players briefly share the I1 spawns. Low |
+| M-7 | Saves | Pre-existing `SetAsync` without a session lock (from the economy audit) | Pre-existing; affects quick server-hopping, not island logic |
+| M-8 | Live servers | **P1a has only been saved, not published.** Team Create saves don't update live servers; a live dev server runs the last **published** version (the P0 baseline) | **Blocks any real-device test** until the dev place is published (dev only, owner approval) |
+
+### Recommended two-device test (no local multi-client)
+**Prerequisites (owner approval needed for step 1):**
+1. **Publish the dev place only**: Island Dev Studio window → *File → Publish to Roblox* (it publishes to place 103379930563763; the experience stays **Private**). Verify the title says *Blade Forest - Island Dev* before clicking.
+2. **Second account access:** a private experience can be joined only by its owner and collaborators. Add a second Roblox account (an alt or a trusted friend) on Creator Hub → *Blade Forest - Island Dev* → **Collaborators** (play access). The same account can't be in one server from two devices.
+3. **Devices:** Device A = the Mac in the **Roblox Player app** (not Studio; much lighter). Device B = a phone or tablet in the Roblox app with the second account. This also gives a first mobile streaming data point.
+4. **Same server:** the owner joins first; the second account joins through the owner's profile → *Join*, or the owner sends an in-game invite.
+
+**Test script (about 10 minutes, manual, travel pads only):**
+| Step | Action | Expect |
+|---|---|---|
+| A | Both stand on the Island 1 **Crystal Wilds** pad and press **E / tap** on a count of three | Owner (Void, Power 1,834) arrives; the second account with low Power gets "🔒 needs 250 Power" → **independent unlock states** |
+| B | (Optional, gives both access) Second account rolls or equips a Power ≥ 250 weapon, or the owner tests with two high-Power accounts | — |
+| C | Both press the Crystal Wilds pad together | Both arrive; note whether they overlap (M-1) or land about 6 studs apart |
+| D | On Crystal Wilds, one presses the **ReturnPad**, the other stays | Each sees their own island; cooldown on one doesn't block the other |
+| E | Both return home together | Both near (0, 5, 22); note overlap |
+| F | One player resets (dies) on Crystal Wilds | Respawns on Crystal Wilds; the other is unaffected |
+| G | Both leave and rejoin | The owner rejoins on `LastIsland`; the second account rejoins on its own last island |
+
+**Recording:** screenshots or a short video from both devices, plus the device models. The in-game **Developer Console (F9 → Server)** is available to the owner for any errors. Claude can then read saved `LastIsland` and `UnlockedIslands` for both accounts from the dev DataStore in a single-client Studio session afterwards.

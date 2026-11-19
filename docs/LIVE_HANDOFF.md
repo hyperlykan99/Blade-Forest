@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None.** Claude stopped and released 2026-11-18 22:20 PST (owner switching to **Codex**) |
-| Last handoff author / time | **Claude → Codex / 2026-11-18 ~22:20 PST** |
+| Active AI editor | **None.** Claude resumed 2026-11-18 23:40 PST for read-only checks only (no Studio edits, no playtests) and released at 23:50 PST |
+| Last handoff author / time | **Claude / 2026-11-18 ~23:50 PST** (resume check; Codex made no changes) |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
-| Current task | **P1a nearly complete** in dev place 103379930563763 (**saved version 7**; no edits after v7). ✅ registry, TravelService, save fields, prompts, death mid-travel, streaming fix, regressions, **persistence and rejoin**. ⏳ **Only remaining: 2-player simultaneous travel test** |
-| Next action | **Codex:** (1) verify `game.PlaceId == 103379930563763`, `GameId == 10777797608`; (2) claim this row; (3) owner starts Server & Clients with **2** clients (toolbar client count was 0); (4) run the 2-player test in `P1A_RESULTS.md` → 'Codex: remaining test'; (5) record results and release. **P1b NOT authorized. Never touch production 73142469975141** |
+| Current task | **P1a code complete and verified** in dev place 103379930563763 (Studio code = branch `p1a/island-prototype` @ `3511a5c`, checksum-verified 23:45 PST). Only remaining: a **real two-device** multiplayer test (local multi-client is ruled out: too heavy for the MacBook). See `P1A_RESULTS.md` → Resume check |
+| Next action | Owner: (1) approve **publishing the dev place only** (P1a is saved, not published; live servers run the P0 baseline); (2) add a 2nd account as collaborator; (3) run the two-device script in `P1A_RESULTS.md`. Optional approval: fix arrival-slot race M-1. **P1b NOT authorized.** Don't launch multiple local Studio clients |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
