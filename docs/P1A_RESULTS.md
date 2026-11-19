@@ -133,3 +133,7 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
   - Note: the dev test account's save now holds the Void weapon and a Crystal unlock (dev data only).
 - **Two-player test: ⏳ not run.** No Server & Clients session was running (MCP saw only the dev place in Edit mode).
 - Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`).
+
+### Two-player attempt (2026-11-18 ~22:10 PST)
+- **Not run: no 2-client session was running.** MCP listed only the dev place in Edit mode (instance `b6c1…`). The Island Dev toolbar showed test mode **"Server & …"** with the **client count at 0** and the session not started (Play enabled, Stop disabled).
+- Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`, checked 22:05 PST).

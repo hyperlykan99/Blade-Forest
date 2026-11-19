@@ -16,7 +16,7 @@
 | Last handoff author / time | **Claude / 2026-11-18 ~22:35 PST** (P1a verification) |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
 | Current task | **P1a verified except 2-player.** Persistence and rejoin ✅ (dev DataStore, 2026-11-18 22:10); prompts, death mid-travel, streaming fix and regressions ✅. Remaining: 2-client simultaneous travel |
-| Next action | Owner: start **Server & Clients** with **2** clients in the Island Dev window and tell Claude; Claude drives the 2-player travel test. **P1b NOT authorized** |
+| Next action | Owner: in the Island Dev toolbar set the client count (person icon, currently **0**) to **2**, then press the blue **Play ▶**; Claude then runs the 2-player test. **P1b NOT authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
