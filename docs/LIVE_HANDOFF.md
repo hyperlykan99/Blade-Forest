@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude**: P1a verification, **dev place 103379930563763 only** (claimed 2026-11-18 21:30 PST) |
-| Last handoff author / time | **Claude / 2026-11-18 ~22:05 PST** (P1a complete in the dev place) |
-| Last confirmed gameplay edit | **Dev place only:** P1a, version 5 (2026-11-18). Production: none since the P0 baseline |
-| Current task | **P1a ✅ done** in dev place 103379930563763, **saved version 5**. Registry, TravelService, island save fields and 18-part test pads; 22 checks passed; rejoin and multi-player unverified. See `docs/P1A_RESULTS.md`. Production untouched |
-| Next action | Owner: review `P1A_RESULTS.md` and branch `p1a/island-prototype`; decide (a) enabling Studio API access on the **dev** experience to test rejoin persistence, (b) a 2-client test, (c) P1b approval. **P1b NOT authorized** |
+| Active AI editor | **None** (Claude released after P1a verification, 2026-11-18 ~22:35 PST) |
+| Last handoff author / time | **Claude / 2026-11-18 ~22:35 PST** (P1a verification) |
+| Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
+| Current task | **P1a verified** (dev place **v7**). Prompts, death mid-travel, streaming failure and regressions ✅; **2 defects found and fixed** (V-1 unlock/gate conflict, V-2 fall on unstreamed arrival). ⚠️ Rejoin persistence and 2-player not run (owner toggles needed). See `P1A_RESULTS.md` § Verification round |
+| Next action | Owner: enable Studio API access on the **dev** experience and start a 2-client test, then ask Claude to finish tests 1–2. Review branch `p1a/island-prototype` (`3511a5c`). **P1b NOT authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |

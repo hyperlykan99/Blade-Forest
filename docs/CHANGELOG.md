@@ -2,6 +2,13 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — P1a verification (DEV PLACE ONLY, version 7)
+- Fixed: travel now requires the current legacy Power gate.
+- Fixed: `CurrentIsland` follows the character's real position.
+- Fixed: arrival models are Persistent, and travel aborts if the stream request fails.
+- Prompts, death mid-travel and regressions verified.
+- Rejoin and 2-player tests are pending owner toggles.
+
 ## 2026-11-18 — P1a island prototype (DEV PLACE ONLY, version 5)
 - Island registry and island-aware `GetAreaAt`.
 - New TravelService (same-place travel: cooldown, combat lock, streaming, respawn).
