@@ -12,10 +12,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | `73142469975141` (Team Create) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None recorded** — claim this field before editing |
+| Active AI editor | **Claude** (claimed 2026-11-18 19:05 PST) |
 | Last handoff author / time | **ChatGPT / 2026-11-18** (document setup only) |
 | Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
-| Current task | **None claimed** |
+| Current task | Export the 34 Studio scripts to `src/` (read-only, no gameplay changes); waiting on the owner to attach `BladeForest.rbxlx` |
 | Next action | Receiving AI: read this page and `AI_HANDOFF.md`, inspect the actual Studio place, then state the intended task before editing |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
@@ -50,15 +50,15 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | Unclaimed |
-| Started (date/time/timezone) | — |
-| Task / owner approval | — |
-| Studio place ID and saved version checked | — |
-| Git branch / starting commit | — |
-| Scripts or objects being edited | — |
-| Work in progress / unsaved changes | — |
-| Tests and results | — |
-| Risks / blockers | — |
+| AI | Claude |
+| Started (date/time/timezone) | 2026-11-18 19:05 America/Los_Angeles |
+| Task / owner approval | Export the 34 scripts without changing gameplay. Owner approved 2026-11-18 |
+| Studio place ID and saved version checked | Place `73142469975141` / universe `10777481912` confirmed; Edit mode, not running. Saved version not re-queried (last documented: 48). 34 scripts / 393,047 bytes, identical to Claude's previous inventory, so no code changes since |
+| Git branch / starting commit | `main` @ `e1c0b5d` |
+| Scripts or objects being edited | None in Studio (export only reads) |
+| Work in progress / unsaved changes | None from Claude |
+| Tests and results | Studio state check passed (see above) |
+| Risks / blockers | Folder access on the owner's Mac was denied, so the export needs the owner to attach an `.rbxlx` copy to the chat |
 
 ## Latest completed handoff
 
