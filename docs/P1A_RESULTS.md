@@ -137,3 +137,25 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 ### Two-player attempt (2026-11-18 ~22:10 PST)
 - **Not run: no 2-client session was running.** MCP listed only the dev place in Edit mode (instance `b6c1…`). The Island Dev toolbar showed test mode **"Server & …"** with the **client count at 0** and the session not started (Play enabled, Stop disabled).
 - Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`, checked 22:05 PST).
+
+### Status at handoff to Codex (2026-11-18 22:20 PST)
+| Area | Status |
+|---|---|
+| Registry / classification | ✅ |
+| Travel I1↔I2, I1↔I3; invalid, locked, spam, cooldown, combat lock | ✅ |
+| ProximityPrompt pads (real input) | ✅ |
+| Death mid-travel; respawn on island | ✅ |
+| Streaming failure (V-2 fixed: Persistent arrival models + abort) | ✅ |
+| Unlock vs. legacy gate (V-1 fixed) | ✅ |
+| Grandfathering (unit) | ✅ |
+| **Persistence and rejoin (dev DataStore)** | ✅ |
+| Regressions (chop, roll, upgrade, sawmill, egg pricing, index, daily, NPCs, Blade King, Treant) | ✅ |
+| **2-player simultaneous travel / arrival spacing / independent states** | ⏳ **NOT RUN** (no 2-client session was running) |
+
+### Codex: remaining test (dev place only)
+1. Owner: in the Island Dev toolbar set mode **Server & Clients**, client count **2**, press **Play ▶**.
+2. Server: confirm 2 players, `Loaded`. Set Power for both as a transient attribute (`SetAttribute("Power", 2500)`) or use the dev save.
+3. From both clients **at the same time**, `Remotes.Travel:InvokeServer("CrystalWilds")` → expect both `true`, positions ≥ 3 studs apart (slot 0 at (3000, 5, 0) and a ring slot 6 studs away), both stable on the floor.
+4. Independent states: send client A to `FrostboundReach` and keep B on `CrystalWilds`; check each `CurrentIsland` attribute and that A's cooldown doesn't affect B.
+5. Both `TimberHaven` → both at or near (0, 5, 22), not stacked.
+6. Record results here and in `LIVE_HANDOFF.md`; release the editor row.

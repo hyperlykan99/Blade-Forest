@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude paused 2026-11-18 21:55 PST; waiting on the owner to confirm the API toggle is saved and to start a 2-client test) |
-| Last handoff author / time | **Claude / 2026-11-18 ~22:35 PST** (P1a verification) |
+| Active AI editor | **None.** Claude stopped and released 2026-11-18 22:20 PST (owner switching to **Codex**) |
+| Last handoff author / time | **Claude → Codex / 2026-11-18 ~22:20 PST** |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
-| Current task | **P1a verified except 2-player.** Persistence and rejoin ✅ (dev DataStore, 2026-11-18 22:10); prompts, death mid-travel, streaming fix and regressions ✅. Remaining: 2-client simultaneous travel |
-| Next action | Owner: in the Island Dev toolbar set the client count (person icon, currently **0**) to **2**, then press the blue **Play ▶**; Claude then runs the 2-player test. **P1b NOT authorized** |
+| Current task | **P1a nearly complete** in dev place 103379930563763 (**saved version 7**; no edits after v7). ✅ registry, TravelService, save fields, prompts, death mid-travel, streaming fix, regressions, **persistence and rejoin**. ⏳ **Only remaining: 2-player simultaneous travel test** |
+| Next action | **Codex:** (1) verify `game.PlaceId == 103379930563763`, `GameId == 10777797608`; (2) claim this row; (3) owner starts Server & Clients with **2** clients (toolbar client count was 0); (4) run the 2-player test in `P1A_RESULTS.md` → 'Codex: remaining test'; (5) record results and release. **P1b NOT authorized. Never touch production 73142469975141** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
@@ -45,6 +45,16 @@
 3. Update `CURRENT_STATUS.md` for verified behavior, `CHANGELOG.md` for completed changes, and `TASKS.md` for task status. Update `AI_HANDOFF.md` if architecture or conventions changed.
 4. Commit and push doc changes; include the Git commit SHA/link. If push fails, paste the handoff in the chat and explicitly mark it **not synced**.
 5. Set `Active AI editor` to **None**, `Current task` to **None claimed**, and give the next AI one specific next action.
+
+## Claude → Codex handoff (2026-11-18 22:20 PST)
+
+- **Studio state:** dev place `Blade Forest - Island Dev` (place 103379930563763 / universe 10777797608, PRIVATE), **Edit mode, saved version 7**. No edits since v7; only playtests ran afterwards. A final `save_place` check timed out on the device and was **not retried**. If Studio shows unsaved changes, they are not Claude's: inspect before saving.
+- **Studio API access:** ON for the dev experience (verified working 22:10 PST).
+- **Dev test data:** the account 394034825 dev save holds the Void weapon, a Crystal Wilds unlock and `LastIsland = CrystalWilds` (dev DataStore only).
+- **Code:** branch `p1a/island-prototype` @ `3511a5c` matches Studio v7 (BladeConfig 55,586 B, DataService 19,574 B, TravelService 7,991 B; checksums in commit messages). Studio-only objects: `Workspace.Islands` (18 parts, Persistent models).
+- **Test hooks (Studio only):** `ServerStorage.DevTravel:Invoke(player, islandId, {unlock=,cooldown=,same=})`, `ServerStorage.DevGrant:Invoke(player, "Get"|"Save"|"AddWeapon", ...)`. Note: a command-bar `require(DataService)` returns a separate copy with no players; use DevGrant `Get`.
+- **Production:** 73142469975141 untouched; `updateTime` `2026-11-18T15:12:30.520Z` (last checked 22:05 PST).
+- **Not authorized:** P1b, gameplay/economy/monetization changes, production edits, asset imports, deleting import folders.
 
 ## Current session (claim before editing)
 
