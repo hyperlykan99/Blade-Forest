@@ -42,19 +42,50 @@ local function isUnlocked(player, isl)
 	return true
 end
 
--- arrival spot: center first, then a ring of 8 so players don't stack
-local function freeSpot(isl)
-	for slot = 0, 8 do
-		local a = (slot - 1) * math.pi / 4
-		local p = isl.Arrival + (slot == 0 and Vector3.zero or Vector3.new(math.cos(a) * 6, 0, math.sin(a) * 6))
-		local taken = false
-		for _, other in ipairs(Players:GetPlayers()) do
-			local r = other.Character and other.Character:FindFirstChild("HumanoidRootPart")
-			if r and (r.Position - p).Magnitude < 3 then taken = true break end
+-- arrival spot: center first, then a ring of 8 so players don't stack.
+-- M-1: the slot is chosen right before PivotTo with no yield in between, and a
+-- just-used slot stays reserved briefly so another player arriving in the next
+-- moments (before positions replicate) can't pick the same one.
+local RESERVE_SECONDS = 2
+local reserved = {} -- [islandId] = { [slot] = { player = Player, untilT = os.clock() deadline } }
+
+local function slotPosition(isl, slot)
+	if slot == 0 then return isl.Arrival end
+	local a = (slot - 1) * math.pi / 4
+	return isl.Arrival + Vector3.new(math.cos(a) * 6, 0, math.sin(a) * 6)
+end
+
+local function releasePlayer(player)
+	for _, slots in pairs(reserved) do
+		for slot, r in pairs(slots) do
+			if r.player == player then slots[slot] = nil end
 		end
-		if not taken then return CFrame.new(p) end
 	end
-	return CFrame.new(isl.Arrival)
+end
+
+local function reserve(isl, slot, player)
+	releasePlayer(player) -- a player holds at most one reservation
+	reserved[isl.Id] = reserved[isl.Id] or {}
+	reserved[isl.Id][slot] = { player = player, untilT = os.clock() + RESERVE_SECONDS }
+end
+
+-- never yields
+local function freeSpot(isl, forPlayer)
+	local now = os.clock()
+	local slots = reserved[isl.Id]
+	for slot = 0, 8 do
+		local p = slotPosition(isl, slot)
+		local r = slots and slots[slot]
+		local taken = r ~= nil and r.player ~= forPlayer and r.untilT > now and r.player.Parent ~= nil
+		if not taken then
+			for _, other in ipairs(Players:GetPlayers()) do
+				local root = other ~= forPlayer and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+				if root and (root.Position - p).Magnitude < 3 then taken = true break end
+			end
+		end
+		if not taken then return CFrame.new(p), slot end
+	end
+	return CFrame.new(isl.Arrival), 0
 end
 
 local function setIsland(player, isl)
@@ -69,17 +100,20 @@ local function place(player, isl)
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	if not root or not hum or hum.Health <= 0 then return false, "No character" end
-	local cf = freeSpot(isl)
 	-- arrival models are Persistent (always on every client); still preload the area
-	local streamed, streamErr = pcall(function() player:RequestStreamAroundAsync(cf.Position, STREAM_TIMEOUT) end)
+	-- around the island's fixed arrival anchor (this yields)
+	local streamed, streamErr = pcall(function() player:RequestStreamAroundAsync(isl.Arrival, STREAM_TIMEOUT) end)
 	if not streamed then
 		warn("[Travel] stream request failed for", player.Name, isl.Id, streamErr)
 		return false, "Couldn't load " .. isl.Name .. " - try again"
 	end
 	if player.Character ~= char or not root.Parent or hum.Health <= 0 then return false, "Character changed during travel" end
+	-- M-1: choose the landing slot and move in one step; nothing from here to PivotTo yields
+	local cf, slot = freeSpot(isl, player)
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
 	char:PivotTo(cf)
+	reserve(isl, slot, player)
 	return true
 end
 
@@ -143,6 +177,7 @@ end
 
 local function onPlayer(player)
 	player.CharacterAdded:Connect(function(char) onCharacter(player, char) end)
+	player.CharacterRemoving:Connect(function() releasePlayer(player) end)
 	task.spawn(function()
 		while player.Parent and not player:GetAttribute("Loaded") do task.wait(0.2) end
 		if not player.Parent then return end
@@ -156,7 +191,10 @@ local function onPlayer(player)
 end
 Players.PlayerAdded:Connect(onPlayer)
 for _, p in ipairs(Players:GetPlayers()) do onPlayer(p) end
-Players.PlayerRemoving:Connect(function(p) lastTravel[p], busy[p] = nil, nil end)
+Players.PlayerRemoving:Connect(function(p)
+	lastTravel[p], busy[p] = nil, nil
+	releasePlayer(p)
+end)
 
 -- CurrentIsland / LastIsland follow the character's real position (e.g. after an
 -- AreaService push-back), checked once a second; skipped while a travel is running
