@@ -12,7 +12,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after P1a, 2026-11-18 ~22:05 PST) |
+| Active AI editor | **Claude**: P1a verification, **dev place 103379930563763 only** (claimed 2026-11-18 21:30 PST) |
 | Last handoff author / time | **Claude / 2026-11-18 ~22:05 PST** (P1a complete in the dev place) |
 | Last confirmed gameplay edit | **Dev place only:** P1a, version 5 (2026-11-18). Production: none since the P0 baseline |
 | Current task | **P1a ✅ done** in dev place 103379930563763, **saved version 5**. Registry, TravelService, island save fields and 18-part test pads; 22 checks passed; rejoin and multi-player unverified. See `docs/P1A_RESULTS.md`. Production untouched |
