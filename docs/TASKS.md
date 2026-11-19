@@ -15,8 +15,9 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [x] Read-only map survey, island placement proposal, streaming and mobile review, system dependency list, 200-seed island simulation. [Claude]
 - [ ] Owner decision: island coordinates (I1 at origin reused, I2 (3000,0,0), I3 (6000,0,0)) and the Island 1 zone mapping. [Owner]
 - [ ] Owner decision: candidate gates G2 = 600 trees + Power 60 + Blade King; G3 = 6,000 Island-2 trees + Power 500 + Island-2 boss. [Owner + ChatGPT]
-- [~] **P0 APPROVED 2026-11-18**: offline full-place backup, private isolated dev experience, restore verification, safe export to `src/`. Execution NOT yet verified; follow `docs/P0_ISOLATION_AND_BACKUP.md`. [Claude / Owner]
-- [ ] **P1 NOT AUTHORIZED**: island registry replacing `GetAreaAt`; TravelService; DataService `UnlockedIslands`/`LastIsland`/`IslandProgress` with grandfathering; blockouts. Require separate owner approval and P0 verification. [Claude]
+- [x] **P0 VERIFIED COMPLETE**: offline backup, private dev place 103379930563763 (universe 10777797608), verified restore, script export to `p0/script-export` (unmerged); owner still to copy backup to external media. [Claude]
+- [~] **P1a ONLY APPROVED 2026-11-18** in private dev place 103379930563763: safe island lookup, test pads at x~3000/6000, in-place TravelService prototype, compatible test save fields and checks. Verify place ID before writes; follow `docs/P1_PROTOTYPE_SCOPE.md`. Implementation NOT yet verified. [Claude]
+- [ ] **P1b/P1c NOT AUTHORIZED:** actual Crystal/Frost terrain migration, detailed islands, bosses, economic unlock gates, permanent portal art. [Owner]
 - [ ] P2 (after approval): mobile streaming tests against the §4.3 budget; Island 1 trim plan (Pine count, lights, 370-part Frost Mythic). [Claude]
 
 ## Economy and monetization (proposals from the audit; not approved or implemented)
