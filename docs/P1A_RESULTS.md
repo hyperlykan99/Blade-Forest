@@ -113,3 +113,8 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 ### Owner steps to finish verification (dev experience only)
 1. Studio (Island Dev window) → **File → Experience Settings → Security → Enable Studio Access to API Services → Save.**
 2. In the Studio toolbar, set the test mode to **Server & Clients** and the client count to **2**, and press **Start**. Then tell Claude, who drives both clients over MCP.
+
+### Final-test attempt (2026-11-18 21:50 PST)
+- **Studio API access check: ❌ not active for the dev place.** A playtest in place 103379930563763 made a direct `DataStoreService:GetDataStore("BladeForest_v3"):GetAsync(...)`, which returned `502: API Services rejected request … Error code: 7 … Studio access…`. The session loaded with `_NoSave = true`. **The persistence test (1) was not run**, because no save can be written or read yet.
+- **Two-player test (2): not run.** It needs the owner to start Server & Clients with 2 clients (the toolbar control doesn't accept background input).
+- Production `updateTime` re-checked: unchanged (see the handoff).
