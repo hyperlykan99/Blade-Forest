@@ -1,0 +1,243 @@
+{
+ "source_backup_sha256": "e050c6c36bf177a1629e94c09bdefd75ee4d3c7dd869e9858603c29556d64ffd",
+ "scripts": [
+  {
+   "path": "ReplicatedStorage.BladeConfig",
+   "class": "ModuleScript",
+   "file": "src/shared/BladeConfig.luau",
+   "bytes": 53433,
+   "sha256": "1559332996cdb0c38acf7445054d85690b4442f06a4dd355898e1329763c0734"
+  },
+  {
+   "path": "ReplicatedStorage.UIIcons",
+   "class": "ModuleScript",
+   "file": "src/shared/UIIcons.luau",
+   "bytes": 2205,
+   "sha256": "1094de9c2fb2ad786d91d8e6dcc15085bb3cf2a753d9a5c5b381fe882e173c7a"
+  },
+  {
+   "path": "ReplicatedStorage.UITheme",
+   "class": "ModuleScript",
+   "file": "src/shared/UITheme.luau",
+   "bytes": 5555,
+   "sha256": "7494979d1fadad0e5808636582f7674103ca99290b2f13355b1ddb9ac5bbddcb"
+  },
+  {
+   "path": "ServerScriptService.AFKService",
+   "class": "Script",
+   "file": "src/server/AFKService.server.luau",
+   "bytes": 1307,
+   "sha256": "92d9d0b5ddb8b41202ef139fd674374c7c790529ddc2bd75c72e91b9d10291ac"
+  },
+  {
+   "path": "ServerScriptService.AreaService",
+   "class": "Script",
+   "file": "src/server/AreaService.server.luau",
+   "bytes": 1737,
+   "sha256": "7108c7672566d3f62c719ce3913636edb380e2ea34503cc78c5ae72fd7478272"
+  },
+  {
+   "path": "ServerScriptService.CombatServer",
+   "class": "Script",
+   "file": "src/server/CombatServer.server.luau",
+   "bytes": 20797,
+   "sha256": "cc13c09b471f9f369a8ddcedc3e43942c4924f5e78af8a8c81708b7e7ce83252"
+  },
+  {
+   "path": "ServerScriptService.DataService",
+   "class": "ModuleScript",
+   "file": "src/server/DataService.luau",
+   "bytes": 18797,
+   "sha256": "16f04bbc1b273d46033a3f55b0501f5210e90da5e31e284b95eadde155da2a09"
+  },
+  {
+   "path": "ServerScriptService.ExtrasService",
+   "class": "Script",
+   "file": "src/server/ExtrasService.server.luau",
+   "bytes": 11734,
+   "sha256": "b391b36f3cc3da23195ba29039b12267269c56bd97e0aa249146602d2066f011"
+  },
+  {
+   "path": "ServerScriptService.LeaderboardService",
+   "class": "Script",
+   "file": "src/server/LeaderboardService.server.luau",
+   "bytes": 4965,
+   "sha256": "110f34442300708e2fbf5d6aa230894829cd8ef6d6ef98055e8b22eadcb184cf"
+  },
+  {
+   "path": "ServerScriptService.MetaService",
+   "class": "Script",
+   "file": "src/server/MetaService.server.luau",
+   "bytes": 11613,
+   "sha256": "f76077cf47ae619c991a1cba266e5f5c3422d3dcf1a86bc632fec626270adf3b"
+  },
+  {
+   "path": "ServerScriptService.Progress",
+   "class": "ModuleScript",
+   "file": "src/server/Progress.luau",
+   "bytes": 4205,
+   "sha256": "0461379a5e10422cb658f15182a08ecd85bc2b7df9fadd97db104514f035632a"
+  },
+  {
+   "path": "ServerScriptService.PvPService",
+   "class": "Script",
+   "file": "src/server/PvPService.server.luau",
+   "bytes": 4921,
+   "sha256": "fcf31e09af1f632ea4f0597f400bb3127aa3546eec2885a817500dd695820f01"
+  },
+  {
+   "path": "ServerScriptService.RollService",
+   "class": "Script",
+   "file": "src/server/RollService.server.luau",
+   "bytes": 3166,
+   "sha256": "d96152c761dd000480893fb41e50fa7f591048dfec7f9436bc35de82d4ae1a7b"
+  },
+  {
+   "path": "ServerScriptService.SoulService",
+   "class": "Script",
+   "file": "src/server/SoulService.server.luau",
+   "bytes": 1860,
+   "sha256": "e7a247fdceb5e09f018eba54f3ba9ed7a528752290c4d8017712d605741d8165"
+  },
+  {
+   "path": "ServerScriptService.StoreService",
+   "class": "Script",
+   "file": "src/server/StoreService.server.luau",
+   "bytes": 7939,
+   "sha256": "1a9a6573620c907fdf9392a0a038a4b371c6323226184c09e5cb83bcfbfe4c9a"
+  },
+  {
+   "path": "ServerScriptService.TraitService",
+   "class": "Script",
+   "file": "src/server/TraitService.server.luau",
+   "bytes": 5344,
+   "sha256": "a2b921adbe2f2b43a45389703fde6bc874f929b6f28c487475e1c4e4930c8167"
+  },
+  {
+   "path": "ServerScriptService.WorldServer",
+   "class": "Script",
+   "file": "src/server/WorldServer.server.luau",
+   "bytes": 13930,
+   "sha256": "ad33d8d944ba33d90e444c2733fa2c0ee686cfda2feba475b4c953117296b71e"
+  },
+  {
+   "path": "ServerStorage.SwordTools",
+   "class": "ModuleScript",
+   "file": "src/serverstorage/SwordTools.luau",
+   "bytes": 2393,
+   "sha256": "7e50288e78353d2c02c0d35374e7e340e54ea6a6237ba5b38a33017e89138bf4"
+  },
+  {
+   "path": "ServerStorage.TreeKit",
+   "class": "ModuleScript",
+   "file": "src/serverstorage/TreeKit.luau",
+   "bytes": 5038,
+   "sha256": "b34c772fb8f835bbfa026d20f788d5c36eb82a147ae30aa80d5a715ce33a43e7"
+  },
+  {
+   "path": "StarterGui.GameUI.UIController",
+   "class": "LocalScript",
+   "file": "src/gui/UIController.client.luau",
+   "bytes": 17800,
+   "sha256": "d3a51fd46b2b729bec98edd6149664817d92decdbc6bc11a7209606d2d29f7f2"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.AFKController",
+   "class": "LocalScript",
+   "file": "src/client/AFKController.client.luau",
+   "bytes": 10003,
+   "sha256": "ff53e2ca03f932d34b493e692f0f7eaf4ef64eec82f742bbefb1f357e15ffe3b"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.AutoChop",
+   "class": "LocalScript",
+   "file": "src/client/AutoChop.client.luau",
+   "bytes": 12453,
+   "sha256": "94d1cb601a403c537a5a159e9e16584c36bf615624e69b1b316eb17c281e7e09"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.BladeEffects",
+   "class": "LocalScript",
+   "file": "src/client/BladeEffects.client.luau",
+   "bytes": 14507,
+   "sha256": "75a04d83d9991d053d347a7e679b4d37b920f0e548c1af22fdfc985beaede3fb"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.ChopEffects",
+   "class": "LocalScript",
+   "file": "src/client/ChopEffects.client.luau",
+   "bytes": 18500,
+   "sha256": "ae4f730f5dbcd63aca73cee4deba444a506c46da4c22089249266c171a676c01"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.ExtrasController",
+   "class": "LocalScript",
+   "file": "src/client/ExtrasController.client.luau",
+   "bytes": 16035,
+   "sha256": "28d919f8769f8f721a163c8d9c4d1fe73813580805d9507f6a20078f00d9ec03"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.HudExtras",
+   "class": "LocalScript",
+   "file": "src/client/HudExtras.client.luau",
+   "bytes": 3833,
+   "sha256": "4fdb6ca45c2f00eebd4d0e1978833974d8fbc3ec92f0b60fd238c28f33a4bba7"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.IndexController",
+   "class": "LocalScript",
+   "file": "src/client/IndexController.client.luau",
+   "bytes": 14632,
+   "sha256": "594397cdffa11afa2dd5ec6be7a985dbdf0981493e0934ca2b5bd249b98e26f4"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.MetaController",
+   "class": "LocalScript",
+   "file": "src/client/MetaController.client.luau",
+   "bytes": 24621,
+   "sha256": "1cccb2a21a02d1175bb6b50d7e352cf524d7caf47addfddd55c2b739556c5113"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.PvPSoulController",
+   "class": "LocalScript",
+   "file": "src/client/PvPSoulController.client.luau",
+   "bytes": 13682,
+   "sha256": "788a3018ceccd84f7923bdefdd3bd081a4449574418aa99cdfee377894e89900"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.RollController",
+   "class": "LocalScript",
+   "file": "src/client/RollController.client.luau",
+   "bytes": 20074,
+   "sha256": "762eed597e46863e33c76e56df1e3902e147cd5fdc1f191557476ee3ee03881c"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.StoreController",
+   "class": "LocalScript",
+   "file": "src/client/StoreController.client.luau",
+   "bytes": 11474,
+   "sha256": "53f46e12de239b60a8c8ca4f3e79980d5bccd5574bc549e31ab5241699087dd8"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.TraitsController",
+   "class": "LocalScript",
+   "file": "src/client/TraitsController.client.luau",
+   "bytes": 15486,
+   "sha256": "eceeb1672f275896ebc39173b26199738051db08b37996a38c7d8b1fe46769f6"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.TutorialController",
+   "class": "LocalScript",
+   "file": "src/client/TutorialController.client.luau",
+   "bytes": 7017,
+   "sha256": "54cfc7ad0deec4d6cf0bf794a5783ace5b58dda7010e403b85bd007c30a422ff"
+  },
+  {
+   "path": "StarterPlayer.StarterPlayerScripts.UIStyler",
+   "class": "LocalScript",
+   "file": "src/client/UIStyler.client.luau",
+   "bytes": 11991,
+   "sha256": "caa60e806dc1983785c1e841c11539163cc3c3dd4267685f9ba907db23075b6e"
+  }
+ ]
+}

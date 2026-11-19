@@ -3,21 +3,29 @@
   "tree": {
     "$className": "DataModel",
     "ServerScriptService": {
+      "$ignoreUnknownInstances": true,
       "$path": "src/server"
     },
     "ReplicatedStorage": {
+      "$ignoreUnknownInstances": true,
       "$path": "src/shared"
     },
     "ServerStorage": {
+      "$ignoreUnknownInstances": true,
       "$path": "src/serverstorage"
     },
     "StarterPlayer": {
+      "$ignoreUnknownInstances": true,
       "StarterPlayerScripts": {
+        "$ignoreUnknownInstances": true,
         "$path": "src/client"
       }
     },
     "StarterGui": {
+      "$ignoreUnknownInstances": true,
       "GameUI": {
+        "$className": "ScreenGui",
+        "$ignoreUnknownInstances": true,
         "$path": "src/gui"
       }
     }
