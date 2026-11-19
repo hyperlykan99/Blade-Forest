@@ -55,3 +55,31 @@ Players spin a ring of orbiting blades around their character and walk through a
 - Areas radiate outward and are gated by power.
 - Mountains and barricades can't be climbed: `CharacterMaxSlopeAngle = 32`, plus the `ClimbBlockers` parts.
 - Assets come from the Creator Store; we don't make custom models.
+
+## Proposed map redesign — island progression (planning only)
+
+**Owner direction (2026-11-18):** Consider remodeling Blade Forest from one connected world with radiating areas into a **Starter Island**, followed by **teleport-accessed islands**. Design the system to allow additional islands in future game updates.
+
+**Not yet approved for construction:** Island count, names, terrain layouts, travel implementation, progression requirements, release order, and migration of existing areas. Do not change the current map or scripts until a blueprint and implementation plan are reviewed.
+
+### Design goals
+- A welcoming Starter Island with the early chop/upgrade/roll onboarding loop and easy-to-find destinations.
+- A clear teleport/travel hub that sends players to the next island once progression criteria are satisfied. Players should be able to return to prior islands.
+- Each island provides an identifiable progression tier with themed trees, rewards, collections, and potentially an island boss; new islands can be added without rebuilding the system.
+- Rework area progression **alongside the economy**: gates should use attainable, measurable progression rather than depending exclusively on very rare weapon rolls. Target D1/D7 pacing and preserve free-player access.
+- Preserve existing weapon/pet/trait/save collections and avoid resetting player progress when remapping existing zones.
+- Decide whether islands are physically separated areas in **one Roblox place** (local teleport/streaming) or **separate places within one experience** (TeleportService). Evaluate persistence, load times, mobile performance, server population, boss events, and maintainability before choosing.
+- Prepare a scalable island registry and server-side validation for unlocking/travel. Avoid hard-coded assumptions that there are exactly four islands.
+- Plan safe backwards compatibility for existing area IDs, unlocks, spawns, quest targets, travel, and world events.
+
+### Initial conceptual player journey (not final layout)
+Starter Island → teleport to Island 2 → additional progressively unlocked islands in later updates. Existing Starter Grove / Pine Forest / Crystal Canyon / Frost Peaks are *not* automatically reassigned; their future mapping must be determined in the design phase.
+
+### Design deliverables before implementation
+1. Island master plan: hub, traversal, teleport placement, theme and content responsibilities.
+2. Old-to-new area mapping with player-save migration and rollback strategy.
+3. Economy model for each island: unlock milestones, time-to-reach, Logs/Souls income and sinks, paid-vs-free gap.
+4. Teleport architecture decision (same-place or cross-place), UI flow, mobile performance and failure handling.
+5. Reusable island template for future releases plus staged tests.
+
+**Status:** Proposal recorded; no Studio modifications authorized.
