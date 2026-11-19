@@ -202,3 +202,66 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 | G | Both leave and rejoin | The owner rejoins on `LastIsland`; the second account rejoins on its own last island |
 
 **Recording:** screenshots or a short video from both devices, plus the device models. The in-game **Developer Console (F9 → Server)** is available to the owner for any errors. Claude can then read saved `LastIsland` and `UnlockedIslands` for both accounts from the dev DataStore in a single-client Studio session afterwards.
+
+
+---
+
+## M-1 arrival-slot race fix (2026-11-18 23:50 – 2026-11-19 00:30 PST, Claude; owner-approved, M-1 only)
+
+**Target:** dev place 103379930563763 / universe 10777797608 (IDs asserted before every write). Production untouched.
+
+| | |
+|---|---|
+| Baseline before edit | Dev v7 content: TravelService 7,991 B `1354999541` = branch `p1a/island-prototype` @ `3511a5c` (re-verified; no newer changes) |
+| Rollback checkpoint | **Dev v8**, "M-1 rollback checkpoint = P1a v7 baseline" (content identical to v7) |
+| Saved result | **Dev v9**, "M-1 arrival-slot race fix (TravelService only)". Saved, **not published** |
+| GitHub | New branch **`p1a/m1-arrival-slot-fix`** @ **`7f925b4`** (from `3511a5c`); 1 file changed: `src/server/TravelService.server.luau` |
+| Studio = GitHub | TravelService **9,388 B, Adler-32 `3611788483`**, identical. BladeConfig (55,586 `3426233414`) and DataService (19,574 `676054173`) unchanged |
+
+### What changed (TravelService only)
+1. `place()` preloads around the island's **fixed arrival anchor** (`isl.Arrival`) instead of a pre-chosen slot. This is the only yield.
+2. After the yield, the character, root part and health are re-validated (unchanged).
+3. **The slot is chosen immediately before `PivotTo`** (`freeSpot(isl, player)`); nothing between selection and positioning can yield.
+4. After a successful pivot the slot is **reserved for 2 s** (`reserved[islandId][slot]`). This covers replication lag, when another player's server-side position hasn't updated yet. Reservations are skipped if expired or if the holder left (`Parent == nil`). A player holds at most one. They are cleared on `PlayerRemoving` and `CharacterRemoving` (death / respawn). They are only created on success, so failed or aborted travels never leave one behind.
+5. `freeSpot` ignores the travelling player's own body and reservation. Slot geometry is unchanged: center, then a ring of 8 at 6 studs.
+6. Respawn and rejoin already call `place()`, so they use the same safe selection.
+
+Preserved and unchanged: validation order, legacy Power gate, combat lock, 3 s cooldown (measured from the request start, as before), unlock recording, `busy` flag, the character-changed abort, the stream-failure abort, DataService fields and the Studio-only DevTravel hook.
+
+### Test evidence
+**A. Concurrency harness (mocks, single playtest server; not real players).** The exact new `slotPosition` / `releasePlayer` / `reserve` / `freeSpot` code was copied verbatim from the running TravelService into a temporary ModuleScript (deleted afterwards). Mock players are plain tables with `Parent`, `Character:FindFirstChild("HumanoidRootPart").Position`. Concurrency is simulated with coroutines that `yield` where `RequestStreamAroundAsync` yields.
+
+| # | Simulated scenario | Result |
+|---|---|---|
+| H0 | **Control:** the old order (select, yield, pivot) with A and B both waiting on streaming | Both chose slot 0: **race reproduced** |
+| H1 | New order, same interleaving (A and B start, both yield, then resume one after the other) | ✅ A = slot 0, B = slot 1 |
+| H2 | A placed and reserved, but A's server position still shows the old spot (replication lag) | ✅ B gets slot 1 |
+| H3a | Reservation holder left (`Parent = nil`) | ✅ slot 0 available to B |
+| H3b | `releasePlayer` (death or leave) | ✅ 0 reservations remain |
+| H4 | Reservation older than 2 s | ✅ slot freed |
+| H5 | Player reserves on two islands in a row | ✅ only 1 reservation kept |
+| H6 | 10 players arriving together | ✅ first 9 get 9 distinct slots (6-stud ring); 10th falls back to the center (unchanged behaviour) |
+| H7 | A player's own body or reservation | ✅ never blocks themselves |
+
+**B. Real single-client playtest (live TravelService v9; no local multi-client).**
+| # | Test | Result |
+|---|---|---|
+| B1 | Rejoin with saved `LastIsland = CrystalWilds` (new `place()` path) | ✅ placed at (3000, 5.8, 0), area Crystal Canyon |
+| B2 | Invalid island / locked Frostbound Reach (Power 1834 < 2000) | ✅ "Unknown island" / "🔒 … needs 2000 Power" |
+| B3 | I2 → I1 safe return; I1 → I2 | ✅ (0, 5.8, 22) / (3000, 5.8, 0), stable |
+| B4 | Rapid requests | ✅ all requests inside the cooldown rejected. Note: in Studio each `InvokeServer` takes about 0.7–1 s, so a request about 3 s after a trip *started* can succeed (unchanged v7 semantics) |
+| B5 | Death while waiting on streaming | ✅ "Character changed during travel", `CurrentIsland` unchanged, normal respawn |
+| B6 | Next travel after B5 | ✅ succeeds (no stuck `busy` or reservation) |
+| B7 | Death on Crystal Wilds, then respawn | ✅ respawned on Crystal Wilds at (3000, 5.8, 0), stable |
+| B8 | Console | ✅ no errors |
+
+**Not verified:** actual two-player gameplay. Two real clients arriving within the same streaming window still needs the **two-device test** (needs the owner's approval to publish the dev place). The harness proves the selection and reservation logic, not network timing.
+
+### Remaining risks
+- Real-network timing between two clients (covered by the two-device plan).
+- If more than 9 players arrive within 2 s, the 10th stacks on the center (same as before).
+- If a player stands still on a ring slot, that slot stays "taken" by distance; arrivals use the next one (intended).
+
+### Rollback
+- **Studio:** Version History → restore **v8** (= v7 content), or delete the M-1 edits by restoring `TravelService` from branch `p1a/island-prototype` @ `3511a5c`.
+- **GitHub:** don't merge `p1a/m1-arrival-slot-fix`; `p1a/island-prototype` is untouched.

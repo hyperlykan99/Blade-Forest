@@ -2,6 +2,12 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-19 — M-1 arrival-slot race fix (DEV PLACE ONLY, version 9)
+- TravelService only: slot chosen right before `PivotTo` with no yield in between.
+- 2 s per-slot reservation, released on leave or death.
+- Preload around the fixed arrival anchor.
+- Checkpoint v8 = v7. Production unchanged.
+
 ## 2026-11-18 — P1a verification (DEV PLACE ONLY, version 7)
 - Fixed: travel now requires the current legacy Power gate.
 - Fixed: `CurrentIsland` follows the character's real position.

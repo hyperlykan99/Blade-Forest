@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude**: M-1 arrival-slot fix ONLY, dev place 103379930563763 (claimed 2026-11-18 23:50 PST; rollback checkpoint = dev v8, identical to v7) |
-| Last handoff author / time | **Claude / 2026-11-18 ~23:50 PST** (resume check; Codex made no changes) |
-| Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
-| Current task | **P1a code complete and verified** in dev place 103379930563763 (Studio code = branch `p1a/island-prototype` @ `3511a5c`, checksum-verified 23:45 PST). Only remaining: a **real two-device** multiplayer test (local multi-client is ruled out: too heavy for the MacBook). See `P1A_RESULTS.md` → Resume check |
-| Next action | Owner: (1) approve **publishing the dev place only** (P1a is saved, not published; live servers run the P0 baseline); (2) add a 2nd account as collaborator; (3) run the two-device script in `P1A_RESULTS.md`. Optional approval: fix arrival-slot race M-1. **P1b NOT authorized.** Don't launch multiple local Studio clients |
+| Active AI editor | **None** (Claude released after the M-1 fix, 2026-11-19 00:30 PST) |
+| Last handoff author / time | **Claude / 2026-11-19 ~00:30 PST** (M-1 fix) |
+| Last confirmed gameplay edit | **Dev place only:** v9 (M-1, TravelService). Production: none since the P0 baseline (`updateTime` 15:12:30Z, re-checked 2026-11-19 00:25 PST) |
+| Current task | **M-1 fixed** in dev place **v9** (checkpoint v8 = v7). TravelService only, 9,388 B; branch `p1a/m1-arrival-slot-fix` @ `7f925b4` (Studio = GitHub). Harness H0–H7 and single-client B1–B8 pass. Two-player gameplay **not** verified |
+| Next action | Owner: review and merge `p1a/m1-arrival-slot-fix` → `p1a/island-prototype`; decide on **publishing the dev place only** for the two-device test (`P1A_RESULTS.md` → two-device plan). **No local multi-client. P1b NOT authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |
