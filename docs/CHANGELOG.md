@@ -2,6 +2,13 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — P1a island prototype (DEV PLACE ONLY, version 5)
+- Island registry and island-aware `GetAreaAt`.
+- New TravelService (same-place travel: cooldown, combat lock, streaming, respawn).
+- Island save fields with grandfathering.
+- 18-part test pads at (3000, 0, 0) and (6000, 0, 0).
+- Production unchanged. Details in `P1A_RESULTS.md`; code on branch `p1a/island-prototype`.
+
 ## 2026-11-18 — P0 verified complete
 - Dev experience "Blade Forest - Island Dev" (universe 10777797608, place 103379930563763) is private and isolated, with contents identical to production.
 - Backup re-verified.
