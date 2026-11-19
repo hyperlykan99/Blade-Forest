@@ -15,8 +15,8 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [x] Read-only map survey, island placement proposal, streaming and mobile review, system dependency list, 200-seed island simulation. [Claude]
 - [ ] Owner decision: island coordinates (I1 at origin reused, I2 (3000,0,0), I3 (6000,0,0)) and the Island 1 zone mapping. [Owner]
 - [ ] Owner decision: candidate gates G2 = 600 trees + Power 60 + Blade King; G3 = 6,000 Island-2 trees + Power 500 + Island-2 boss. [Owner + ChatGPT]
-- [ ] P0 (after approval): isolated dev copy and backup; script export to `src/`. [Claude]
-- [ ] P1 (after approval, dev copy): island registry replacing `GetAreaAt`; TravelService; DataService `UnlockedIslands`/`LastIsland`/`IslandProgress` with grandfathering; blockouts. [Claude]
+- [~] **P0 APPROVED 2026-11-18**: offline full-place backup, private isolated dev experience, restore verification, safe export to `src/`. Execution NOT yet verified; follow `docs/P0_ISOLATION_AND_BACKUP.md`. [Claude / Owner]
+- [ ] **P1 NOT AUTHORIZED**: island registry replacing `GetAreaAt`; TravelService; DataService `UnlockedIslands`/`LastIsland`/`IslandProgress` with grandfathering; blockouts. Require separate owner approval and P0 verification. [Claude]
 - [ ] P2 (after approval): mobile streaming tests against the §4.3 budget; Island 1 trim plan (Pine count, lights, 370-part Frost Mythic). [Claude]
 
 ## Economy and monetization (proposals from the audit; not approved or implemented)
