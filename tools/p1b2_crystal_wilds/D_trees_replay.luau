@@ -1,4 +1,4 @@
--- P1b.2 Stage D — rebuild the 620 Crystal Wilds trees EXACTLY from docs/p1b_tree_spots_crystal_wilds.csv.
+-- P1b.2 Stage D — rebuild the 620 v12 (sparse) trees EXACTLY from docs/p1b_tree_spots_crystal_wilds_v12_sparse.csv (superseded by P1b.2r).
 -- Setup: create ServerStorage.P1bTreeSpots (ModuleScript) whose source is:  return [==[<CSV contents>]==]
 -- CSV line: x,y,z,type(sans "Crystal_"),scale(relative to template),rotY(deg),mutation("-" = none)
 -- (The original run generated these by seeded dart-throwing, seed 20261120; this replays the result.)

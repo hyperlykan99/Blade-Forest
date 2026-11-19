@@ -8,7 +8,7 @@ Every script starts with `_guard.luau` (PlaceId + GameId assert) and has a run-t
 |---|---|---|
 | `B_terrain.luau` | Terrain: slab, Crystal Canyon core CopyRegion → PasteRegion (+2756 X), hills, paths, flat zones; pre-build TerrainRegion snapshot | Slab/core/paths/flats exact; hill noise pass is a parameter-faithful reference (voxels not checksummed) |
 | `C_plaza_bounds.luau` | Persistent arrival plaza, return pad, rim walls; backs up + removes P1a test model | Geometry, attributes, prompt exact; cosmetic material/colour approximate |
-| `D_trees_replay.luau` | Rebuilds the 620 trees from `docs/p1b_tree_spots_crystal_wilds.csv` (checksum-verified) | Exact |
+| `D_trees_replay.luau` | Rebuilds the 620 v12 (sparse) trees from `docs/p1b_tree_spots_crystal_wilds_v12_sparse.csv` (checksum-verified). Superseded by P1b.2r; see tools/p1b2r_dense_redistribution | Exact |
 | `E_light_budget.luau` | Disables 14 Frozen-mutation lights on new trees (reversible, `REVERT = true`) | Exact |
 | `rollback.luau` | Manual rollback (terrain snapshot, bounds-based tree removal, restore P1a model) | — |
 
