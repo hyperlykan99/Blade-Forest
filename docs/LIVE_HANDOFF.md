@@ -12,10 +12,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | `73142469975141` (Team Create) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude** (claimed 2026-11-18 19:05 PST) |
+| Active AI editor | **Claude**: P0 isolation and backup (claimed 2026-11-18 20:15 PST) |
 | Last handoff author / time | **Claude / 2026-11-18 ~20:05 PST** (M2 technical validation, read-only) |
 | Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
-| Current task | Done: M2 technical validation, read-only (`docs/M2_TECHNICAL_VALIDATION.md`). Waiting: script export once the owner attaches `BladeForest.rbxlx`. **No construction approved** |
+| Current task | **P0 only** (per `P0_ISOLATION_AND_BACKUP.md`): offline backup, separate private dev experience, isolation check, script export. Production must not be saved or published |
 | Next action | Owner and ChatGPT: review M2 §8. Approve or revise the island coordinates, the Island 1 reuse mapping and the candidate gates. Construction (P0 dev copy) needs explicit owner approval |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
