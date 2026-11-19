@@ -32,13 +32,14 @@ local function isUnlocked(player, isl)
 	local d = DataService.Get(player)
 	if not d then return false, "Loading..." end
 	d.UnlockedIslands = d.UnlockedIslands or {}
-	if d.UnlockedIslands[isl.Id] then return true end
+	-- P1a: AreaService still enforces the legacy area Power gate on every island,
+	-- so travel must meet it too (a saved unlock alone would just bounce the player back)
 	local need = Config.GetIslandRequiredPower(isl)
-	if (player:GetAttribute("Power") or 0) >= need then
-		d.UnlockedIslands[isl.Id] = true -- remember it (same rule as the legacy area gate)
-		return true
+	if (player:GetAttribute("Power") or 0) < need then
+		return false, string.format("🔒 %s needs %d Power", isl.Name, need)
 	end
-	return false, string.format("🔒 %s needs %d Power", isl.Name, need)
+	d.UnlockedIslands[isl.Id] = true -- remember it (for P1c gates / UI)
+	return true
 end
 
 -- arrival spot: center first, then a ring of 8 so players don't stack
@@ -69,7 +70,12 @@ local function place(player, isl)
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	if not root or not hum or hum.Health <= 0 then return false, "No character" end
 	local cf = freeSpot(isl)
-	pcall(function() player:RequestStreamAroundAsync(cf.Position, STREAM_TIMEOUT) end)
+	-- arrival models are Persistent (always on every client); still preload the area
+	local streamed, streamErr = pcall(function() player:RequestStreamAroundAsync(cf.Position, STREAM_TIMEOUT) end)
+	if not streamed then
+		warn("[Travel] stream request failed for", player.Name, isl.Id, streamErr)
+		return false, "Couldn't load " .. isl.Name .. " - try again"
+	end
 	if player.Character ~= char or not root.Parent or hum.Health <= 0 then return false, "Character changed during travel" end
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
@@ -151,6 +157,21 @@ end
 Players.PlayerAdded:Connect(onPlayer)
 for _, p in ipairs(Players:GetPlayers()) do onPlayer(p) end
 Players.PlayerRemoving:Connect(function(p) lastTravel[p], busy[p] = nil, nil end)
+
+-- CurrentIsland / LastIsland follow the character's real position (e.g. after an
+-- AreaService push-back), checked once a second; skipped while a travel is running
+task.spawn(function()
+	while true do
+		task.wait(1)
+		for _, player in ipairs(Players:GetPlayers()) do
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if root and not busy[player] and player:GetAttribute("CurrentIsland") then
+				local isl = Config.GetIslandAt(root.Position)
+				if isl and player:GetAttribute("CurrentIsland") ~= isl.Id then setIsland(player, isl) end
+			end
+		end
+	end
+end)
 
 -- Studio-only test hook (never reachable by clients):
 -- ServerStorage.DevTravel:Invoke(player, islandId, { unlock = true, cooldown = true, same = true })
