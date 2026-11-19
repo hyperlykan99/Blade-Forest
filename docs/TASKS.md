@@ -17,7 +17,10 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [ ] Owner decision: candidate gates G2 = 600 trees + Power 60 + Blade King; G3 = 6,000 Island-2 trees + Power 500 + Island-2 boss. [Owner + ChatGPT]
 - [x] **P0 VERIFIED COMPLETE**: offline backup, private dev place 103379930563763 (universe 10777797608), verified restore, script export to `p0/script-export` (unmerged); owner still to copy backup to external media. [Claude]
 - [~] **P1a ONLY APPROVED 2026-11-18** in private dev place 103379930563763: safe island lookup, test pads at x~3000/6000, in-place TravelService prototype, compatible test save fields and checks. Verify place ID before writes; follow `docs/P1_PROTOTYPE_SCOPE.md`. Implementation NOT yet verified. [Claude]
-- [ ] **P1b/P1c NOT AUTHORIZED:** actual Crystal/Frost terrain migration, detailed islands, bosses, economic unlock gates, permanent portal art. [Owner]
+- [x] **P1b.2 Crystal Wilds construction** — built in dev v12, single-client tested ([Claude], 2026-11-19). See `P1B_MIGRATION_BLUEPRINT.md` §12.
+- [ ] **Owner review of P1b.2**: effects drift on respawn (B1 glow cap?), shared Golden Slime cap, altar N/A, merge `p1b2/crystal-wilds`. [Owner]
+- [ ] Private dev publish of v12 for an iPhone check (needs separate approval). Two-player test still unverified. [Owner]
+- [ ] **P1b.3 / P1b.4 / P1c NOT AUTHORIZED:** actual Crystal/Frost terrain migration, detailed islands, bosses, economic unlock gates, permanent portal art. [Owner]
 - [ ] P2 (after approval): mobile streaming tests against the §4.3 budget; Island 1 trim plan (Pine count, lights, 370-part Frost Mythic). [Claude]
 
 ## Economy and monetization (proposals from the audit; not approved or implemented)

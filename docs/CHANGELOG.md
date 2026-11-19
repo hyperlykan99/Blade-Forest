@@ -2,6 +2,15 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-19 — P1b.2 Crystal Wilds construction (DEV PLACE ONLY, version 12)
+- Checkpoint **v9**, result **v12**. Branch `p1b2/crystal-wilds` @ `0fc997d`.
+- Terrain: the Crystal Canyon core was copied with CopyRegion and extended to 560×480 (X 2720–3280). The original canyon is untouched.
+- Persistent arrival plaza at (2790,·,0), a return pad, and rim walls. The P1a test model was removed (a backup is kept).
+- 620 seeded trees (tree-spot manifest committed).
+- Light budget met with a localized, reversible disable of 14 Frozen lights.
+- `BladeConfig`: Crystal Wilds Arrival → (2790,5,0). `WorldServer`: a 2nd Golden Slime zone (shares the Max 4 cap).
+- Single-client tests pass. Two-player and iPhone are unverified. Not published. Production unchanged.
+
 ## 2026-11-19 — P1b.1 migration blueprint (docs only)
 - Read-only inventory of Crystal Canyon and Frost Peaks.
 - Island plans, build methodology, mobile budgets, asset manifest, conflicts, staged plan and rollback.

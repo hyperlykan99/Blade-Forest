@@ -219,3 +219,92 @@ Full machine-readable list: `docs/p1b_asset_manifest.json`. Summary:
 3. **B2:** cap the Frost Mythic count, or pick an approved lighter Creator Store replacement.
 4. Whether Frostbound Reach gets a roll altar.
 5. **P1b.4:** keep or retire the legacy Crystal and Frost areas on Island 1 after the islands pass testing.
+
+---
+
+## 12. P1b.2 Crystal Wilds — ACTUAL BUILD RESULTS (2026-11-19, dev place only)
+
+**Status: constructed, single-client tested, saved. Awaiting owner review. NOT published. P1b.3 not started.**
+
+| Item | Value |
+|---|---|
+| Place | Blade Forest - Island Dev `103379930563763` / universe `10777797608` (IDs asserted before every edit) |
+| Checkpoint | Version **9** — "P1b.2 PRE-CRYSTAL-CONSTRUCTION" |
+| Result | Version **12** — "P1b.2 Crystal Wilds construction complete" (Open Cloud `updateTime` 2026-11-19T08:35:18Z) |
+| Branch | `p1b2/crystal-wilds` @ `0fc997d` (scripts + `tools/p1b2_crystal_wilds/` + tree manifest) |
+| Production | `updateTime` 2026-11-18T15:12:30.520Z — **unchanged** (re-checked after the build) |
+
+### 12.1 What was built
+- **Terrain** (footprint X 2720–3280, Z −240–240, seed 20261119):
+  - Rock/Grass slab.
+  - The original Crystal Canyon core was copied with `CopyRegion` (voxels (47,−8,−34)–(90,16,34)) and pasted +2756 studs in X. The core now spans X 2944–3116, Z ±136. **The original canyon is untouched**: a re-sample was identical, with 770 hits.
+  - Noise hills with Rock/Basalt patches, 10-wide Ground paths, and flat plaza, station, arena and portal zones.
+  - Footprint sample: 4331/4331 hits, Y −13.7…47.1, 92% flat. Outside the footprint: 0 hits.
+- **Arrival:**
+  - `Workspace.Islands.CrystalWilds_Plaza` (Persistent, 6 parts): 44×2×44 floor with its top at y 2 and centred on (2790,·,0), a ramp from 2 to 4, an arrival marker, a label, and a **ReturnPad** at (2775,2.5,16) (TravelTo=TimberHaven, prompt 0.4 s / 10 studs).
+  - All 9 arrival slots raycast to y 2.00 with no blockers.
+  - `CrystalWilds_Bounds`: 4 invisible rim walls.
+  - The old P1a `CrystalWilds` test model was removed after validation. A backup clone is kept in `ServerStorage.P1bBackups`.
+- **Trees:** **620** built with `TreeKit.Build`, parented to `Workspace.Breakables`, with Area=`CrystalCanyon`, P1bIsland=`CrystalWilds` and P1bStage=`P1b.2`. Seed 20261120; dart-throwing with no canopy overlap, slope normal.Y ≥ 0.866, and exclusions for the plaza, ramp, station, arena, portal and paths.
+  - By rarity: Common 364, Uncommon 149, Rare 73, Epic 23, Legendary 7, Mythic 3, Secret 1.
+  - Mutations: Frozen 14, Golden 11, Shadow 2, Rainbow 1.
+  - Manifest: `docs/p1b_tree_spots_crystal_wilds.csv` (620 rows, 22454 bytes, Adler-32 308787882; Studio and Python agree).
+- **Backups** (`ServerStorage.P1bBackups`):
+  - `CrystalWilds_PreTerrain` (TerrainRegion, voxel min (670,−24,−70), 161×65×141).
+  - `CrystalWilds_P1aTestModel`.
+
+### 12.2 Script changes (2 scripts; all others byte-identical)
+| Script | Before | After | Change |
+|---|---|---|---|
+| `BladeConfig` | 55586:3426233414 | **55586:167717973** | Crystal Wilds `Arrival` (3000,5,0) → **(2790,5,0)** |
+| `WorldServer` | 13930:2981965952 | **14591:830933556** | Adds a terrain-only RaycastParams and a 2nd `GoldenSlime` zone on Crystal Wilds (X 3080–3220, Z −180…−60, on the terrain surface). It uses the same tag, so it **shares the existing Max = 4 cap** |
+
+Unchanged and verified: TravelService (M-1) 9388:3611788483, DataService 19574:676054173, TreeKit 5038:3027397391, CombatServer 20797:1888490247, AreaService 1737:843202379, AutoChop 12453:155288051. Studio matches `p1b2/crystal-wilds` for all 35 exported scripts. **No DataStore schema, monetization, purchase or progression changes.**
+
+### 12.3 Budgets (new Crystal Wilds content)
+| Metric | Budget | Actual |
+|---|---|---|
+| Tree BaseParts | ≤ 7000 | **4953** (4333 MeshParts) |
+| Parts per tree | ≤ 40 | **16** max |
+| Other new parts | ≤ 300 | **10** |
+| Lights | ≤ 40 | **37** (51 as built; 14 Frozen-mutation lights disabled locally, see below) |
+| Particle emitters | ≤ 150 | **135** (136 seen by the client) |
+
+**Light adjustment (localized and reversible; not a TreeKit change).** On the 14 new trees with Mutation=Frozen, the `MutationFX` PointLight was set `Enabled=false` and tagged `P1bLightDisabled=true`. To revert, run `tools/p1b2_crystal_wilds/E_light_budget.luau` with `REVERT = true`.
+
+### 12.4 Tests (one Studio client only; no multi-client; no save resets)
+| # | Test | Result |
+|---|---|---|
+| T1 | Timber Haven → Crystal Wilds travel | ✅ (2790, 5.8, 0), level |
+| T3 | Client streaming on CW | ✅ 4953 CW tree parts, **0** Island-1 tree parts cached, floor present |
+| T4 | Chop a new tree with real blades | ✅ 1.2 s, Logs +1980 (= 900 × 2.2), index `Crystal_Common` recorded |
+| T5 | Tree respawn | ✅ 8 s, same pivot, Area CrystalCanyon (re-rolled to Uncommon) |
+| T6 | AutoChop 20 s | ✅ +5940 Logs, stayed on the island |
+| T7 | Original canyon tree + `Gate_CrystalCanyon` (250 Power) + 46 CanyonWalls | ✅ intact |
+| T7c/T8 | Golden Slimes | ✅ total 4 (original zone 2 + CW zone 2), on the ground |
+| T9 | Power gate | ✅ at Power 60: "🔒 Crystal Wilds needs 250 Power"; forced placement pushed back |
+| T10 | Reset on CW | ✅ respawn on the plaza |
+| T11 | Rejoin with LastIsland | ✅ (2790, 5.8, 0) |
+| T12 | Invalid island / combat / cooldown | ✅ all refused with messages |
+| T14 | Frost travel regression | ✅ (6000, 5.8, 0) and back |
+| — | Return pad (real prompt) | ✅ → Timber Haven (0, 5.8, 22) |
+| T15 | Console | ✅ no errors |
+| — | Altar | **N/A**: `Config.Altars` is unreferenced and no altar object exists, so none was added |
+| — | Two-player | **UNVERIFIED** (multi-client forbidden locally) |
+| — | iPhone | **UNVERIFIED**: needs a separately approved private dev publish |
+
+### 12.5 Known limitations / owner decisions
+1. **Effects drift on respawn.** Respawned trees are re-rolled by `TreeKit.BuildRandom`, which regenerates effects, and the light-disable applies only to the initial instances.
+   - Expected steady state: about 60 lights and 156 emitters, above the 40/150 budgets.
+   - Fix options: an approved TreeKit-level glow cap (B1), or about 415 trees for the light budget.
+2. **Respawned trees lose `P1bIsland`/`P1bStage`.** Audit and rollback use the island bounds instead (X 2700–3300, |Z| ≤ 300).
+3. **Shared Golden Slime cap.** The total is unchanged at 4, so the original zone now averages about 2. A separate cap would need approval.
+4. Small terrain details:
+   - The arena flat reads about y 6.
+   - There is a 2-stud step from the path (y 4) to the copied canyon floor (y 2) at the core's west mouth.
+   - The Golden Slime zone overlaps the reserved arena circle.
+5. **Server cost:** +620 models and about 4953 parts in memory. Combat uses a spatial query, so there is no per-frame O(trees) cost. Client AutoChop scans `Breakables` (5021 trees) per pick, which is modest.
+
+### 12.6 Rollback
+- **Preferred:** Version History → restore **v9** ("P1b.2 PRE-CRYSTAL-CONSTRUCTION"). Then revert `BladeConfig` and `WorldServer` to `7f925b4`, or simply don't merge `p1b2/crystal-wilds`.
+- **Manual:** run `tools/p1b2_crystal_wilds/rollback.luau`. It pastes the terrain snapshot, removes Breakables inside the CW bounds, deletes the plaza and bounds, and restores the P1a model.
