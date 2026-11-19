@@ -1,6 +1,6 @@
 # Blade Forest — P1 Limited Island Prototype Scope
 
-**Prepared:** 2026-11-18. **Status:** Proposed developer brief for the next milestone. **Owner must explicitly approve P1 implementation before any Studio writes.**
+**Prepared:** 2026-11-18. **Status:** P1a ONLY explicitly OWNER APPROVED on 2026-11-18; implementation pending Claude verification of dev place. This is not approval for P1b, P1c, P2 or production changes.
 
 ## Strict targeting
 
@@ -32,4 +32,4 @@
 - Record unit checks for invalid island ID, spam, noclip into locked area, death during travel, streaming timeout, and failed requests.
 - Document script export/PR vs Studio state and update `docs/LIVE_HANDOFF.md`, `docs/TASKS.md`, `docs/CHANGELOG.md`.
 
-**Do not treat this document as build approval.**
+**Approval:** The owner has explicitly authorized ONLY the P1a prototype described above in private dev place 103379930563763. Claude must verify place identity, save a dev-only rollback checkpoint, implement and test within that scope, report before moving on. No production changes.
