@@ -1,0 +1,25 @@
+{
+  "name": "BladeForest",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "$path": "src/server"
+    },
+    "ReplicatedStorage": {
+      "$path": "src/shared"
+    },
+    "ServerStorage": {
+      "$path": "src/serverstorage"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$path": "src/client"
+      }
+    },
+    "StarterGui": {
+      "GameUI": {
+        "$path": "src/gui"
+      }
+    }
+  }
+}

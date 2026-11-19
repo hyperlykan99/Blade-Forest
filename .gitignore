@@ -1,0 +1,30 @@
+# Roblox place / model binaries (code lives in src/, assets live in the cloud place)
+*.rbxl
+*.rbxlx
+*.rbxl.lock
+*.rbxlx.lock
+*.rbxm
+*.rbxmx
+
+# Build output
+/build/
+sourcemap.json
+
+# Secrets and local config — never commit
+.env
+.env.*
+*.key
+*.pem
+secrets/
+open-cloud-key*
+.ROBLOSECURITY*
+
+# Tooling
+/Packages/
+/ServerPackages/
+/DevPackages/
+.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
