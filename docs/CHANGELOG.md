@@ -2,6 +2,11 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-19 — Dev v9 published to the PRIVATE dev experience (iPhone testing)
+- Studio File → Publish on place 103379930563763.
+- The experience stays private. Production unchanged.
+- Publish to be confirmed in-game.
+
 ## 2026-11-19 — M-1 arrival-slot race fix (DEV PLACE ONLY, version 9)
 - TravelService only: slot chosen right before `PivotTo` with no yield in between.
 - 2 s per-slot reservation, released on leave or death.

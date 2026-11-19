@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude**: owner-approved **publish of dev v9 to the PRIVATE dev experience only** (claimed 2026-11-19 00:05 PST) |
-| Last handoff author / time | **Claude / 2026-11-19 ~00:30 PST** (M-1 fix) |
+| Active AI editor | **None** (Claude released after the dev-only publish attempt, 2026-11-19 00:15 PST) |
+| Last handoff author / time | **Claude / 2026-11-19 ~00:15 PST** (dev publish for iPhone) |
 | Last confirmed gameplay edit | **Dev place only:** v9 (M-1, TravelService). Production: none since the P0 baseline (`updateTime` 15:12:30Z, re-checked 2026-11-19 00:25 PST) |
-| Current task | **M-1 fixed** in dev place **v9** (checkpoint v8 = v7). TravelService only, 9,388 B; branch `p1a/m1-arrival-slot-fix` @ `7f925b4` (Studio = GitHub). Harness H0–H7 and single-client B1–B8 pass. Two-player gameplay **not** verified |
-| Next action | Owner: review and merge `p1a/m1-arrival-slot-fix` → `p1a/island-prototype`; decide on **publishing the dev place only** for the two-device test (`P1A_RESULTS.md` → two-device plan). **No local multi-client. P1b NOT authorized** |
+| Current task | Dev v9 **published (File → Publish) to the PRIVATE dev experience** for iPhone solo testing; publish not confirmable via Open Cloud, so confirm in-game (travel pads present). Experience stays PRIVATE. **Two-player test remains UNVERIFIED** |
+| Next action | Owner: open https://www.roblox.com/games/103379930563763 on iPhone (owner account) and run the iPhone solo checklist in `P1A_RESULTS.md`. If the pads are missing, press **File → Publish** in the Island Dev Studio window. **P1b NOT authorized** |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |

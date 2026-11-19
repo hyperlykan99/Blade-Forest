@@ -265,3 +265,29 @@ Preserved and unchanged: validation order, legacy Power gate, combat lock, 3 s c
 ### Rollback
 - **Studio:** Version History → restore **v8** (= v7 content), or delete the M-1 edits by restoring `TravelService` from branch `p1a/island-prototype` @ `3511a5c`.
 - **GitHub:** don't merge `p1a/m1-arrival-slot-fix`; `p1a/island-prototype` is untouched.
+
+
+---
+
+## Dev publish for iPhone playtesting (2026-11-19 00:05–00:15 PST, owner-approved, dev only)
+
+| Check | Result |
+|---|---|
+| Studio target before publishing | `game.PlaceId` 103379930563763, `GameId` 10777797608, Edit mode; only the Island Dev window open |
+| Content | v9: TravelService 9,388 B `3611788483` (M-1), 3 island models, 4,401 trees |
+| Experience before and after | `visibility: PRIVATE`, owner `users/394034825`, `mobileEnabled: true`, `ageRating 13+` (unchanged) |
+| Publish action | Studio **File → Publish** on the Island Dev window (publishes to its own place 103379930563763). No dialog or error appeared |
+| Publish confirmation | ⚠️ **Not confirmable via Open Cloud:** place `updateTime` stayed `2026-11-19T07:47:03.804Z` (the v9 save). The public games API check needed approval and wasn't run. **Confirm on the iPhone:** if the two neon travel pads ("➜ Crystal Wilds / Frostbound Reach (P1a test)") are beside the spawn plaza, P1a is live |
+| Production | `updateTime` `2026-11-18T15:12:30.520Z`: **unchanged** |
+
+**Experience link (private; works only for the owner account, `hyperlykan99`):** https://www.roblox.com/games/103379930563763
+
+### iPhone solo checklist (owner account; dev save has the Void weapon, Power 1834)
+1. Spawn: you should load on **Crystal Wilds** (your saved `LastIsland`). A lone grass platform with a yellow marker and a label means the rejoin placement works on mobile.
+2. Tap the green **ReturnPad** → Timber Haven plaza (0, 5, 22).
+3. Tap the **Crystal Wilds** pad → arrive, no falling. Tap the **Frostbound Reach** pad → "🔒 needs 2000 Power".
+4. Reset the character on Crystal Wilds → respawn there.
+5. Leave and rejoin → back on your last island.
+6. Note frame rate, load time after travel, UI fit, and any pad that's hard to tap.
+
+**Still unverified:** two-player travel and arrival spacing on real devices (only one device available). The M-1 fix is verified by harness and single-client tests only.
