@@ -118,3 +118,8 @@ Dev place 103379930563763 only. One Studio solo playtest client; rejection, prom
 - **Studio API access check: ❌ not active for the dev place.** A playtest in place 103379930563763 made a direct `DataStoreService:GetDataStore("BladeForest_v3"):GetAsync(...)`, which returned `502: API Services rejected request … Error code: 7 … Studio access…`. The session loaded with `_NoSave = true`. **The persistence test (1) was not run**, because no save can be written or read yet.
 - **Two-player test (2): not run.** It needs the owner to start Server & Clients with 2 clients (the toolbar control doesn't accept background input).
 - Production `updateTime` re-checked: unchanged (see the handoff).
+
+### Final-test attempt 2 (2026-11-18 ~22:00 PST, after the owner reported reopening the place)
+- **Studio API access: ❌ still rejected** in place 103379930563763 (`502 … Error code: 7 … Studio access to APIs`; the session loaded with `_NoSave = true`). **Persistence test not run.**
+- **2-client session: not detected.** MCP saw only the dev place in Edit mode (no Play server or client DataModels), so the two-player test was not run.
+- Production `updateTime` unchanged (`2026-11-18T15:12:30.520Z`).
