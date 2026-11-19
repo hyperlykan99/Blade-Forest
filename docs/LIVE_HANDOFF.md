@@ -12,7 +12,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after P1a verification, 2026-11-18 ~22:35 PST) |
+| Active AI editor | **Claude**: P1a final tests (persistence, 2-player), **dev place 103379930563763 only** (claimed 2026-11-18 21:50 PST) |
 | Last handoff author / time | **Claude / 2026-11-18 ~22:35 PST** (P1a verification) |
 | Last confirmed gameplay edit | **Dev place only:** P1a v7 (2026-11-18). Production: none since the P0 baseline (`updateTime` 15:12:30Z re-checked 22:30 PST) |
 | Current task | **P1a verified** (dev place **v7**). Prompts, death mid-travel, streaming failure and regressions ✅; **2 defects found and fixed** (V-1 unlock/gate conflict, V-2 fall on unstreamed arrival). ⚠️ Rejoin persistence and 2-player not run (owner toggles needed). See `P1A_RESULTS.md` § Verification round |
