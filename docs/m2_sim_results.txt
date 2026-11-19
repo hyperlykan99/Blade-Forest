@@ -1,0 +1,72 @@
+
+== checklist Logs earned on I2 >= 25M | A: CURRENT luck stacking | Gate3 Power >= 500 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   5.8h   6.8h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.4h   2.9h   3.5h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   2.0h   2.3h   2.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    107m    112m   2.0h | I3 not in 20h:   0%
+
+== checklist Logs earned on I2 >= 25M | A: CURRENT luck stacking | Gate3 Power >= 1000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   5.8h   7.9h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.4h   2.9h   5.1h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   2.0h   2.3h   2.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    107m    112m   2.0h | I3 not in 20h:   0%
+
+== checklist Logs earned on I2 >= 25M | A: CURRENT luck stacking | Gate3 Power >= 2000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   7.6h   >20h | I3 not in 20h:  14%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.4h   4.7h  14.8h | I3 not in 20h:   3%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   2.0h   2.7h   6.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    107m    112m   2.0h | I3 not in 20h:   0%
+
+== checklist Logs earned on I2 >= 25M | B: paid luck additive, cap 25x | Gate3 Power >= 500 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   5.8h   6.8h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.5h   3.3h   3.8h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   2.2h   2.8h   3.2h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    119m   2.2h   2.7h | I3 not in 20h:   0%
+
+== checklist Logs earned on I2 >= 25M | B: paid luck additive, cap 25x | Gate3 Power >= 1000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   5.8h   7.9h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.5h   3.3h   6.7h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   2.2h   2.8h   5.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    119m   2.2h   2.7h | I3 not in 20h:   0%
+
+== checklist Logs earned on I2 >= 25M | B: paid luck additive, cap 25x | Gate3 Power >= 2000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   4.8h   7.6h   >20h | I3 not in 20h:  14%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   2.7h   7.2h   >20h | I3 not in 20h:  12%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   2.4h   6.3h  18.1h | I3 not in 20h:   8%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3    119m   2.5h   5.7h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | A: CURRENT luck stacking | Gate3 Power >= 500 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.5h   3.8h   4.1h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.4h   3.5h   3.7h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   3.3h   3.3h   3.4h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.2h   3.2h   3.3h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | A: CURRENT luck stacking | Gate3 Power >= 1000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.5h   4.0h   7.9h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.4h   3.5h   5.1h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   3.3h   3.3h   3.4h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.2h   3.2h   3.3h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | A: CURRENT luck stacking | Gate3 Power >= 2000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.6h   7.6h   >20h | I3 not in 20h:  14%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.4h   4.7h  14.8h | I3 not in 20h:   3%
+  heavy      I2 p10/p50/p90     19m     19m     20m | I3   3.3h   3.4h   6.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.2h   3.2h   3.3h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | B: paid luck additive, cap 25x | Gate3 Power >= 500 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.5h   3.8h   4.1h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.4h   3.6h   3.9h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   3.3h   3.5h   3.7h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.3h   3.3h   3.4h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | B: paid luck additive, cap 25x | Gate3 Power >= 1000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.5h   4.0h   7.9h | I3 not in 20h:   0%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.4h   3.7h   6.7h | I3 not in 20h:   0%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   3.3h   3.5h   5.9h | I3 not in 20h:   0%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.3h   3.3h   3.4h | I3 not in 20h:   0%
+
+== checklist Trees chopped on I2 >= 6,000 | B: paid luck additive, cap 25x | Gate3 Power >= 2000 | 200 seeds, equal 45-min sessions ==
+  free       I2 p10/p50/p90     22m     23m     25m | I3   3.6h   7.6h   >20h | I3 not in 20h:  14%
+  casual     I2 p10/p50/p90     20m     21m     22m | I3   3.5h   7.2h   >20h | I3 not in 20h:  12%
+  heavy      I2 p10/p50/p90     19m     20m     20m | I3   3.4h   6.3h  18.1h | I3 not in 20h:   8%
+  heavy_mega I2 p10/p50/p90     19m     19m     19m | I3   3.3h   3.3h   5.7h | I3 not in 20h:   0%

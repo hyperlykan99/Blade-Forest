@@ -11,6 +11,14 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 ## Security
 - [ ] Delete the unused `ServerStorage.*Imports` and `BoardTemplate` folders, or strip their scripts. They contain suspected backdoor modules (see AI_HANDOFF). Waiting for owner approval. [Claude]
 
+## M2 island plan (from M2_TECHNICAL_VALIDATION.md; construction NOT approved)
+- [x] Read-only map survey, island placement proposal, streaming and mobile review, system dependency list, 200-seed island simulation. [Claude]
+- [ ] Owner decision: island coordinates (I1 at origin reused, I2 (3000,0,0), I3 (6000,0,0)) and the Island 1 zone mapping. [Owner]
+- [ ] Owner decision: candidate gates G2 = 600 trees + Power 60 + Blade King; G3 = 6,000 Island-2 trees + Power 500 + Island-2 boss. [Owner + ChatGPT]
+- [ ] P0 (after approval): isolated dev copy and backup; script export to `src/`. [Claude]
+- [ ] P1 (after approval, dev copy): island registry replacing `GetAreaAt`; TravelService; DataService `UnlockedIslands`/`LastIsland`/`IslandProgress` with grandfathering; blockouts. [Claude]
+- [ ] P2 (after approval): mobile streaming tests against the §4.3 budget; Island 1 trim plan (Pine count, lights, 370-part Frost Mythic). [Claude]
+
 ## Economy and monetization (proposals from the audit; not approved or implemented)
 - [ ] Fix `ProcessReceipt`: grant only after a confirmed save; move to `UpdateAsync` with a session lock or ProfileStore. [Claude, needs approval]
 - [ ] Fill in the developer `ProductId`s after creating the products. [Owner, then Claude]

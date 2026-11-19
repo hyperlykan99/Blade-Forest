@@ -13,10 +13,10 @@
 | Roblox place | `73142469975141` (Team Create) |
 | Most recent documented place version | **48** (verify before working) |
 | Active AI editor | **Claude** (claimed 2026-11-18 19:05 PST) |
-| Last handoff author / time | **Claude / 2026-11-18 ~19:40 PST** (read-only economy and monetization audit) |
+| Last handoff author / time | **Claude / 2026-11-18 ~20:05 PST** (M2 technical validation, read-only) |
 | Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
-| Current task | (1) Done: read-only economy and monetization audit, `docs/ECONOMY_MONETIZATION_AUDIT.md`. (2) Waiting: script export to `src/` once the owner attaches `BladeForest.rbxlx` |
-| Next action | ChatGPT: prioritise §12 of `ECONOMY_MONETIZATION_AUDIT.md` with the owner. Claude: export scripts when the `.rbxlx` arrives. No gameplay change is approved yet |
+| Current task | Done: M2 technical validation, read-only (`docs/M2_TECHNICAL_VALIDATION.md`). Waiting: script export once the owner attaches `BladeForest.rbxlx`. **No construction approved** |
+| Next action | Owner and ChatGPT: review M2 §8. Approve or revise the island coordinates, the Island 1 reuse mapping and the candidate gates. Construction (P0 dev copy) needs explicit owner approval |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Not yet**, per `CURRENT_STATUS.md`; recheck before relying on this |
@@ -57,7 +57,7 @@
 | Git branch / starting commit | `main` @ `e1c0b5d` |
 | Scripts or objects being edited | None in Studio (export only reads) |
 | Work in progress / unsaved changes | None from Claude |
-| Tests and results | Studio state check passed. Audit: read-only `execute_luau` reads of the scripts listed in the report. Economy model `docs/economy_sim.py` run (25 seeds). No Studio writes and no saves |
+| Tests and results | Studio state re-checked 2026-11-18 (Edit mode, 34 scripts / 393,047 B unchanged). M2: read-only survey of map, terrain, streaming, trees, NPCs, bosses and spawns; island sim `docs/m2_island_sim.py` (200 seeds × 4 archetypes × 2 luck variants × 6 gates). No Studio writes and no saves |
 | Risks / blockers | Export needs the owner to attach an `.rbxlx` (Mac folder access denied). Audit found: all 9 dev products have `ProductId = 0` (none purchasable); `SetAsync` without session lock; paid-random gating gaps once log packs go live. See the report |
 
 ## Latest completed handoff

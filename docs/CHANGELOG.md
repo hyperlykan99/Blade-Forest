@@ -2,6 +2,10 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-18 — M2 technical validation (docs only)
+- Added `docs/M2_TECHNICAL_VALIDATION.md`, `docs/m2_island_sim.py` and `docs/m2_sim_results.txt`.
+- Read-only Studio survey; no Studio, script, terrain, monetization or data changes.
+
 ## 2026-11-18 — Economy and monetization audit (docs only)
 - Added `docs/ECONOMY_MONETIZATION_AUDIT.md` and the model `docs/economy_sim.py`.
 - Read-only; no gameplay, price or script changes.
