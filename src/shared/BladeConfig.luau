@@ -875,7 +875,7 @@ Config.Islands = {
 		Arrival = Vector3.new(0, 5, 22), LegacyArea = nil, ReleaseState = "available" },
 	{ Id = "CrystalWilds", Name = "Crystal Wilds", Order = 2, Center = Vector3.new(3000, 0, 0),
 		BoundsMin = Vector3.new(2700, -600, -300), BoundsMax = Vector3.new(3300, 1200, 300),
-		Arrival = Vector3.new(3000, 5, 0), LegacyArea = "CrystalCanyon", ReleaseState = "available" },
+		Arrival = Vector3.new(2790, 5, 0), LegacyArea = "CrystalCanyon", ReleaseState = "available" },
 	{ Id = "FrostboundReach", Name = "Frostbound Reach", Order = 3, Center = Vector3.new(6000, 0, 0),
 		BoundsMin = Vector3.new(5660, -600, -320), BoundsMax = Vector3.new(6340, 1200, 320),
 		Arrival = Vector3.new(6000, 5, 0), LegacyArea = "FrostPeaks", ReleaseState = "available" },

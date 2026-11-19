@@ -85,10 +85,20 @@ local SLIME_TYPES = {
 	GoldenSlime = { Size = 4, Health = 500, Reward = 120, Color = Color3.fromRGB(255, 205, 50), Hop = 28, Touch = 10 },
 }
 -- where each slime type lives
+local terrainOnly = RaycastParams.new() -- P1b.2: ground lookup for the Crystal Wilds zone
+terrainOnly.FilterType = Enum.RaycastFilterType.Include
+terrainOnly.FilterDescendantsInstances = { workspace.Terrain }
 local SLIME_ZONES = {
 	{ Type = "Slime", Max = 12, Point = function() return ringPoint(142, 200, true) end },
 	{ Type = "BigSlime", Max = 8, Point = function() return ringPoint(150, 270, true) end },
 	{ Type = "GoldenSlime", Max = 4, Point = function() return Vector3.new(rng:NextNumber(215, 305), 0, rng:NextNumber(-100, 100)) end },
+	-- P1b.2: additional Golden Slime zone on Crystal Wilds. Same tag, so it SHARES the Max = 4 cap above
+	-- (total Golden Slimes unchanged); spawns on the terrain surface.
+	{ Type = "GoldenSlime", Max = 4, Point = function()
+		local x, z = rng:NextNumber(3080, 3220), rng:NextNumber(-180, -60)
+		local hit = workspace:Raycast(Vector3.new(x, 120, z), Vector3.new(0, -200, 0), terrainOnly)
+		return Vector3.new(x, hit and hit.Position.Y or 2, z)
+	end },
 }
 
 local function spawnSlime(typeName, pos)
