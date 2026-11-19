@@ -68,6 +68,10 @@ local DEFAULT = {
 	Codes = {},
 	GroupClaimed = false,
 	TutorialDone = false,
+	-- P1a islands (added via reconcile; old keys untouched)
+	UnlockedIslands = { TimberHaven = true }, -- [islandId] = true
+	LastIsland = "TimberHaven",
+	IslandProgress = {}, -- [islandId] = { ... } reserved for P1c objectives
 }
 
 local function deepCopy(t)
@@ -489,6 +493,17 @@ function DataService.Load(player)
 		data.Coins = nil
 	end
 	reconcile(data, DEFAULT)
+	-- P1a islands: grandfather legacy progress (BestArea) into island unlocks. Only ever adds.
+	do
+		local best = Config.AreaById[data.BestArea] or Config.AreaById.StarterGrove
+		for _, isl in ipairs(Config.Islands or {}) do
+			local la = isl.LegacyArea and Config.AreaById[isl.LegacyArea]
+			if la and best.Order >= la.Order then data.UnlockedIslands[isl.Id] = true end
+		end
+		if type(data.LastIsland) ~= "string" or not (Config.IslandById and Config.IslandById[data.LastIsland]) then
+			data.LastIsland = Config.HomeIsland or "TimberHaven"
+		end
+	end
 	-- never let a failed load overwrite the real save
 	data._NoSave = loadFailed or nil
 

@@ -66,6 +66,11 @@ end
 -- everything else (outer ring + boss arena) = Pine Forest.
 Config.StarterRadius = 130
 function Config.GetAreaAt(pos)
+	-- P1a islands: a test island reports its legacy area (keeps gates, prices and indexes unchanged)
+	local isl = Config.GetIslandAt and Config.GetIslandAt(pos)
+	if isl and isl.LegacyArea then
+		return isl.LegacyArea
+	end
 	if pos.X < -345 then
 		return "FrostPeaks"
 	end
@@ -858,4 +863,41 @@ function Config.RewardText(rw, bestArea)
 	if rw.Kind == "Boost" then return (rw.Label or rw.Boost) .. " " .. math.floor(rw.Seconds / 60) .. "m" end
 	return "?"
 end
+--------------------------------------------------------------------
+-- Islands (P1a prototype, Island Dev place only).
+-- Stable IslandIds. Each island maps to a legacy area id, so saves, area
+-- gates, BestArea pricing and the indexes keep working unchanged.
+-- Island 1 = the whole existing map (Starter, Pine, Crystal wedge, Frost annex).
+--------------------------------------------------------------------
+Config.Islands = {
+	{ Id = "TimberHaven", Name = "Timber Haven", Order = 1, Center = Vector3.new(0, 0, 0),
+		BoundsMin = Vector3.new(-720, -600, -440), BoundsMax = Vector3.new(420, 1200, 440),
+		Arrival = Vector3.new(0, 5, 22), LegacyArea = nil, ReleaseState = "available" },
+	{ Id = "CrystalWilds", Name = "Crystal Wilds", Order = 2, Center = Vector3.new(3000, 0, 0),
+		BoundsMin = Vector3.new(2700, -600, -300), BoundsMax = Vector3.new(3300, 1200, 300),
+		Arrival = Vector3.new(3000, 5, 0), LegacyArea = "CrystalCanyon", ReleaseState = "available" },
+	{ Id = "FrostboundReach", Name = "Frostbound Reach", Order = 3, Center = Vector3.new(6000, 0, 0),
+		BoundsMin = Vector3.new(5660, -600, -320), BoundsMax = Vector3.new(6340, 1200, 320),
+		Arrival = Vector3.new(6000, 5, 0), LegacyArea = "FrostPeaks", ReleaseState = "available" },
+}
+Config.IslandById = {}
+for _, isl in ipairs(Config.Islands) do Config.IslandById[isl.Id] = isl end
+Config.HomeIsland = "TimberHaven"
+Config.TravelCooldown = 3
+
+-- island whose horizontal bounds contain pos, or nil (open water / void)
+function Config.GetIslandAt(pos)
+	for _, isl in ipairs(Config.Islands) do
+		local a, b = isl.BoundsMin, isl.BoundsMax
+		if pos.X >= a.X and pos.X <= b.X and pos.Z >= a.Z and pos.Z <= b.Z then return isl end
+	end
+	return nil
+end
+
+-- P1a unlock rule = the legacy area gate (no new economy gates yet)
+function Config.GetIslandRequiredPower(isl)
+	local a = isl and isl.LegacyArea and Config.AreaById[isl.LegacyArea]
+	return a and a.RequiredPower or 0
+end
+
 return Config
