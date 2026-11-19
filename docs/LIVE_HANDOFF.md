@@ -12,7 +12,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **None** (Claude released after P1b.2, 2026-11-19 ~01:10 PST) |
+| Active AI editor | **Claude**: **P1b.2r dense-forest redistribution (Option A)**, owner-approved, dev place 103379930563763 only (claimed 2026-11-19 01:50 PST) |
 | Last handoff author / time | **Claude / 2026-11-19 ~01:10 PST** (P1b.2 Crystal Wilds construction) |
 | Last confirmed gameplay edit | **Dev place only:** v12 (P1b.2 Crystal Wilds; BladeConfig + WorldServer). Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked after P1b.2) |
 | Current task | **P1b.2 Crystal Wilds built** in dev v12 (checkpoint v9), branch `p1b2/crystal-wilds` @ `0fc997d`. Results: `P1B_MIGRATION_BLUEPRINT.md` §12. Not published |
