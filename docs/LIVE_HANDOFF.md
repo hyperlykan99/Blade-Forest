@@ -12,10 +12,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Dev:** **v23** "M0 FOUNDATIONS" (Team Create save, Open Cloud `updateTime` 2026-11-20T11:22:18.739Z). Checkpoint **v18** relabelled "M0 PRE-FOUNDATIONS". v19–v22 probably Team Create auto-saves of the M0 session (unverified); v17 still unexplained. **Production:** documented v48; not touched. Production `updateTime` last read 2026-11-19 21:53 PST (2026-11-18T15:12:30.520Z); re-read on 2026-11-20 was blocked by the permission classifier |
-| Active AI editor | **None** (Claude released the editor 2026-11-20 03:30 PST after M0) |
+| Active AI editor | **Claude** (M0.1 Foundations Corrections, claimed 2026-11-20 04:15 PST, branch `m0.1/foundations-corrections`) |
 | Last handoff author / time | **Claude / 2026-11-20 03:30 PST** (M0 Foundations) |
 | Last confirmed gameplay edit | **Dev place only:** v23, M0 server persistence/receipt/policy/analytics scripts plus quarantine of malicious imported scripts. No gameplay tuning changed. Production: none since the P0 baseline |
-| Current task | **M0 Foundations complete locally; awaiting owner review.** Results: `docs/m0/M0_FOUNDATIONS_RESULTS.md` |
+| Current task | **M0.1 corrections in progress** (H2, H3, H1, M1, H6, M5; owner-approved, dev place only). Checkpoint: dev v23 relabelled "M0.1 PRE-CORRECTIONS"; script backups in `ServerStorage.M01Backups` |
 | Next action | Owner: review M0 results. Pending: (1) real cross-server lock test (≥50 cycles), (2) server-side purchase gate before any commerce, (3) keep or roll back the extra dev Logs from the smoke test (pre-M0 copy in `bk3_p_394034825`), (4) confirm v17/v19–v22 in Version History, (5) optional private dev publish for iPhone/2-device. **M1 NOT authorized.** |
 | Code source of truth | **Roblox dev place** (v23). Branch `m0/foundations` holds checksum-matched exports of all changed and new scripts (see results §2). `main` does not contain `src/` changes |
 | Documentation source of truth | GitHub `docs/` |
