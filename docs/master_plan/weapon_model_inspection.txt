@@ -1,0 +1,66 @@
+Blade Forest - 3D weapon model inspection (READ-ONLY)
+====================================================
+Captured 2026-11-19 ~22:50 PST via Roblox Studio MCP execute_luau, Edit datamodel,
+dev place 103379930563763. ReplicatedStorage.BladeModels (43 models). Nothing modified or saved.
+
+Columns: P = BaseParts, MP = MeshParts, U = Unions, SM = SpecialMeshes, uniqMesh = distinct MeshIds,
+tex = Texture/SurfaceAppearance, dec = Decals, scr = scripts, em = ParticleEmitters, li = Lights,
+tr = Trails, coll = CanCollide parts, unanch = unanchored parts, size = extents (studs), PP = PrimaryPart set
+
+Bloodthorn|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.9x0.3x4.0|PP=false
+BloodvineScythe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.9x0.1x4.0|PP=false
+BoneScythe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.5x0.3x4.0|PP=false
+BonewhiteReaper|P41|MP41|U0|SM0|uniqMesh41|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.6x0.1x4.0|PP=false
+Celestial|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.2x0.1x4.0|PP=false
+CrimsonCrescent|P2|MP2|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.3x0.3x4.0|PP=false
+Dragonflame|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.8x0.4x4.0|PP=false
+EmberHatchet|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.5x0.2x4.0|PP=false
+Emerald|P2|MP2|U0|SM0|uniqMesh2|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.9x0.2x4.0|PP=false
+EngravedAxe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.6x0.3x4.0|PP=false
+FarmhandScythe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.6x0.2x4.0|PP=false
+ForsakenAxe|P11|MP11|U0|SM0|uniqMesh11|tex0|dec0|scr0|em4|li1|tr1|coll0|unanch0|2.1x0.4x4.0|PP=false
+FoundersEdge|P59|MP6|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.7x0.3x4.0|PP=false
+FrostboundReaper|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|3.7x0.6x4.0|PP=false
+Frost|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li1|tr0|coll0|unanch0|1.5x0.3x4.0|PP=false
+Galaxy|P1|MP0|U0|SM1|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.1x0.5x4.0|PP=false
+GlacialEdge|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.1x0.3x4.0|PP=false
+GlacierFang|P19|MP0|U0|SM0|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.2x0.2x4.0|PP=false
+Golden|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|3.9x0.3x4.0|PP=false
+Inferno|P1|MP0|U0|SM1|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.7x0.4x4.0|PP=false
+Iron|P4|MP0|U3|SM0|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.1x0.2x4.0|PP=false
+LumberHatchet|P5|MP5|U0|SM0|uniqMesh5|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.3x0.3x4.0|PP=false
+MagmaHook|P7|MP7|U0|SM0|uniqMesh7|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.3x0.3x4.0|PP=false
+PrismSaber|P16|MP1|U0|SM1|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.9x0.3x4.0|PP=false
+RedcliffAxe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.1x0.3x4.0|PP=false
+RoninKatana|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr3|coll0|unanch0|0.4x0.3x4.0|PP=false
+RustySickle|P5|MP5|U0|SM0|uniqMesh5|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.5x0.2x4.0|PP=false
+SeraphsLight|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.2x0.1x4.0|PP=false
+ShadowKatana|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em8|li1|tr0|coll0|unanch0|0.4x0.2x4.0|PP=false
+SilverLabrys|P8|MP8|U0|SM0|uniqMesh8|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.2x0.3x4.0|PP=false
+SoulHarvester|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.8x0.2x4.0|PP=false
+SoulboundBlade|P15|MP14|U1|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.0x0.4x4.0|PP=false
+SoulfireScythe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em2|li2|tr0|coll0|unanch0|2.5x0.3x4.0|PP=false
+Starbreaker|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.9x0.3x4.0|PP=false
+StarfallReaper|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr1|coll0|unanch0|2.5x0.3x4.0|PP=false
+SunsteelSword|P144|MP11|U6|SM0|uniqMesh3|tex0|dec0|scr0|em1|li1|tr0|coll0|unanch0|0.7x0.3x4.0|PP=false
+Umbraxe|P1|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.4x0.3x4.0|PP=false
+VenomfangAxe|P2|MP1|U0|SM0|uniqMesh1|tex0|dec0|scr0|em0|li1|tr0|coll0|unanch0|2.2x0.7x4.0|PP=false
+Void|P1|MP0|U0|SM1|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|0.5x0.3x4.0|PP=false
+WarlordAxe|P13|MP13|U0|SM0|uniqMesh13|tex13|dec0|scr0|em0|li0|tr0|coll0|unanch0|2.2x0.1x4.0|PP=false
+WillowScythe|P1|MP1|U0|SM0|uniqMesh1|tex1|dec0|scr0|em0|li0|tr0|coll0|unanch0|3.0x0.3x4.0|PP=false
+Wooden|P13|MP0|U0|SM0|uniqMesh0|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.2x0.2x4.0|PP=false
+WoodsmanAxe|P2|MP2|U0|SM0|uniqMesh2|tex0|dec0|scr0|em0|li0|tr0|coll0|unanch0|1.1x0.2x4.0|PP=false
+Mesh ids shared by more than one part: 7
+
+Summary
+- 43 models = 43 weapons in BladeConfig (39 rollable + 4 exclusives). No missing or orphan models.
+- 0 scripts inside any model. 0 CanCollide parts. All parts anchored (the blade system clones them).
+- All models normalized to 4.0 studs long. No model sets PrimaryPart.
+- 30 of 43 models are a single part (MeshPart or SpecialMesh).
+- Heavy models: SunsteelSword 144 parts (6 unions), FoundersEdge 59, BonewhiteReaper 41,
+  GlacierFang 19, PrismSaber 16, SoulboundBlade 15, WarlordAxe 13 (13 SurfaceAppearances), Wooden 13.
+- Built-in effects that multiply per blade: ShadowKatana 8 emitters + 1 light, ForsakenAxe 4 emitters + 1 light + trail,
+  SoulfireScythe 2 emitters + 2 lights, SunsteelSword 1 emitter + 1 light, Frost 1 light, VenomfangAxe 1 light,
+  RoninKatana 3 trails, StarfallReaper 1 trail.
+- Triangle counts cannot be read from Luau; they must be checked in the Creator Store listing or Studio's
+  Statistics view before approval.

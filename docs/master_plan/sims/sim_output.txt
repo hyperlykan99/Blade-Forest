@@ -1,0 +1,81 @@
+== Current cascade: displayed vs actual (luck 1) for commons
+  Wooden: shown 1/2  actual 1/3.1
+  RustySickle: shown 1/3  actual 1/6.1
+  FarmhandScythe: shown 1/4  actual 1/6.1
+  LumberHatchet: shown 1/6  actual 1/7.7
+  WoodsmanAxe: shown 1/9  actual 1/10.2
+  Iron: shown 1/25  actual 1/27.3
+
+== Current luck stack
+  Free early (D1): x2
+  Free mid (D7): x15
+  Free max (no rebirth): x644
+  Heavy payer: x309
+  Max everything: x12,870
+
+== Current: expected play-hours to first item of tier (auto-roll)
+  archetype | luck | Legendary | Mythic | Secret | Divine
+  Free early (D1) | 2 | 1.64 | 16.4 | 118 | 1.36e+03
+  Free mid (D7) | 15 | 0.175 | 1.75 | 12.6 | 145
+  Free max (no rebirth) | 644 | 0.00436 | 0.0422 | 0.302 | 3.47
+  Heavy payer | 309 | 0.00486 | 0.0479 | 0.344 | 3.95
+  Max everything | 12,870 | 0.000236 | 0.00124 | 0.00832 | 0.0948
+
+== Proposed luck (perm additive cap x5, temp = strongest one, pass x2, hard cap 50)
+  Free early (D1): x1.4
+  Free mid (D7): x7.8
+  Free max: x25.0
+  Heavy payer: x50.0
+  Max everything: x50.0
+
+== Proposed altar: items per island = 32
+  archetype | luck | Legendary | Mythic | Secret | Divine  (hours of auto-roll at ONE island altar)
+  Free early (D1) | 1.4 | 2.54 | 26.6 | 251 | 1.31e+04
+  Free mid (D7) | 7.8 | 0.525 | 7.14 | 87.6 | 5.47e+03
+  Free max | 25.0 | 0.184 | 2.98 | 43.6 | 3.06e+03
+  Heavy payer | 50.0 | 0.0538 | 0.967 | 15.7 | 1.18e+03
+  Max everything | 50.0 | 0.0538 | 0.967 | 15.7 | 1.18e+03
+  heavy/free-mid speedup per tier: [9.7, 7.4, 5.6, 4.6]
+  CURRENT heavy/free-mid speedup per tier: [36.1, 36.6, 36.7, 36.7]
+
+== Logs multiplier stack
+  current free max (no rebirth): 106
+  current paid max (no rebirth): 466
+  current paid max, 10 rebirths: 1630
+  proposed free max: 56
+  proposed paid max: 112
+  proposed free D7-ish: 3  paid D7-ish: 13
+  current  free D7-ish: 3  paid D7-ish: 12
+
+== Power stack per weapon
+  current: star 2.5 x shiny 1.5 = 3.75
+  proposed: star 2.5 x shiny 1.5 x awakening 1.6 = 6.0 (runes/forge do NOT raise Power)
+
+== Deterministic Divine route (Altar Essence, 1 per roll; recipe 100k + boss materials)
+  free auto 1.1 s: 30.6 h of rolling
+  Fast Roll 0.6 s: 16.7 h of rolling
+
+== Save size estimate (JSON)
+  per weapon entry ~ 118 bytes; 120 weapons ~ 13 KB; full profile est < 60 KB vs 4 MB key limit
+== 12-trait Logs crate odds (existing weights kept, new added)
+  Sapling: 39.37%  (was 50.00%)
+  Woodcutter: 22.05%  (was 28.00%)
+  Lumberjack: 11.02%  (was 14.00%)
+  TimberTitan: 4.72%  (was 6.00%)
+  ForestWarden: 1.42%  (was 1.80%)
+  AncientRoot: 0.16%  (was 0.20%)
+  SwiftFeet: 7.87% (new)
+  KeenEdge: 4.72% (new)
+  SoulReaper: 4.72% (new)
+  MutationHunter: 2.36% (new)
+  Beastmaster: 0.79% (new)
+  FortuneBark: 0.79% (new)
+  expected Logs bonus of one crate: old +46.1%  new +36.3%
+  Ancient Root: 1 in 635 crates (was 1 in 500); median crates to first = 440
+  trait Logs sits in Permanent group (cap +600%): best single trait +200%, two slots (no duplicates) +350%
+
+== Strength ramp check: arrival Power vs island Common-tree Strength (WeakDamageMult 0.1 below Strength)
+  Crystal Wilds (G2 cand.): arrival Power 60, Common Strength 250 -> x0.1 damage on every tree
+  Crystal Wilds (current legacy gate): arrival Power 250, Common Strength 250 -> FULL damage
+  Frostbound (G3 cand.): arrival Power 500, Common Strength 2000 -> x0.1 damage on every tree
+  Frostbound (legacy gate): arrival Power 2000, Common Strength 2000 -> FULL damage
