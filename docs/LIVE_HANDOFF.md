@@ -12,10 +12,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Dev:** **v18** (P1b.2r camera visibility fix; Studio-reported Team Create save, Open Cloud `updateTime` 2026-11-20T05:52:14.927Z). Checkpoint **v16** (pre-camera-fix = v15 state). v17 unexplained (not saved by Claude; check Version History). Earlier: v15 P1b.2r result, v14 pre-redistribution checkpoint. **Production:** documented v48 (HUD handoff); version number not re-queried. Production `updateTime` 2026-11-18T15:12:30.520Z (re-checked 2026-11-19 21:53 PST) |
-| Active AI editor | **None** (Claude released after the camera fix, 2026-11-19 22:00 PST) |
+| Active AI editor | **Claude** (M0 Foundations, claimed 2026-11-19 23:14 PST, branch `m0/foundations`) |
 | Last handoff author / time | **Claude / 2026-11-19 22:00 PST** (P1b.2r camera visibility fix) |
 | Last confirmed gameplay edit | **Dev place only:** v18, client-only `ChopEffects` LocalScript (canopy fade + label tiers). Before that v15 (tree positions). Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked 2026-11-19 21:53 PST) |
-| Current task | **None claimed.** Camera fix done on branch `p1b2r/camera-visibility-fix` (not merged). Results: `docs/p1b2r_camera/CAMERA_FIX_RESULTS.md` on that branch |
+| Current task | **M0 Foundations in progress** (owner-approved, M0 only). Dev checkpoint: v18 relabelled "M0 PRE-FOUNDATIONS". Script backups in `ServerStorage.M0Backups` |
 | Next action | Owner: review the camera fix (v18) and decide merge of `p1b2r/dense-forest` + `p1b2r/camera-visibility-fix`, and whether to do a private dev publish for iPhone testing. Still open: ~4x income in dense zones, B1 respawn effect/tag drift. **P1b.3 NOT authorized.** iPhone and two-player unverified |
 | Code source of truth | **Roblox dev place** (v18). Exported scripts are checksum-matched to Studio on `p1b2r/camera-visibility-fix` (ChopEffects 27331:1017905967; all others unchanged since `p1b2/crystal-wilds`). `main` does not yet contain `src/` changes (no merge approved) |
 | Documentation source of truth | GitHub `docs/` |
