@@ -72,21 +72,45 @@ local function floatText(pos, text, color, size, rise, life)
 end
 
 --------------------------------------------------------------------
--- 1) Strength tags
+-- 1) Strength tags + canopy visibility
 --------------------------------------------------------------------
+-- P1b.2r camera-visibility fix (client-only).
+--   * `reg` is a nearby-tree visibility registry, independent of the tag preference,
+--     so canopies keep fading when "Tree Strength Tags" is OFF.
+--   * Canopy-aware line-of-sight test: a tree "blocks" when its canopy cylinder crosses
+--     the camera->head or camera->hip segment (strong fade). Near misses get the old mild
+--     fade; every other tree stays fully opaque. Up-fades are quick; un-fades wait briefly
+--     (hysteresis), then ease out. LocalTransparencyModifier is only written on real changes.
+--   * Labels (StrengthTag BillboardGuis) are created once per nearby tree and shown/hidden
+--     with .Enabled by a priority pass: tier 1 (Legendary+ or mutated) is uncapped, tiers 2-3
+--     share a cap (16 compact / 24 otherwise). Labels covering the character are hidden.
 local GREEN = Color3.fromRGB(110, 255, 140)
 local RED = Color3.fromRGB(255, 90, 90)
 local tags = {}
+local reg = {}
+local lastStruck = setmetatable({}, { __mode = "k" })
 
 local function updateTag(tree)
 	local t = tags[tree]
 	if not t then return end
 	local s = tree:GetAttribute("Strength") or 0
 	local ok = myPower() >= s
+	t.Locked = not ok
 	t.Label.Text = (ok and "⚡ " or "🔒 ") .. Config.FormatNumber(s)
 	t.Label.TextColor3 = ok and GREEN or RED
 	t.Stroke.Color = ok and GREEN or RED
 end
+
+local function tierOf(tree)
+	local rdef = Config.RarityById[tree:GetAttribute("Rarity") or "Common"]
+	local mut = Config.MutationById[tree:GetAttribute("Mutation") or ""]
+	local order = rdef and rdef.Order or 1
+	if mut or order >= 5 then return 1 end -- Legendary, Mythic, Secret, Divine, any mutation
+	if order >= 3 then return 2 end -- Rare, Epic
+	return 3 -- Common, Uncommon
+end
+local TIER_CREATE = { 90, 52, 48 } -- create a tag inside this distance...
+local TIER_DROP = 12 -- ...and drop it beyond create + this (hysteresis)
 
 local function makeTag(tree)
 	if tags[tree] or not tree:IsA("Model") or not tree:GetAttribute("IsTree") then return end
@@ -98,6 +122,7 @@ local function makeTag(tree)
 	local fancy = rarity ~= "Common" or mut ~= nil
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "StrengthTag"
+	bb.Enabled = false -- the label pass decides
 	bb.Size = UDim2.fromOffset(fancy and (mut and 150 or 100) or 78, fancy and 44 or 24)
 	bb.MaxDistance = (rdef and rdef.Order >= 4) and 90 or 48
 	bb.LightInfluence = 0
@@ -139,61 +164,121 @@ local function makeTag(tree)
 	label.TextScaled = true
 	label.Parent = frame
 	bb.Parent = fx
-	tags[tree] = { Gui = bb, Label = label, Stroke = st }
+	tags[tree] = { Gui = bb, Label = label, Stroke = st, Tier = tierOf(tree), Shown = false }
 	updateTag(tree)
-	tree.AncestryChanged:Connect(function()
-		if not tree:IsDescendantOf(workspace) and tags[tree] then
-			tags[tree].Gui:Destroy()
-			tags[tree] = nil
-		end
-	end)
 end
 
--- Tags only exist near you (thousands of trees!). Same loop fades canopies
--- that sit between the camera and your character so chopping stays visible.
-local TAG_IN, TAG_OUT = 90, 110
 local function removeTag(tree)
 	local t = tags[tree]
 	if not t then return end
-	for _, p in ipairs(t.Leaves) do p.LocalTransparencyModifier = 0 end
 	t.Gui:Destroy()
 	tags[tree] = nil
 end
 
-local function leavesOf(tree)
-	local list = {}
-	for _, d in ipairs(tree:GetDescendants()) do
-		if d:IsA("BasePart") and d.Name ~= "Hitbox" then table.insert(list, d) end
+-- Visibility registry ----------------------------------------------
+local REG_IN, REG_OUT = 90, 110
+local FADE_BLOCK, FADE_NEAR = 0.9, 0.72
+
+local function setFade(e, v)
+	if math.abs(v - e.Applied) < 0.02 and not (v == 0 and e.Applied ~= 0) then return end
+	e.Applied = v
+	for _, p in ipairs(e.Leaves) do
+		if p.Parent then p.LocalTransparencyModifier = v end
 	end
-	return list
 end
 
+-- leaves + canopy cylinder (radius around the trunk axis, vertical span), cached per tree
+local function measure(tree, e)
+	local piv = tree:GetPivot().Position
+	local leaves, r, lo, hi = {}, 0, math.huge, -math.huge
+	for _, d in ipairs(tree:GetDescendants()) do
+		if d:IsA("BasePart") and d.Name ~= "Hitbox" then
+			table.insert(leaves, d)
+			local cf, sz = d.CFrame, d.Size
+			local hx = math.abs(cf.RightVector.X) * sz.X / 2 + math.abs(cf.UpVector.X) * sz.Y / 2 + math.abs(cf.LookVector.X) * sz.Z / 2
+			local hy = math.abs(cf.RightVector.Y) * sz.X / 2 + math.abs(cf.UpVector.Y) * sz.Y / 2 + math.abs(cf.LookVector.Y) * sz.Z / 2
+			local hz = math.abs(cf.RightVector.Z) * sz.X / 2 + math.abs(cf.UpVector.Z) * sz.Y / 2 + math.abs(cf.LookVector.Z) * sz.Z / 2
+			local dxz = Vector2.new(cf.X - piv.X, cf.Z - piv.Z).Magnitude
+			r = math.max(r, dxz + math.max(hx, hz))
+			lo = math.min(lo, cf.Y - hy)
+			hi = math.max(hi, cf.Y + hy)
+		end
+	end
+	if e.Leaves then
+		-- release parts that are no longer part of the tree
+		local keep = {}
+		for _, p in ipairs(leaves) do keep[p] = true end
+		for _, p in ipairs(e.Leaves) do if not keep[p] and p.Parent then p.LocalTransparencyModifier = 0 end end
+	end
+	e.Leaves, e.R, e.Lo, e.Hi = leaves, r, lo, hi
+	e.X, e.Z = piv.X, piv.Z
+	e.Scale = tree:GetScale()
+	e.PP = tree.PrimaryPart
+	if e.Applied and e.Applied > 0 then
+		for _, p in ipairs(leaves) do p.LocalTransparencyModifier = e.Applied end
+	end
+end
+
+local function unregister(tree)
+	local e = reg[tree]
+	if not e then return end
+	reg[tree] = nil
+	if e.Conn then e.Conn:Disconnect() end
+	for _, p in ipairs(e.Leaves or {}) do
+		if p.Parent then p.LocalTransparencyModifier = 0 end
+	end
+	removeTag(tree)
+end
+
+local function register(tree)
+	if reg[tree] then return end
+	local e = { Applied = 0, Target = 0, ClearAt = 0 }
+	reg[tree] = e
+	measure(tree, e)
+	e.Conn = tree.AncestryChanged:Connect(function()
+		if not tree:IsDescendantOf(workspace) then unregister(tree) end
+	end)
+end
+
+-- Tags and the registry only exist near you (thousands of trees!).
 task.spawn(function()
 	while true do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local pos = root and root.Position or camera.CFrame.Position
+		local tagsOn = player:GetAttribute("Pref_ShowTags") ~= false
 		local made = 0
 		for _, t in ipairs(Breakables:GetChildren()) do
 			local pp = t.PrimaryPart
-			if pp then
+			local e = reg[t]
+			if not pp then
+				if e then unregister(t) end -- streamed out
+			elseif t:GetAttribute("IsTree") then
 				local d = (pp.Position - pos).Magnitude
-				local tag = tags[t]
-				local tagsOn = player:GetAttribute("Pref_ShowTags") ~= false
-				if not tagsOn and tag then
-					removeTag(t)
-				elseif not tag then
-					if tagsOn and d < TAG_IN and t:GetAttribute("IsTree") then
-						makeTag(t)
-						if tags[t] then tags[t].Leaves = leavesOf(t) end
+				if not e then
+					if d < REG_IN then
+						register(t)
 						made += 1
 						if made % 40 == 0 then task.wait() end
 					end
-				elseif d > TAG_OUT then
-					removeTag(t)
-				elseif tag.Gui.Adornee ~= pp then
-					tag.Gui.Adornee = pp
-					tag.Gui.StudsOffsetWorldSpace = Vector3.new(0, -pp.Size.Y / 2 + 4.6, 0)
-					tag.Leaves = leavesOf(t)
+				elseif d > REG_OUT then
+					unregister(t)
+				else
+					if e.PP ~= pp or math.abs(t:GetScale() - e.Scale) > 0.01 then
+						measure(t, e) -- re-streamed or still growing in after a respawn
+						local tag = tags[t]
+						if tag then
+							tag.Gui.Adornee = pp
+							tag.Gui.StudsOffsetWorldSpace = Vector3.new(0, -pp.Size.Y / 2 + 4.6, 0)
+						end
+					end
+					local tag = tags[t]
+					if not tagsOn then
+						if tag then removeTag(t) end
+					elseif not tag then
+						if d < TIER_CREATE[tierOf(t)] then makeTag(t) end
+					elseif d > TIER_CREATE[tag.Tier] + TIER_DROP then
+						removeTag(t)
+					end
 				end
 			end
 		end
@@ -201,40 +286,176 @@ task.spawn(function()
 	end
 end)
 
-local function segDist2D(p, a, b)
-	local ab = b - a
-	local len2 = ab:Dot(ab)
-	if len2 < 1e-4 then return (p - a).Magnitude, 0 end
-	local t = math.clamp((p - a):Dot(ab) / len2, 0, 1)
-	return (p - (a + ab * t)).Magnitude, t
+-- Canopy fade (~11 Hz) ----------------------------------------------
+-- distance from 2-D point p to 2-D segment a-b, plus the segment parameter t
+local function segDist2D(px, pz, ax, az, bx, bz)
+	local abx, abz = bx - ax, bz - az
+	local len2 = abx * abx + abz * abz
+	local t = 0
+	if len2 > 1e-4 then t = math.clamp(((px - ax) * abx + (pz - az) * abz) / len2, 0, 1) end
+	local cx, cz = ax + abx * t, az + abz * t
+	return math.sqrt((px - cx) ^ 2 + (pz - cz) ^ 2), t
 end
 
-local FADE = 0.72
+-- how strongly a canopy cylinder obstructs segment cam->target: 2 = blocks, 1 = near miss, 0 = clear
+local NEAR_BAND = 3.5
+local function obstruction(e, cam, target)
+	local d, t = segDist2D(e.X, e.Z, cam.X, cam.Z, target.X, target.Z)
+	if d > e.R + NEAR_BAND then return 0 end
+	local y = cam.Y + (target.Y - cam.Y) * t
+	if y < e.Lo - 0.5 or y > e.Hi + 0.5 then return 0 end
+	return d <= e.R + 0.75 and 2 or 1
+end
+
+local FADE_HOLD = 0.35 -- seconds a tree must stay clear before un-fading
+local STEP_UP, STEP_DOWN = 0.45, 0.25
+local fadeCostAcc, fadeTicks, fadedNow = 0, 0, 0
 local lastFade = 0
 RunService.RenderStepped:Connect(function()
 	local now = os.clock()
-	if now - lastFade < 0.08 then return end
+	if now - lastFade < 0.09 then return end
 	lastFade = now
-	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
 	if not root then return end
+	local t0 = os.clock()
 	local cam = camera.CFrame.Position
-	local cam2 = Vector3.new(cam.X, 0, cam.Z)
-	local me2 = Vector3.new(root.Position.X, 0, root.Position.Z)
-	for tree, t in pairs(tags) do
-		local pp = tree.PrimaryPart
-		if pp and t.Leaves then
-			local p2 = Vector3.new(pp.Position.X, 0, pp.Position.Z)
-			local fade = (p2 - cam2).Magnitude < 15
-			if not fade then
-				local dseg = segDist2D(p2, cam2, me2)
-				fade = dseg < 9 and (p2 - me2).Magnitude < (cam2 - me2).Magnitude + 6
+	local head = char:FindFirstChild("Head")
+	local headPos = head and head.Position or (root.Position + Vector3.new(0, 1.5, 0))
+	local hipPos = root.Position - Vector3.new(0, 1, 0)
+	local faded = 0
+	for tree, e in pairs(reg) do
+		if e.R then
+			local o = math.max(obstruction(e, cam, headPos), obstruction(e, cam, hipPos))
+			local want = o == 2 and FADE_BLOCK or (o == 1 and FADE_NEAR or 0)
+			if want >= e.Target then
+				e.Target = want
+				e.ClearAt = now
+			elseif now - e.ClearAt >= FADE_HOLD then
+				e.Target = want
 			end
-			if fade ~= (t.Faded or false) then
-				t.Faded = fade
-				local v = fade and FADE or 0
-				for _, p in ipairs(t.Leaves) do p.LocalTransparencyModifier = v end
+			local v = e.Applied
+			if v < e.Target then v = math.min(e.Target, v + STEP_UP)
+			elseif v > e.Target then v = math.max(e.Target, v - STEP_DOWN) end
+			if v ~= e.Applied then setFade(e, v) end
+			if e.Applied > 0 then faded += 1 end
+		end
+	end
+	fadedNow = faded
+	fadeCostAcc += os.clock() - t0
+	fadeTicks += 1
+end)
+
+-- Label priority (~3.3 Hz) -------------------------------------------
+local UIS = game:GetService("UserInputService")
+local function isCompact()
+	local size = camera.ViewportSize
+	return size.Y < 560 or size.X < 780 or (UIS.TouchEnabled and not UIS.KeyboardEnabled)
+end
+local STRUCK_HOLD = 3
+
+-- screen rectangle covered by the character (for hiding labels drawn over it)
+local function charRect(char, root)
+	local minX, minY, maxX, maxY, depth = math.huge, math.huge, -math.huge, -math.huge, math.huge
+	local right = camera.CFrame.RightVector
+	for _, off in ipairs({ Vector3.new(0, 2.6, 0), Vector3.new(0, -3, 0) }) do
+		for _, s in ipairs({ -1.3, 1.3 }) do
+			local p, on = camera:WorldToViewportPoint(root.Position + off + right * s)
+			if p.Z > 0 then
+				minX, maxX = math.min(minX, p.X), math.max(maxX, p.X)
+				minY, maxY = math.min(minY, p.Y), math.max(maxY, p.Y)
+				depth = math.min(depth, p.Z)
 			end
 		end
+	end
+	if minX == math.huge then return nil end
+	return minX - 8, minY - 8, maxX + 8, maxY + 8, depth
+end
+
+local labelStats = { tier1 = 0, ordinary = 0, hiddenOverChar = 0, cap = 24 }
+task.spawn(function()
+	while true do
+		task.wait(0.3)
+		local char = player.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if root then
+			local now = os.clock()
+			local pos = root.Position
+			local cap = isCompact() and 16 or 24
+			local rx0, ry0, rx1, ry1, rdepth = charRect(char, root)
+			local ordinary, show = {}, {}
+			local hidden, t1 = 0, 0
+			for tree, t in pairs(tags) do
+				local pp = tree.PrimaryPart
+				if pp then
+					local d = (pp.Position - pos).Magnitude
+					local slack = t.Shown and 4 or 0
+					local struck = lastStruck[tree] and now - lastStruck[tree] < STRUCK_HOLD
+					local eligible
+					if t.Tier == 1 then
+						eligible = d <= 90 + slack
+					elseif t.Tier == 2 then
+						eligible = d <= 48 + slack
+					else
+						eligible = d <= 24 + slack or ((t.Locked or struck) and d <= 48 + slack)
+					end
+					if eligible then
+						-- hide a label that sits on top of the character (in front of it, overlapping)
+						local over = false
+						if rx0 then
+							local w = t.Gui.Size.X.Offset / 2
+							local h = t.Gui.Size.Y.Offset / 2
+							local sp = camera:WorldToViewportPoint(pp.Position + t.Gui.StudsOffsetWorldSpace)
+							if sp.Z > 0 and sp.Z < rdepth + 1 and sp.X + w > rx0 and sp.X - w < rx1 and sp.Y + h > ry0 and sp.Y - h < ry1 then
+								over = true
+							end
+						end
+						if over then
+							hidden += 1
+						elseif t.Tier == 1 then
+							show[tree] = true
+							t1 += 1
+						else
+							-- tier 2 before tier 3; locked/struck tier 3 before plain tier 3; nearer first; keep shown ones
+							local rank = (t.Tier == 2 and 0 or ((t.Locked or struck) and 1000 or 2000)) + d - slack
+							table.insert(ordinary, { tree, rank })
+						end
+					end
+				end
+			end
+			table.sort(ordinary, function(a, b) return a[2] < b[2] end)
+			for i = 1, math.min(cap, #ordinary) do show[ordinary[i][1]] = true end
+			for tree, t in pairs(tags) do
+				local on = show[tree] == true
+				if t.Shown ~= on then
+					t.Shown = on
+					t.Gui.Enabled = on
+				end
+			end
+			labelStats.tier1 = t1
+			labelStats.ordinary = math.min(cap, #ordinary)
+			labelStats.hiddenOverChar = hidden
+			labelStats.cap = cap
+		end
+	end
+end)
+
+-- lightweight diagnostics for testing (attributes on this LocalScript; no gameplay effect)
+task.spawn(function()
+	while true do
+		task.wait(2)
+		local n, nt = 0, 0
+		for _ in pairs(reg) do n += 1 end
+		for _ in pairs(tags) do nt += 1 end
+		script:SetAttribute("VisRegistry", n)
+		script:SetAttribute("VisTags", nt)
+		script:SetAttribute("VisFaded", fadedNow)
+		script:SetAttribute("VisLabelsTier1", labelStats.tier1)
+		script:SetAttribute("VisLabelsOrdinary", labelStats.ordinary)
+		script:SetAttribute("VisLabelsHiddenOverChar", labelStats.hiddenOverChar)
+		script:SetAttribute("VisLabelCap", labelStats.cap)
+		script:SetAttribute("VisFadeMsPerTick", fadeTicks > 0 and fadeCostAcc / fadeTicks * 1000 or 0)
+		fadeCostAcc, fadeTicks = 0, 0
 	end
 end)
 
@@ -363,6 +584,7 @@ Remotes.Hits.OnClientEvent:Connect(function(hits)
 		if target and target.Parent and target:GetAttribute("IsTree") then
 			startShake(target, pos, weak)
 			if attackerId == player.UserId then
+				lastStruck[target] = os.clock()
 				onMyChop(pos, weak, target)
 			elseif math.random() < 0.3 then
 				sound3D(CHOP_SOUND, pos, 0.25, 1)
