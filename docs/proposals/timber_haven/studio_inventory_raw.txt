@@ -1,0 +1,89 @@
+Blade Forest - Timber Haven redesign: raw Studio inventory (READ-ONLY)
+=====================================================================
+Captured 2026-11-19 ~22:30 PST by Claude via Roblox Studio MCP execute_luau,
+datamodel Edit, dev place 103379930563763 / universe 10777797608.
+Nothing was modified or saved. Values are as printed by the read-only queries.
+
+--- Workspace top level ---
+WS.Enemies [Folder] kids=0 parts=0 scripts=0
+WS.Map [Folder] kids=46 parts=980 scripts=0
+WS.Breakables [Folder] kids=5021 parts=27363 scripts=0
+WS.Islands [Folder] kids=4 parts=20 scripts=0
+WS.SpawnLocation c(-16,1,0) s(12,1,12)
+WS.SpawnLocation c(0,1,-16) s(12,1,12)
+WS.SpawnLocation c(16,1,0) s(12,1,12)
+WS.SpawnLocation c(0,1,16) s(12,1,12)
+
+--- workspace.Map children (c = bounding-box center, s = size) ---
+Map.Leaderboards [Folder] kids=3 parts=21 scripts=0
+Map.AreaWalls [Folder] kids=8 parts=144 scripts=0
+Map.ClimbBlockers [Folder] kids=132 parts=132 scripts=0
+Map.Camps [Folder] kids=4 parts=504 scripts=0
+Map.Stations [Folder] kids=2 parts=48 scripts=0
+Map.BossArena [Model] kids=52 parts=52 c(0,8,-270) s(17,103,104)
+Map.TraitCrate [Model] kids=2 parts=19 c(19,4,-19) s(6,4,5)
+Map.SpawnPlaza [Model] kids=22 parts=22 c(0,7,0) s(14,64,64)
+Map.Border [Part] x many: 62x300x4 wall segments on a ring of radius ~330 around the
+  origin, plus the Frost annex walls at x=-340 (4x300x150, z=+-105), x=-660 (4x300x350)
+  and z=+-175 (300x300x4 centered x=-515).
+
+--- Map sub-objects ---
+Stations.LogMarket [Model] c(24,7,24) s(16,9,10)
+Stations.PetEgg [Model] c(27,11,2) s(14,19,12)
+Camps.Camp_1 c(153,9,152) s(41,14,42) Center=(152.03, 2, 152.03)
+Camps.Camp_2 c(-152,9,153) s(41,14,42) Center=(-152.03, 2, 152.03)
+Camps.Camp_3 c(-153,9,-152) s(41,14,42) Center=(-152.03, 2, -152.03)
+Camps.Camp_4 c(152,9,-153) s(41,14,42) Center=(152.03, 2, -152.03)
+Leaderboards.Board_Rarest c(-26,8,26) s(22,18,1) Board=Rarest
+Leaderboards.Board_Logs c(-36,8,0) s(22,18,1) Board=Logs
+Leaderboards.Board_Hours c(-26,8,-26) s(22,18,1) Board=Hours
+AreaWalls.StarterHedge c(0,4,0) s(264,8,264)
+AreaWalls.Gate_PineForest_1 c(130,9,0) s(20,19,2)
+AreaWalls.Gate_PineForest_2 c(0,9,130) s(20,19,2)
+AreaWalls.Gate_PineForest_3 c(-130,9,0) s(20,19,2)
+AreaWalls.Gate_PineForest_4 c(0,9,-130) s(20,19,2)
+AreaWalls.CanyonWalls c(258,6,0) s(145,18,270)
+AreaWalls.Gate_CrystalCanyon c(188,9,0) s(20,19,2)
+AreaWalls.Gate_FrostPeaks c(-345,13,0) s(20,19,2)
+Map lights=22 emitters=6
+
+--- Islands folder ---
+Islands.CrystalWilds_Bounds [Model] parts=4 c(3000,36,0) s(564,80,484)
+Islands.CrystalWilds_Plaza [Model] parts=6 c(2796,7,0) s(56,14,44)
+Islands.FrostboundReach [Model] parts=8 c(6000,19,0) s(164,42,164)
+  ArrivalFloor (6000,0,0), EdgeWall x4, IslandLabel (6000,14,-30), ArrivalMarker (6000,2,0), ReturnPad (6000,2,24)
+Islands.TimberHaven [Model] parts=2 c(0,2,-26) s(32,1,8)
+  Pad_CrystalWilds (-12,2,-26), Pad_FrostboundReach (12,2,-26)
+
+--- ProximityPrompts in Workspace ---
+Map.Stations.LogMarket.PromptPart.ProximityPrompt @ (24,5,24) action=Trade OpenPanel=Sawmill
+Map.Stations.PetEgg.PromptPart.ProximityPrompt @ (27,6,2) action=Hatch OpenPanel=Pets
+Map.TraitCrate...TraitPrompt @ (18,2,-18) action=Open Trait Crate
+Islands.CrystalWilds_Plaza.ReturnPad.ProximityPrompt @ (2775,2,16) TravelTo=TimberHaven
+Islands.FrostboundReach.ReturnPad.ProximityPrompt @ (6000,2,24) TravelTo=TimberHaven
+Islands.TimberHaven.Pad_CrystalWilds.ProximityPrompt @ (-12,2,-26) TravelTo=CrystalWilds
+Islands.TimberHaven.Pad_FrostboundReach.ProximityPrompt @ (12,2,-26) TravelTo=FrostboundReach
+
+--- Breakables (trees) by island and Area attribute ---
+Timber Haven (x < 2500):
+  StarterGrove  n=848   parts=6792  x[-119,119]  z[-121,122]
+  PineForest    n=2232  parts=6824  x[-299,255]  z[-289,297]
+  CrystalCanyon n=400   parts=3188  x[199,298]   z[-124,123]
+  FrostPeaks    n=921   parts=5606  x[-633,-379] z[-152,151]
+  total         4401 trees, 22410 parts
+Crystal Wilds (x > 2500): CrystalCanyon n=620
+Non-tree breakables: 0
+Tree types per Area attribute (whole place): StarterGrove=7, PineForest=7, CrystalCanyon=7, FrostPeaks=7
+CrystalCanyon tree types on Timber Haven = 7, on Crystal Wilds = 7, missing on Crystal Wilds: none
+Sample tree attributes: Rarity, TreeType, TreeName, Strength, Template, Reward, Respawn,
+  Health, Kind, LeafColor, IsTree, MaxHealth, Area
+
+--- Other ---
+Terrain MaxExtents -32000..32000 (all axes)
+Lighting.ClockTime 14.5; Workspace.StreamingEnabled = true
+ServerStorage: SwordTools, TreeKit, TreeImports(242), WeaponImports2(184), TraitChestA(5),
+  TraitChestB(3), TraitChestC(30), WeaponImports3(218), BoardTemplate(12), TreeImports2(1050),
+  NPCImports(3566), NPCModels(462), PetImports(2327), P1bBackups(22)   [descendant counts]
+ReplicatedStorage: BladeConfig, UIIcons, UITheme, Remotes(15), BladeModels(622),
+  TreeModels(1042), PetModels(270)
+No roll-altar objects found in Workspace; Config.Altars is not referenced by any script.

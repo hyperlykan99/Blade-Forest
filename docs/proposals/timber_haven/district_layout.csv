@@ -1,0 +1,9 @@
+district,center_x_rel,center_z_rel,size_x,size_z,world_center_x,world_center_z,legacy_area,holds
+Haven Village,0,0,140,120,0,-3000,StarterGrove,"Spawn, Log Market; safe zone r 70"
+Crafters' Plaza,0,-125,140,90,0,-3125,StarterGrove,"Upgrades, rolls; Forge workshop"
+Collectors' Row,-140,-20,110,160,-140,-3020,StarterGrove,Weapon Gallery; Pet Sanctuary; Trait Shrine
+Sapling Woods,160,20,170,200,160,-2980,StarterGrove,"Beginner forest; ~300 trees, Power 0"
+Pinewood Hollow,40,220,330,180,40,-2780,PineForest,"Intermediate, gate Power 40; ~450 trees, 2 camps"
+Elderpine Ridge,-290,170,170,260,-290,-2830,PineForest,"Advanced forest; ~450 trees; 2 camps, Treant"
+Kingsfall Arena,-250,-230,160,160,-250,-3230,PineForest,Blade King arena
+Portal Cliffs,250,-230,200,160,250,-3230,StarterGrove,Pad to Crystal Wilds; Pad to Frostbound Reach; 2 future pad slots
