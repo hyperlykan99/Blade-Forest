@@ -308,3 +308,29 @@ Unchanged and verified: TravelService (M-1) 9388:3611788483, DataService 19574:6
 ### 12.6 Rollback
 - **Preferred:** Version History → restore **v9** ("P1b.2 PRE-CRYSTAL-CONSTRUCTION"). Then revert `BladeConfig` and `WorldServer` to `7f925b4`, or simply don't merge `p1b2/crystal-wilds`.
 - **Manual:** run `tools/p1b2_crystal_wilds/rollback.luau`. It pastes the terrain snapshot, removes Breakables inside the CW bounds, deletes the plaza and bounds, and restores the P1a model.
+
+
+---
+
+## 13. P1b.2r — dense-forest redistribution (Option A), dev place v15 (2026-11-19)
+Full results: `docs/p1b2r/P1B2R_RESULTS.md` on branch `p1b2r/dense-forest` (`a893300`, not merged).
+
+- **What changed:** the 620 Crystal Wilds tree instances were moved (PivotTo only) to the approved Option A spots.
+  - Z1 Arrival Thicket 155, Z2 Gorge Grove 155, Z3 North Shardwood 150, Z4 South Hollow 140, P1–P4 5 each.
+  - Measured nearest-neighbour distance: 5.23 / 5.20 / 5.17 / 5.19.
+- **Unchanged:** no terrain, scripts, data or economy settings. The working manifest is now dense; the v12 sparse manifest is archived as `docs/p1b_tree_spots_crystal_wilds_v12_sparse.csv`.
+- **Budgets (initial):** 4,953 tree parts, max 16 per tree, 37 enabled lights, 135 emitters, 10 other parts. The respawn effect and tag drift remains (B1, not implemented).
+- **Studio tests (one client):**
+  - first contact 1.64 s from the plaza;
+  - entry 17–20 trees per revolution, midgame 21–34;
+  - 30-s route 183 trees / 110k Logs (sparse 29 / 25k);
+  - respawn stays on the new spot;
+  - AutoChop OK;
+  - travel, power gate, rejoin and Frost travel OK;
+  - no console errors.
+- **Risks:**
+  - camera visibility partial (Z2/Z3);
+  - Studio FPS about 30% lower inside zones (MacBook; iPhone unverified);
+  - about 4× chopping income against sparse;
+  - two-player unverified.
+- **Rollback:** Version History → v14 "P1b.2r PRE-DENSE-REDISTRIBUTION", or `tools/p1b2r_dense_redistribution/rollback.luau` (exact, dry-run verified).

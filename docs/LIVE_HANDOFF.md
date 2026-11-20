@@ -12,11 +12,11 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **48** (verify before working) |
-| Active AI editor | **Claude**: **P1b.2r dense-forest redistribution (Option A)**, owner-approved, dev place 103379930563763 only (claimed 2026-11-19 01:50 PST) |
-| Last handoff author / time | **Claude / 2026-11-19 ~01:10 PST** (P1b.2 Crystal Wilds construction) |
-| Last confirmed gameplay edit | **Dev place only:** v12 (P1b.2 Crystal Wilds; BladeConfig + WorldServer). Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked after P1b.2) |
-| Current task | **P1b.2 Crystal Wilds built** in dev v12 (checkpoint v9), branch `p1b2/crystal-wilds` @ `0fc997d`. Results: `P1B_MIGRATION_BLUEPRINT.md` §12. Not published |
-| Next action | Owner: review P1b.2 (§12.5: effects drift on respawn / B1, shared slime cap, altar N/A); decide merge, private dev publish for iPhone. **P1b.3 NOT authorized.** Two-player unverified |
+| Active AI editor | **None** (Claude released after P1b.2r, 2026-11-19 21:20 PST) |
+| Last handoff author / time | **Claude / 2026-11-19 21:20 PST** (P1b.2r dense-forest redistribution) |
+| Last confirmed gameplay edit | **Dev place only:** v15 (P1b.2r: 620 Crystal Wilds trees moved into 4 dense zones; no script/terrain/data changes). Checkpoint v14. Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked 2026-11-19 21:15 PST) |
+| Current task | **None claimed.** P1b.2r done on branch `p1b2r/dense-forest` @ `a893300` (not merged). Results: `docs/p1b2r/P1B2R_RESULTS.md` on that branch |
+| Next action | Owner: review P1b.2r (camera visibility in Z2/Z3, ~30% Studio FPS drop in zones, ~4x income, respawn effect/tag drift = B1); decide merge and a private dev publish for iPhone. **P1b.3 NOT authorized.** Two-player unverified |
 | Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branch `p0/script-export`** (34 scripts, checksum-verified). Not yet merged to `main` |

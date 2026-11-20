@@ -2,6 +2,15 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-19 — P1b.2r Crystal Wilds dense-forest redistribution, Option A (DEV PLACE ONLY, v15)
+- Checkpoint **v14** "P1b.2r PRE-DENSE-REDISTRIBUTION"; result **v15**. Branch `p1b2r/dense-forest` @ `a893300` (not merged).
+- The existing 620 tree instances were moved with `PivotTo` (no rebuild; no attribute, scale or effect changes) into Z1–Z4 (155/155/150/140) plus 4 trail pockets of 5. Nearest-neighbour distance is about 5.2 studs per zone.
+- Exact pre-move snapshot and move map stored in `ServerStorage.P1bBackups` and in git. The move is idempotent; the rollback tool's dry run was verified.
+- Initial budgets unchanged: 4,953 tree parts, 37 enabled lights, 135 emitters, 10 other parts.
+- Studio tests: entry sweep 17–20 trees per revolution (sparse 1); 30-s route 183 trees (sparse 29); respawn stays on the redistributed spot.
+- Camera visibility is a partial pass (Z2/Z3 obscured). Studio FPS is about 30% lower inside zones.
+- Not published. Production unchanged.
+
 ## 2026-11-19 — P1b.2 Crystal Wilds construction (DEV PLACE ONLY, version 12)
 - Checkpoint **v9**, result **v12**. Branch `p1b2/crystal-wilds` @ `0fc997d`.
 - Terrain: the Crystal Canyon core was copied with CopyRegion and extended to 560×480 (X 2720–3280). The original canyon is untouched.
