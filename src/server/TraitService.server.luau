@@ -9,6 +9,7 @@ local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local NotifyRemote = Remotes:WaitForChild("Notify")
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local Policy = require(script.Parent:WaitForChild("PaidRandomPolicy")) -- M0-D server-side eligibility
 
 local TraitAction = Remotes:FindFirstChild("TraitAction") or Instance.new("RemoteFunction")
 TraitAction.Name = "TraitAction"
@@ -92,20 +93,29 @@ TraitAction.OnServerInvoke = function(player, action, arg)
 		if d.TraitLocked then return false, "Your trait is locked 🔒 - unlock it to roll" end
 		local crate = (arg == "Souls" or arg == "Free") and arg or "Logs"
 		if crate == "Free" then
-			if (d.FreeCrates or 0) < 1 then return false, "No free crates left" end
-			d.FreeCrates -= 1
+			local allowPaid = Policy.FreeCrateAccess(player)
+			local ok, why = DataService.SpendCrate(player, allowPaid)
+			if not ok then
+				if why == "restricted" then
+					return false, "Only Trait Crates earned in-game can be opened on your account."
+				end
+				return false, "No free crates left"
+			end
 		elseif crate == "Souls" then
 			if not DataService.SpendSouls(player, Config.SoulCrateCost) then
 				return false, string.format("Need %d Souls", Config.SoulCrateCost)
 			end
 		else
+			local allowed, msg = Policy.CheckCurrencySpend(player, "TraitCrate_Logs")
+			if not allowed then return false, msg end
 			local cost = Config.GetTraitCrateCost(d.BestArea)
 			if not DataService.SpendCoins(player, cost) then
 				return false, string.format("Need %s Logs", Config.FormatNumber(cost))
 			end
 		end
 		lastRoll[player] = os.clock()
-		local id = roll(crate == "Souls" and "Souls" or "Logs", player:GetAttribute("Pass_LuckyCrates") == true)
+		local lucky = player:GetAttribute("Pass_LuckyCrates") == true and Policy.AllowPaidOddsModifier(player)
+		local id = roll(crate == "Souls" and "Souls" or "Logs", lucky)
 		DataService.Sync(player)
 		if not d.Trait then
 			pending[player] = nil

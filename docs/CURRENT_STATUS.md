@@ -1,11 +1,11 @@
 # Current Status
 
-_Last updated: 2026-11-19 22:00 PST (branch `p1b2r/camera-visibility-fix`; owner review)_
+_Last updated: 2026-11-20 03:30 PST (branch `m0/foundations`; owner review)_
 
 ## Live place
 
 - **Production** (Team Create) `73142469975141`: documented v48 (HUD handoff); unchanged since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked 2026-11-19 21:53 PST).
-- **Dev** `103379930563763` / `10777797608` (PRIVATE): **v18** (camera visibility fix; checkpoint v16; v17 unexplained). Islands prototype: Timber Haven hub, Crystal Wilds (P1b.2 terrain, plaza, return pad; 620 trees in four dense zones after P1b.2r), Frostbound Reach (P1a placeholder). 35 scripts; BladeConfig and WorldServer (P1b.2) and the client ChopEffects (camera fix) differ from production.
+- **Dev** `103379930563763` / `10777797608` (PRIVATE): **v23** (M0 Foundations; checkpoint v18; v17 unexplained; v19–v22 probably auto-saves). The dev save is now format v4 with session locking (see `docs/m0/M0_FOUNDATIONS_RESULTS.md`). Islands prototype: Timber Haven hub, Crystal Wilds (P1b.2 terrain, plaza, return pad; 620 trees in four dense zones after P1b.2r), Frostbound Reach (P1a placeholder). 35 scripts; BladeConfig and WorldServer (P1b.2) and the client ChopEffects (camera fix) differ from production.
 
 ## Working and playtested
 

@@ -1,0 +1,93 @@
+path	class	length	adler32	count	family	markers	disposition
+ServerStorage.BoardTemplate.Model.Part.Part-to-Part Strong Joint.LightConfig	Script	7087	1348114478	1	LightConfig		DESTROYED
+ServerStorage.BoardTemplate.Model.Part.Part-to-Part Strong Joint.LightConfig.EasyConfiguration	ModuleScript	4501	2857919094	1	LightConfig		DESTROYED (with parent)
+ServerStorage.BoardTemplate.Model.Part.Part-to-Part Strong Joint.LightConfig.Type	ModuleScript	6783	3010048225	1	LightConfig	MarketplaceService	DESTROYED (with parent)
+ServerStorage.BoardTemplate.Model.Part.qPerfectionWeld	Script	14030	1817889896	1	qPerfectionWeld variant	require(asset id) (found in earlier read-only review)	DESTROYED
+ServerStorage.NPCImports.BarrelCrate.barrel.Cylinder.002.WeldConstraint.LightConfig	Script	7087	1348114478	1	LightConfig		DESTROYED
+ServerStorage.NPCImports.BarrelCrate.barrel.Cylinder.002.WeldConstraint.LightConfig.EasyConfiguration	ModuleScript	4501	2857919094	1	LightConfig		DESTROYED (with parent)
+ServerStorage.NPCImports.BarrelCrate.barrel.Cylinder.002.WeldConstraint.LightConfig.Type	ModuleScript	6783	3010048225	1	LightConfig	MarketplaceService	DESTROYED (with parent)
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Animate	Script	14082	4102577906	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Cannon	Script	487	1007133965	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.FadeBodyOnDeath	Script	693	2318064341	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.Bombs	Script	450	1222874962	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.Bombs.Script	Script	144	2285383323	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.Cells	Script	469	3891764690	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.Cells.Script	Script	143	1521167952	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.PelletScript	Script	1327	2554638856	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.PelletScript.FIRE.FireDamage	Script	643	1647367678	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Head.Slingshot	Script	3249	259854722	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Humanoid.Script	Script	138	323562228	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Humanoid.Theme End	Script	339	4024133975	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Humanoid.Theme Start	Script	148	3917294706	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.HumanoidRootPart.ParticleEmitter.Script	Script	143	1051536744	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.LeftHand.Handle.Damage Script	Script	263	3905180251	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.LeftLowerArm.Damage Script	Script	262	2795131439	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Read me	Script	565	79145523	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Respawn	Script	228	1269582548	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.RightLowerArm.Chain Hook.Damage Script	Script	263	3905180251	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.Script	Script	923	397683802	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.UpperTorso.BodyFrontAttachment.Effect.Script	Script	143	1032727912	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.UpperTorso.Explode3.Script	Script	135	2648123445	1	-		DISABLED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.UpperTorso.Model.Cannon.Cannon.Effects.Sound.PitchShiftSoundEffect.Runtime	Script	5634	1090671888	1	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.NPCImports.BossRig.Captain.Captain Pirate Boss.UpperTorso.Model.Cannon.Cannon.Effects.Sound.PitchShiftSoundEffect.Runtime.(…).InputBinding.ScreenBuilder	LocalScript	35631	2280973692	1	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.NPCImports.Camp.Extra.CoreTextureSystem	Script	13919	2645535681	1	TextureConfiguration		DESTROYED
+ServerStorage.NPCImports.Camp.Extra.CoreTextureSystem.TextureConfiguration	ModuleScript	9742	2719715624	1	TextureConfiguration		DESTROYED (with parent)
+ServerStorage.NPCImports.Camp.Object.f1cd.Part.8a03.Object.a58d.qTexture	Script	13889	3572146324	1	TextureConfiguration		DESTROYED
+ServerStorage.NPCImports.Camp.Object.f1cd.Part.8a03.Object.a58d.qTexture.(nested chain of TextureConfiguration/Package/qTexture/LightConfig)	Script+ModuleScript	-	-	10	TextureConfiguration + LightConfig (self-replicating nesting)	MarketplaceService (Type)	DESTROYED (with parent)
+ServerStorage.NPCImports.Campfire.Campfire/Fogueira.Fire.Fire.Runtime	Script	5634	4234827008	1	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.NPCImports.Campfire.Campfire/Fogueira.Fire.Fire.Runtime.(…).ScreenBuilder	LocalScript	35564	1996410414	1	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.NPCImports.Lumberjack.Lumberjack.Script	Script	179	1108031686	1	-		DISABLED
+ServerStorage.NPCImports.Pirate.Pirate.Animate	LocalScript	14724	1388885307	1	-		DISABLED
+ServerStorage.NPCImports.Pirate.Pirate.Health	Script	779	1899954952	1	-		DISABLED
+ServerStorage.NPCImports.Pirate.Pirate.Sound	Script	3919	2565793597	1	-		DISABLED
+ServerStorage.NPCImports.Pirate.Pirate.TriconWithPonytail.Handle.Mesh.Runtime	Script	5634	1090671888	1	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.NPCImports.Pirate.Pirate.TriconWithPonytail.Handle.Mesh.Runtime.(…).ScreenBuilder	LocalScript	35631	2280973692	1	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.NPCImports.SlimeA.CartoonSlime.SlimeBrain	Script	34857	1011690442	1	-		DISABLED
+ServerStorage.NPCImports.SpikeWall.Model.MeshPart.Script	Script	357	3637409655	14	-		DISABLED
+ServerStorage.NPCImports.SpikeWall.Model.MeshPart.Weld.Runtime	Script	5634	1090671888	2	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.NPCImports.SpikeWall.Model.MeshPart.Weld.Runtime.(…).ScreenBuilder	LocalScript	35631	2280973692	2	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.NPCImports.Tent.Simple Camping Tent.Runtime	Script	5634	4234827008	1	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.NPCImports.Tent.Simple Camping Tent.Runtime.(…).ScreenBuilder	LocalScript	35564	1996410414	1	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.P1bBackups.ChopEffects_PreCameraFix	LocalScript	18500	3640422855	1	- (project's own camera-fix backup)		NOT TOUCHED
+ServerStorage.PetImports.Dragon.I_want_to_make_a_pet__0725202050_texture.input.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.PetImports.EggKit.{Candy,Desert,Lava,Ocean}.Egg.Attachment.BillboardGui.TextLabel.UIStroke.Runtime	Script	5634	1090671888	4	Runtime/ScreenBuilder		DESTROYED
+ServerStorage.PetImports.EggKit.{Candy,Desert,Lava,Ocean}.(…).Runtime.(…).ScreenBuilder	LocalScript	35631	2280973692	4	Runtime/ScreenBuilder		DESTROYED (with parent)
+ServerStorage.PetImports.Fox.Low Poly Red Fox - CBRO_Grace.EffectBuilder	Script	4546	3769479450	1	EffectBuilder	require	DESTROYED
+ServerStorage.PetImports.Hatchling.I_want_to_make_a_pet__0725202050_texture.input.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	6800	571378075	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.PetImports.Owl.Snow Owl.PetModel.LeftFoot.shoe_attachment.PartsToHide.LeftFoot.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.PetImports.Unicorn.Magical Unicorn.Animate	LocalScript	23691	765410951	1	-		DISABLED
+ServerStorage.PetImports.Unicorn.Magical Unicorn.Animate.pose.CartoonyPose.Weight.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.TreeImports.CrystalTree.Model.Model.Meshes/vegetationlbs_Cube.006.ModelSettings.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	6817	3305278653	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.TreeImports2.C_Mushroom.Low poly.default.Configuration.Pаckаgе (Cyrillic homoglyph name)	Script	7385	324592770	1	TextureConfiguration		DESTROYED
+ServerStorage.TreeImports2.Crystal_Mythic.stone.PoseTexture (+TextureConfiguration)	Script+ModuleScript	13510	1376394155	2	TextureConfiguration		DESTROYED
+ServerStorage.TreeImports2.Crystal_Secret.Model.Model.Meshes/vegetationlbs_Cube.006.ModelSettings.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	6817	3305278653	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.TreeImports2.Frost_Mythic.Tree Snow.Constant (+TextureConfiguration)	Script+ModuleScript	13814	2377091034	2	TextureConfiguration		DESTROYED
+ServerStorage.TreeImports2.Grove_Mythic.Model.Model.Meshes/Low-Poly Tree Stump.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.TreeImports2.Pine_Mythic.RedwoodTreeLarge-Var01.Fern_Var01.FernLeavesOuter.DO NOT DELETE.Material (+Credits LocalScript)	Script+LocalScript	10268	2697135647	2	DoNotDelete/Credits		DESTROYED
+ServerStorage.WeaponImports2.ForsakenAxe.Forsaken Axe.Equip / Idle Animation Tool	LocalScript	870	4144568126	1	-		DISABLED
+ServerStorage.WeaponImports2.ForsakenAxe.Forsaken Axe.Handle.MainPlane.Trail.CoreViewSystem (+TextureConfiguration)	Script+ModuleScript	13151	908207252	2	TextureConfiguration		DESTROYED
+ServerStorage.WeaponImports2.ForsakenAxe.Forsaken Axe.ItemConfig	ModuleScript	1134	157772172	1	-	(data table, not required by game code)	LEFT INERT (ModuleScripts cannot be disabled; never required)
+ServerStorage.WeaponImports2.ForsakenAxe.Forsaken Axe.SwingEffect	Script	1438	4099195461	1	-		DISABLED
+ServerStorage.WeaponImports2.GrimHarvestScythe.Handle.Dependencies.Dependencies.CoreValidation (+5 LocalScripts incl. Check)	Script+5 LocalScript	3147	1532187053	6	CoreValidation	965 non-ASCII chars, Kick, string.char obfuscation	DESTROYED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.Client	LocalScript	1619	1480070521	1	-		DISABLED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.Handle.Handle.Damage Script	Script	269	464540329	1	-		DISABLED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.Handle.ZeezyScythe.Handle.Handle.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.Handle.qPerfectionWeld	Script	7287	2552621846	1	- (standard weld script)		DISABLED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.MostAnimations	LocalScript	2012	1662421294	1	-		DISABLED
+ServerStorage.WeaponImports2.InkScythe.Model.Model.Midnight Scythe.Server	Script	5695	4141286296	1	-		DISABLED
+ServerStorage.WeaponImports2.ReaperSoulScythe.Crimson Death Sword.Soul.Part.Mesh.ExtraData.Shifter.PoseLink	Script	14065	3727809058	1	TextureConfiguration		DESTROYED
+ServerStorage.WeaponImports3.AngelSword.untitled.default.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.WeaponImports3.DragonFireSword.Dragon Fire Sword.LocalScript	LocalScript	3871	186238553	1	-		DISABLED
+ServerStorage.WeaponImports3.DragonFireSword.Dragon Fire Sword.SwordScript	Script	3651	2987419374	1	-		DISABLED
+ServerStorage.WeaponImports3.DragonFireSword.Dragon Fire Sword.SwordScript.MainAttackDamage	Script	961	2206801818	1	-		DISABLED
+ServerStorage.WeaponImports3.DragonFireSword.Dragon Fire Sword.SwordScript.MainAttackDamage.Owner.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	7087	1348114478	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.WeaponImports3.FrostVikingAxe.Part.DO NOT DELETE.Material (+Credits LocalScript)	Script+LocalScript	10254	2362114129	2	DoNotDelete/Credits		DESTROYED
+ServerStorage.WeaponImports3.FrostVikingAxe.Part.LightConfig (+EasyConfiguration, Type)	Script+2 ModuleScript	6800	571378075	3	LightConfig	MarketplaceService (Type)	DESTROYED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.Animations.R15.TonightsForcast.PoseTexture (+TextureConfiguration)	Script+ModuleScript	13510	1376394155	2	TextureConfiguration		DESTROYED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.Animations.R6.LeftSlash.CoreSkyboxSystem	Script	12018	1796842060	1	TextureConfiguration		DESTROYED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.MouseIcon	LocalScript	973	2004105279	1	-		DISABLED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.SwordScript	Script	10228	3669435723	1	-		DISABLED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.SwordScript.aoeScript	Script	173	4150801763	1	-		DISABLED
+ServerStorage.WeaponImports3.IceCrystalSword.ice sword.SwordScript.rockify	Script	1031	15153126	1	-		DISABLED
+# Totals: 153 non-game scripts scanned. 37 malicious root scripts destroyed (95 script instances incl. children). 53 benign scripts disabled. 1 ModuleScript left inert. 1 project backup untouched. Remaining in import folders: 57 scripts, 0 enabled, 0 matching malicious patterns. Active containers (Workspace, ReplicatedStorage, Lighting, StarterPack, StarterGui, StarterPlayer): 0 hits.
+# No model packs, meshes, parts or textures were deleted. No malicious source was exported, copied, or sent to any outside service. Originals remain recoverable only from dev place version v18 ("M0 PRE-FOUNDATIONS").

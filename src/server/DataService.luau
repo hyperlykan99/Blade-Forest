@@ -1,5 +1,9 @@
 -- DataService: the one place player data lives on the server.
--- Save format v3:
+-- M0 (save format v4): session-locked persistence (SessionStore), numbered
+-- migrations (SaveMigrations), confirmed saves for receipts (SaveNow),
+-- fail-closed loading and crate-origin bookkeeping. Same DataStore and key
+-- ("BladeForest_v3" / "p_<UserId>") as v3; v4 only ADDS fields.
+-- Save format v3 (all fields kept in v4):
 --   Logs (main currency, was Coins), Kills, Levels{upgradeId=level}
 --   Weapons{ [weaponId] = { Copies = spare dupes, Star = 0..5, Pulled = total pulled } }
 --   Equipped, AutoEquip
@@ -16,6 +20,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local SessionStore = require(script.Parent:WaitForChild("SessionStore"))
+local SaveMigrations = require(script.Parent:WaitForChild("SaveMigrations"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local DataSync = Remotes:WaitForChild("DataSync")
 local GetData = Remotes:WaitForChild("GetData")
@@ -29,9 +35,17 @@ end)
 
 local DataService = {}
 local profiles = {} -- [player] = data
+local sessions -- SessionStore bound to `store` (nil when DataStores are unavailable)
+if store then
+	sessions = SessionStore.new({ store = store })
+end
+DataService.AUTOSAVE = 60 -- seconds; also refreshes the session lease (SessionStore.LEASE = 300)
+local saving = {}    -- [player] = true while a save is in flight
+local lost = {}      -- [player] = true once another session took the profile
+local Analytics      -- optional, set via DataService.SetAnalytics
 
 local DEFAULT = {
-	Version = 3,
+	Version = 4,
 	Logs = 0,
 	Kills = 0,
 	Levels = {},
@@ -72,6 +86,13 @@ local DEFAULT = {
 	UnlockedIslands = { TimberHaven = true }, -- [islandId] = true
 	LastIsland = "TimberHaven",
 	IslandProgress = {}, -- [islandId] = { ... } reserved for P1c objectives
+	-- v4 (M0) additions; see SaveMigrations
+	WeaponItems = {}, -- future per-item weapon identity (empty until M6)
+	RetiredWeapons = {}, -- catalog-missing weapons parked instead of deleted
+	CrateOrigins = { Earned = 0, Paid = 0, Legacy = 0 }, -- origin of FreeCrates
+	Analytics = { Onboard = {}, Prog = {} }, -- analytics bookkeeping, no personal data
+	Collections = {}, -- reserved for later collectible systems
+	_Meta = { Applied = { ["4"] = true } },
 }
 
 local function deepCopy(t)
@@ -102,7 +123,9 @@ end
 function DataService.Snapshot(data)
 	local snap = {}
 	for k, v in pairs(data) do
-		if k ~= "Purchases" then snap[k] = deepCopy(v) end
+		if k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" then
+			snap[k] = deepCopy(v)
+		end
 	end
 	return snap
 end
@@ -309,6 +332,70 @@ function DataService.AddKill(player)
 end
 
 --------------------------------------------------------------------
+-- Free Trait Crates with origin tracking (M0-D)
+--   FreeCrates stays the total the UI shows. CrateOrigins splits it into
+--   Earned (gameplay), Paid (bought with Robux / paid entitlements) and Legacy
+--   (owned before v4, origin unknown). Code that adds crates directly to
+--   FreeCrates (quests, achievements, codes, Treant) is a free source, so any
+--   unclassified surplus is counted as Earned.
+--------------------------------------------------------------------
+local function normalizeCrates(d)
+	d.FreeCrates = math.max(0, math.floor(tonumber(d.FreeCrates) or 0))
+	local o = d.CrateOrigins
+	if type(o) ~= "table" then o = { Earned = 0, Paid = 0, Legacy = d.FreeCrates } d.CrateOrigins = o end
+	o.Earned = math.max(0, math.floor(tonumber(o.Earned) or 0))
+	o.Paid = math.max(0, math.floor(tonumber(o.Paid) or 0))
+	o.Legacy = math.max(0, math.floor(tonumber(o.Legacy) or 0))
+	local classified = o.Earned + o.Paid + o.Legacy
+	if d.FreeCrates > classified then
+		o.Earned += d.FreeCrates - classified
+	elseif d.FreeCrates < classified then
+		local over = classified - d.FreeCrates
+		for _, k in ipairs({ "Legacy", "Paid", "Earned" }) do
+			local take = math.min(over, o[k])
+			o[k] -= take
+			over -= take
+		end
+	end
+	return o
+end
+DataService.NormalizeCrates = normalizeCrates
+
+-- origin: "Earned" | "Paid"
+function DataService.AddCrates(player, n, origin)
+	local d = profiles[player]
+	n = math.floor(tonumber(n) or 0)
+	if not d or n <= 0 then return false end
+	local o = normalizeCrates(d)
+	o[origin == "Paid" and "Paid" or "Earned"] += n
+	d.FreeCrates += n
+	return true
+end
+
+-- Spend one free crate. allowPaid=false limits it to Earned crates.
+-- Returns ok, originUsed | false, reason
+local function spendCrateOn(d, allowPaid)
+	local o = normalizeCrates(d)
+	if d.FreeCrates < 1 then return false, "none" end
+	local order = allowPaid and { "Earned", "Legacy", "Paid" } or { "Earned" }
+	for _, k in ipairs(order) do
+		if o[k] > 0 then
+			o[k] -= 1
+			d.FreeCrates -= 1
+			return true, k
+		end
+	end
+	return false, "restricted"
+end
+DataService.SpendCrateOn = spendCrateOn -- pure version used by tests
+
+function DataService.SpendCrate(player, allowPaid)
+	local d = profiles[player]
+	if not d then return false, "Loading..." end
+	return spendCrateOn(d, allowPaid)
+end
+
+--------------------------------------------------------------------
 -- Weapons, stars, equip
 --------------------------------------------------------------------
 local function weaponPower(id, entry)
@@ -467,27 +554,41 @@ function DataService.SetLevel(player, upgradeId, level)
 end
 
 --------------------------------------------------------------------
--- Load / save
+-- Load / save (M0-A, M0-B)
+--   * Load acquires the session lock (SessionStore.Acquire). If the profile
+--     is locked by a live server, unreadable, or the DataStore is down, the
+--     player is KICKED with a clear message (fail closed). No default profile
+--     is ever created for an existing player whose data could not be read.
+--   * v3 -> v4: a one-time backup of the untouched v3 record is written to
+--     "bk3_p_<UserId>" and read back before the migrated profile can be saved.
+--   * Save writes only while this server owns the session; if another session
+--     took it over, this server stops saving and kicks the player.
 --------------------------------------------------------------------
-function DataService.Load(player)
-	local data, loadFailed
-	if store then
-		for attempt = 1, 3 do
-			local ok, res = pcall(function()
-				return store:GetAsync("p_" .. player.UserId)
-			end)
-			if ok then
-				data = res
-				loadFailed = false
-				break
-			end
-			loadFailed = true
-			if RunService:IsStudio() then break end -- Studio API access off: don't stall
-			task.wait(1)
-		end
-	end
-	if type(data) ~= "table" then data = deepCopy(DEFAULT) end
-	-- migrate old saves: Coins -> Logs
+local function profileKey(player) return "p_" .. player.UserId end
+local function backupKey(player) return "bk3_p_" .. player.UserId end
+
+local function kick(player, msg)
+	if player.Parent then player:Kick(msg) end
+end
+
+local MSG_LOCKED = "Your Blade Forest data is still open in another server. Please rejoin in a minute."
+local MSG_DOWN = "Roblox data services are not responding, so your progress could not be loaded safely. Please rejoin shortly."
+local MSG_CORRUPT = "Your save could not be read. It has not been changed. Please contact the developer."
+local MSG_MIGRATE = "Your save could not be upgraded safely. It has not been changed. Please rejoin shortly."
+local MSG_LOST = "Your Blade Forest data was opened in another server. Please rejoin."
+
+local function encodeEqual(a, b)
+	local HttpService = game:GetService("HttpService")
+	local ok1, ea = pcall(HttpService.JSONEncode, HttpService, a)
+	local ok2, eb = pcall(HttpService.JSONEncode, HttpService, b)
+	if not (ok1 and ok2 and #ea == #eb) then return false end
+	-- spot-check the fields that matter most
+	return a.Logs == b.Logs and a.Souls == b.Souls and a.Version == b.Version and a.Rebirths == b.Rebirths
+end
+
+-- finishes building a profile table into the in-memory format
+local function prepare(data)
+	-- migrate old saves: Coins -> Logs (v1/v2)
 	if data.Coins ~= nil then
 		data.Logs = (data.Logs or 0) + data.Coins
 		data.Coins = nil
@@ -504,17 +605,58 @@ function DataService.Load(player)
 			data.LastIsland = Config.HomeIsland or "TimberHaven"
 		end
 	end
-	-- never let a failed load overwrite the real save
-	data._NoSave = loadFailed or nil
-
-	-- drop weapons that no longer exist in the catalog
-	for id in pairs(data.Weapons) do
-		if not Config.WeaponById[id] then data.Weapons[id] = nil end
+	-- weapons that no longer exist in the catalog are parked, not deleted
+	for id, entry in pairs(data.Weapons) do
+		if not Config.WeaponById[id] then
+			data.RetiredWeapons[id] = entry
+			data.Weapons[id] = nil
+		end
+	end
+	-- a parked weapon that is back in the catalog returns to the inventory
+	for id, entry in pairs(data.RetiredWeapons) do
+		if Config.WeaponById[id] and not data.Weapons[id] then
+			data.Weapons[id] = entry
+			data.RetiredWeapons[id] = nil
+		end
 	end
 	if not data.Weapons[Config.StarterWeapon] then
 		data.Weapons[Config.StarterWeapon] = { Copies = 0, Star = 0, Pulled = 1 }
 	end
+	normalizeCrates(data)
+	return data
+end
 
+-- Loads and migrates a raw record. Returns ok, data | false, kickMessage
+-- ss: optional SessionStore override (tests); defaults to the live one
+function DataService.BuildProfile(raw, player, ss)
+	local sessions = ss or sessions
+	if raw == nil then
+		local ok, fresh = SaveMigrations.Migrate(deepCopy(DEFAULT))
+		if not ok then return false, MSG_MIGRATE end
+		fresh.Analytics = { Onboard = {}, Prog = {} } -- new player: onboarding funnel applies
+		return true, prepare(fresh), "new"
+	end
+	local needs = (tonumber(raw.Version) or 0) < SaveMigrations.CURRENT
+		or not (type(raw._Meta) == "table" and type(raw._Meta.Applied) == "table" and raw._Meta.Applied[tostring(SaveMigrations.CURRENT)])
+	if needs and sessions and player then
+		-- one-time, read-back-verified backup of the untouched pre-v4 record
+		local original = deepCopy(raw)
+		original._Session = nil
+		local st, stored = sessions:WriteOnce(backupKey(player), { SavedAt = os.time(), FromVersion = raw.Version, Profile = original })
+		if st == "error" then return false, MSG_DOWN end
+		local rs, readBack = sessions:Read(backupKey(player))
+		if rs ~= "ok" or type(readBack) ~= "table" or type(readBack.Profile) ~= "table" then return false, MSG_DOWN end
+		if st == "written" and not encodeEqual(readBack.Profile, original) then return false, MSG_MIGRATE end
+	end
+	local ok, migrated = SaveMigrations.Migrate(raw)
+	if not ok then
+		warn("[DataService] migration failed:", migrated)
+		return false, MSG_MIGRATE
+	end
+	return true, prepare(migrated), needs and "migrated" or "current"
+end
+
+local function finishLoad(player, data)
 	if not player.Parent then return end
 	profiles[player] = data
 
@@ -544,33 +686,136 @@ function DataService.Load(player)
 	DataService.Sync(player)
 end
 
-function DataService.Save(player)
-	local d = profiles[player]
-	if not d or not store or d._NoSave then return end
-	local copy = deepCopy(d)
-	copy._NoSave = nil
-	pcall(function()
-		store:SetAsync("p_" .. player.UserId, copy)
-	end)
+function DataService.Load(player)
+	if not sessions then
+		if RunService:IsStudio() then
+			-- Studio with API access off: play on a throwaway profile that is never saved
+			warn("[DataService] DataStores unavailable in Studio: using an unsaved test profile")
+			local ok, data = DataService.BuildProfile(nil, nil)
+			if ok then
+				data._NoSave = true
+				finishLoad(player, data)
+			end
+			return
+		end
+		return kick(player, MSG_DOWN)
+	end
+	local status, raw = sessions:Acquire(profileKey(player))
+	if not player.Parent then
+		-- left while loading: release the lock we may have just taken
+		if status == "ok" then
+			task.spawn(function()
+				local base = raw or {}
+				sessions:Write(profileKey(player), base, true)
+			end)
+		end
+		return
+	end
+	if status == "locked" then return kick(player, MSG_LOCKED) end
+	if status == "corrupt" then return kick(player, MSG_CORRUPT) end
+	if status ~= "ok" then return kick(player, MSG_DOWN) end
+
+	local ok, data, how = DataService.BuildProfile(raw, player)
+	if not ok then
+		-- release the lock without writing anything new
+		task.spawn(function()
+			if raw then sessions:Write(profileKey(player), raw, true) else
+				sessions:Write(profileKey(player), {}, true)
+			end
+		end)
+		return kick(player, data)
+	end
+	player:SetAttribute("SaveFormat", how) -- "new" | "migrated" | "current" (diagnostics)
+	finishLoad(player, data)
 end
 
-Players.PlayerRemoving:Connect(function(player)
-	DataService.Save(player)
-	profiles[player] = nil
-end)
-
-game:BindToClose(function()
-	local threads = {}
-	for _, p in ipairs(Players:GetPlayers()) do
-		table.insert(threads, task.spawn(DataService.Save, p))
+-- Saves now. release=true also releases the session lock.
+-- Returns true only when the write was confirmed by the DataStore.
+function DataService.SaveNow(player, release)
+	local d = profiles[player]
+	if not d or not sessions or d._NoSave or lost[player] then return false end
+	local t = os.clock()
+	while saving[player] and os.clock() - t < 30 do task.wait(0.1) end
+	if lost[player] then return false end
+	saving[player] = true
+	local copy = deepCopy(d)
+	copy._NoSave = nil
+	local status, err = sessions:Write(profileKey(player), copy, release)
+	saving[player] = nil
+	if status == "ok" then
+		return true
 	end
-	task.wait(2)
+	if status == "lost" then
+		lost[player] = true
+		warn("[DataService] session lost for", player.UserId, "- this server will not save again")
+		if Analytics then pcall(Analytics.SaveFailed, player, "SessionLost") end
+		kick(player, MSG_LOST)
+	else
+		warn("[DataService] save failed for", player.UserId, err)
+		if Analytics then pcall(Analytics.SaveFailed, player, "Error") end
+	end
+	return false
+end
+
+function DataService.Save(player)
+	return DataService.SaveNow(player, false)
+end
+
+-- true while this server is the authoritative owner of the player's profile
+function DataService.IsActive(player)
+	return profiles[player] ~= nil and not lost[player] and player:GetAttribute("Loaded") == true
+end
+
+function DataService.CanPersist(player)
+	local d = profiles[player]
+	return d ~= nil and sessions ~= nil and not d._NoSave and not lost[player]
+end
+
+function DataService.SetAnalytics(a) Analytics = a end
+
+local releasing = {}
+local function releasePlayer(player)
+	if releasing[player] then return end
+	releasing[player] = true
+	if Analytics then pcall(Analytics.OnLeaving, player) end
+	if profiles[player] then
+		local ok = DataService.SaveNow(player, true)
+		if not ok and not lost[player] and DataService.CanPersist(player) then
+			-- one more attempt; if it still fails the lease expires after SessionStore.LEASE
+			task.wait(2)
+			DataService.SaveNow(player, true)
+		end
+	end
+	profiles[player] = nil
+	lost[player] = nil
+	releasing[player] = nil
+end
+
+Players.PlayerRemoving:Connect(releasePlayer)
+
+-- Shutdown: release every profile in parallel, bounded to 25 s
+game:BindToClose(function()
+	local pending = 0
+	for _, p in ipairs(Players:GetPlayers()) do
+		pending += 1
+		task.spawn(function()
+			pcall(releasePlayer, p)
+			pending -= 1
+		end)
+	end
+	local t = os.clock()
+	-- wait for our own threads AND any release already started by PlayerRemoving
+	while (pending > 0 or next(profiles) ~= nil) and os.clock() - t < 25 do task.wait(0.1) end
+	if pending > 0 or next(profiles) ~= nil then warn("[DataService] shutdown: some saves did not finish in 25 s (locks expire after SessionStore.LEASE)") end
 end)
 
+-- Autosave every AUTOSAVE seconds (also refreshes the session lease)
 task.spawn(function()
 	while true do
-		task.wait(120)
-		for _, p in ipairs(Players:GetPlayers()) do task.spawn(DataService.Save, p) end
+		task.wait(DataService.AUTOSAVE)
+		for _, p in ipairs(Players:GetPlayers()) do
+			if profiles[p] and not saving[p] then task.spawn(DataService.Save, p) end
+		end
 	end
 end)
 

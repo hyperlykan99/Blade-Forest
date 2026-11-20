@@ -2,7 +2,7 @@
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
 > This is a shared, human-readable status page, not a live connection or an automatic lock.
-> Last documented snapshot: **2026-11-19 22:00 PST** (Claude, end of P1b.2r camera visibility fix). Written on branch `p1b2r/camera-visibility-fix` (not merged to `main`). **Re-verify Studio before editing.**
+> Last documented snapshot: **2026-11-20 03:30 PST** (Claude, end of M0 Foundations). Written on branch `m0/foundations` (not merged to `main`). **Re-verify Studio before editing.**
 
 ## Quick dashboard
 
@@ -11,16 +11,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev:** **v18** (P1b.2r camera visibility fix; Studio-reported Team Create save, Open Cloud `updateTime` 2026-11-20T05:52:14.927Z). Checkpoint **v16** (pre-camera-fix = v15 state). v17 unexplained (not saved by Claude; check Version History). Earlier: v15 P1b.2r result, v14 pre-redistribution checkpoint. **Production:** documented v48 (HUD handoff); version number not re-queried. Production `updateTime` 2026-11-18T15:12:30.520Z (re-checked 2026-11-19 21:53 PST) |
-| Active AI editor | **Claude** (M0 Foundations, claimed 2026-11-19 23:14 PST, branch `m0/foundations`) |
-| Last handoff author / time | **Claude / 2026-11-19 22:00 PST** (P1b.2r camera visibility fix) |
-| Last confirmed gameplay edit | **Dev place only:** v18, client-only `ChopEffects` LocalScript (canopy fade + label tiers). Before that v15 (tree positions). Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked 2026-11-19 21:53 PST) |
-| Current task | **M0 Foundations in progress** (owner-approved, M0 only). Dev checkpoint: v18 relabelled "M0 PRE-FOUNDATIONS". Script backups in `ServerStorage.M0Backups` |
-| Next action | Owner: review the camera fix (v18) and decide merge of `p1b2r/dense-forest` + `p1b2r/camera-visibility-fix`, and whether to do a private dev publish for iPhone testing. Still open: ~4x income in dense zones, B1 respawn effect/tag drift. **P1b.3 NOT authorized.** iPhone and two-player unverified |
-| Code source of truth | **Roblox dev place** (v18). Exported scripts are checksum-matched to Studio on `p1b2r/camera-visibility-fix` (ChopEffects 27331:1017905967; all others unchanged since `p1b2/crystal-wilds`). `main` does not yet contain `src/` changes (no merge approved) |
+| Most recent documented place version | **Dev:** **v23** "M0 FOUNDATIONS" (Team Create save, Open Cloud `updateTime` 2026-11-20T11:22:18.739Z). Checkpoint **v18** relabelled "M0 PRE-FOUNDATIONS". v19–v22 probably Team Create auto-saves of the M0 session (unverified); v17 still unexplained. **Production:** documented v48; not touched. Production `updateTime` last read 2026-11-19 21:53 PST (2026-11-18T15:12:30.520Z); re-read on 2026-11-20 was blocked by the permission classifier |
+| Active AI editor | **None** (Claude released the editor 2026-11-20 03:30 PST after M0) |
+| Last handoff author / time | **Claude / 2026-11-20 03:30 PST** (M0 Foundations) |
+| Last confirmed gameplay edit | **Dev place only:** v23, M0 server persistence/receipt/policy/analytics scripts plus quarantine of malicious imported scripts. No gameplay tuning changed. Production: none since the P0 baseline |
+| Current task | **M0 Foundations complete locally; awaiting owner review.** Results: `docs/m0/M0_FOUNDATIONS_RESULTS.md` |
+| Next action | Owner: review M0 results. Pending: (1) real cross-server lock test (≥50 cycles), (2) server-side purchase gate before any commerce, (3) keep or roll back the extra dev Logs from the smoke test (pre-M0 copy in `bk3_p_394034825`), (4) confirm v17/v19–v22 in Version History, (5) optional private dev publish for iPhone/2-device. **M1 NOT authorized.** |
+| Code source of truth | **Roblox dev place** (v23). Branch `m0/foundations` holds checksum-matched exports of all changed and new scripts (see results §2). `main` does not contain `src/` changes |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Owner decisions pending: camera-fix review, merge strategy for the P1b.2r branches, private dev publish for iPhone, B1 respawn effect/tag drift, dense-zone income. Still open: owner-managed commerce/API setup; suspicious unused imported scripts awaiting review. iPhone and two-player testing unverified |
+| Blockers | Owner review of M0. Cross-server locking, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
 
 ## Who is responsible
 

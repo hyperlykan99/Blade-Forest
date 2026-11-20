@@ -2,6 +2,18 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-20 — M0 Foundations (DEV PLACE ONLY, v23)
+- Checkpoint **v18** "M0 PRE-FOUNDATIONS"; result **v23**. Branch `m0/foundations` (not merged).
+- Persistence: session-locked saves (`SessionStore`, UpdateAsync lease 300 s), fail-closed loading, bounded retries and a bounded shutdown save.
+- Save v4: numbered idempotent migrations (`SaveMigrations`) plus a read-back-verified one-time v3 backup (`bk3_p_<UserId>`). Fields added: WeaponItems, RetiredWeapons, CrateOrigins, Analytics, Collections, `_Meta`.
+- Receipts (`ReceiptProcessor`): granted only after a confirmed atomic save; purchase ids kept permanently.
+- Paid random items (`PaidRandomPolicy`): PolicyService checks with crate-origin tracking. The Lucky Crates effect is off for restricted players.
+- Analytics baseline (`Analytics`, `AnalyticsBoot`).
+- Security: 37 malicious imported root scripts (95 instances) destroyed and 53 unused imported scripts disabled. Manifest in `docs/m0/M0_SECURITY_MANIFEST.tsv`.
+- Tests: 107/107 unit tests plus live Studio checks. Not run: 50 cross-server cycles, live receipts, iPhone/two-player.
+- Dev save: migrated to v4; the smoke test's auto-chop raised Logs 6,255 → 836,279 (documented, not reverted).
+- Not published; production untouched. Results: `docs/m0/M0_FOUNDATIONS_RESULTS.md`.
+
 ## 2026-11-19 — P1b.2r camera visibility fix, Option C on top of Option A (DEV PLACE ONLY, v18)
 - Checkpoint **v16**; result **v18** (v17 unexplained, not saved by Claude). Branch `p1b2r/camera-visibility-fix` (not merged).
 - Only the client `ChopEffects` was changed (18500:3640422855 → 27331:1017905967).

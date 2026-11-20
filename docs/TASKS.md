@@ -8,8 +8,16 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [x] Scripts exported from the backup (branch `p0/script-export`). [Claude]
 - [ ] Commit `src/` and verify that `rojo serve` round-trips with no diffs. [Claude]
 
+## M0 Foundations (dev v23, branch `m0/foundations`)
+- [x] Session-locked persistence, v4 migration plus backup, receipts, paid-random policy, analytics baseline. [Claude]
+- [ ] Owner review of `docs/m0/M0_FOUNDATIONS_RESULTS.md`. [Owner]
+- [ ] Real cross-server lock test (≥50 cycles on two live servers). [Owner/Claude]
+- [ ] Server-side purchase gate before any product goes live. [Claude, after approval]
+- [ ] iPhone and two-device validation. [Owner]
+
 ## Security
-- [ ] Delete the unused `ServerStorage.*Imports` and `BoardTemplate` folders, or strip their scripts. They contain suspected backdoor modules (see AI_HANDOFF). Waiting for owner approval. [Claude]
+- [x] Quarantine the malicious scripts in `ServerStorage.*Imports` / `BoardTemplate` (M0-E, dev v23): 37 roots destroyed, 53 disabled, models kept. Manifest in `docs/m0/M0_SECURITY_MANIFEST.tsv`. [Claude]
+- [ ] Decide whether to delete the now-inert import folders entirely. [Owner]
 
 ## M2 island plan (from M2_TECHNICAL_VALIDATION.md; construction NOT approved)
 - [x] Read-only map survey, island placement proposal, streaming and mobile review, system dependency list, 200-seed island simulation. [Claude]

@@ -14,6 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local NotifyRemote = Remotes:WaitForChild("Notify")
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local Policy = require(script.Parent:WaitForChild("PaidRandomPolicy")) -- M0-D server-side eligibility
 local Progress = require(script.Parent:WaitForChild("Progress"))
 
 local Extras = Remotes:FindFirstChild("Extras") or Instance.new("RemoteFunction")
@@ -53,6 +54,8 @@ Extras.OnServerInvoke = function(player, action, a)
 
 	if action == "Hatch" then
 		local n = (a == 3) and 3 or 1
+		local allowed, msg = Policy.CheckCurrencySpend(player, "PetEgg_Logs")
+		if not allowed then return false, msg end
 		local cost = Config.GetEggCost(d.BestArea) * n
 		if not DataService.SpendCoins(player, cost) then return false, "Need " .. Config.FormatNumber(cost) .. " Logs" end
 		local results = {}
