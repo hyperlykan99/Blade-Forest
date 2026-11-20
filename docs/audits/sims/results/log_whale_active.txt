@@ -1,0 +1,7 @@
+mutation E[LogMult]=1.1565 E[HealthMult]=1.0414; event avg Logs x1.0775 Luck x1.1411
+0.5 earned ['2.84e+09', '5.9e+09', '1.48e+10'] inc/h ['9.21e+09', '3.18e+10', '6.53e+10'] pow ['2104', '3785', '8476'] reb [1.0, 4.0, 6.0] area {'CrystalCanyon': 1.0} trait ForestWarden
+2 earned ['6.76e+10', '1.2e+11', '1.77e+11'] inc/h ['5.39e+10', '9.36e+10', '1.34e+11'] pow ['5818', '8476', '14572'] reb [9.0, 10.0, 10.0] area {'CrystalCanyon': 0.85, 'FrostPeaks': 0.15} trait ForestWarden
+8 earned ['4.63e+11', '7.79e+11', '1.14e+12'] inc/h ['7.2e+10', '1.26e+11', '1.84e+11'] pow ['10575', '14572', '19905'] reb [11.0, 11.0, 12.0] area {'CrystalCanyon': 0.275, 'FrostPeaks': 0.725} trait ForestWarden
+24 earned ['1.89e+12', '3.01e+12', '4.45e+12'] inc/h ['9.55e+10', '1.55e+11', '2.42e+11'] pow ['14572', '19905', '22891'] reb [12.0, 13.0, 13.0] area {'FrostPeaks': 1.0} trait ForestWarden
+72 earned ['7.23e+12', '1.16e+13', '1.7e+13'] inc/h ['1.28e+11', '1.98e+11', '2.73e+11'] pow ['21818', '22891', '26525'] reb [13.9, 14.0, 14.0] area {'FrostPeaks': 1.0} trait ForestWarden
+200 earned ['2.8e+13', '4.45e+13', '6.13e+13'] inc/h ['1.78e+11', '2.86e+11', '3.73e+11'] pow ['31785', '40001', '40001'] reb [15.0, 15.0, 15.100000000000001] area {'FrostPeaks': 1.0} trait AncientRoot
