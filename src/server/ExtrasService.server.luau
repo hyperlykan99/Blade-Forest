@@ -16,6 +16,7 @@ local NotifyRemote = Remotes:WaitForChild("Notify")
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local Policy = require(script.Parent:WaitForChild("PaidRandomPolicy")) -- M0-D server-side eligibility
 local Progress = require(script.Parent:WaitForChild("Progress"))
+local BossRules = require(script.Parent:WaitForChild("BossRules")) -- M0.1 (M5)
 
 local Extras = Remotes:FindFirstChild("Extras") or Instance.new("RemoteFunction")
 Extras.Name = "Extras"
@@ -183,8 +184,13 @@ local function groundY(x, z)
 end
 
 local function spawnTreant()
-	local totalPower = 0
-	for _, p in ipairs(Players:GetPlayers()) do totalPower += (p:GetAttribute("Power") or 5) end
+	-- M0.1 (M5): only players near the Treant scale its health (not AFK players elsewhere)
+	local entries = {}
+	for _, p in ipairs(Players:GetPlayers()) do
+		local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+		table.insert(entries, { pos = root and root.Position, power = p:GetAttribute("Power") or 5 })
+	end
+	local _, totalPower = BossRules.InRange(entries, WB.Position, BossRules.TREANT_RANGE)
 	local hp = math.max(WB.MinHealth, math.floor(totalPower * WB.HealthPerPower))
 	local tpl = TreeModels:FindFirstChild("Grove_Legendary_1") or TreeModels:GetChildren()[1]
 	local m = tpl:Clone()
@@ -223,15 +229,22 @@ down.Event:Connect(function(m)
 	if m ~= current then return end
 	current = nil
 	workspace:SetAttribute("TreantAlive", false)
-	-- split rewards by damage share
-	local shares, total = {}, 0
+	-- split rewards by damage share. M0.1 (M5): a reward needs at least
+	-- BossRules.MIN_SHARE of the damage or MIN_HITS hits (no one-touch farming)
+	local shares, hits = {}, {}
 	for k, v in pairs(m:GetAttributes()) do
 		local uid = tonumber(k:match("^Dmg_(%d+)$") or "")
-		if uid then shares[uid] = v total += v end
+		if uid then shares[uid] = v end
+		local hid = tonumber(k:match("^Hits_(%d+)$") or "")
+		if hid then hits[hid] = v end
 	end
-	local ranked = {}
-	for uid, v in pairs(shares) do table.insert(ranked, { uid, v }) end
-	table.sort(ranked, function(x, y) return x[2] > y[2] end)
+	local ranked, ineligible, total = BossRules.Rank(shares, hits)
+	for _, r in ipairs(ineligible) do
+		local p = Players:GetPlayerByUserId(r[1])
+		if p then
+			NotifyRemote:FireClient(p, string.format("🌳 Treant chopped, but you only did %d%% of the damage - help a bit longer next time for rewards!", math.floor(r[3] * 100 + 0.5)), "death")
+		end
+	end
 	for i, r in ipairs(ranked) do
 		local p = Players:GetPlayerByUserId(r[1])
 		local d = p and DataService.Get(p)

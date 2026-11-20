@@ -27,6 +27,17 @@ local EFFECT_RANGE = 220 -- only send hit/shatter effects to players this close
 -- All saving/loading lives in DataService (ServerScriptService.DataService)
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local Progress = require(script.Parent:WaitForChild("Progress"))
+-- M0.1 (H1): server-side movement sanity before any blade hit is credited
+local guard = require(script.Parent:WaitForChild("MovementGuard")).shared
+local violationLog = {} -- [player] = os.clock() of the last warning (throttle)
+guard.onViolation = function(player, dist, allowed, dt)
+	if typeof(player) ~= "Instance" then return end
+	player:SetAttribute("MoveViolations", (player:GetAttribute("MoveViolations") or 0) + 1)
+	if os.clock() - (violationLog[player] or 0) > 10 then
+		violationLog[player] = os.clock()
+		warn(string.format("[MovementGuard] %d moved %.0f studs in %.2fs (allowed %.0f): chopping credit paused", player.UserId, dist, dt, allowed))
+	end
+end
 
 local function addCoins(player, amount, pos)
 	return DataService.AddCoins(player, amount, pos)
@@ -227,6 +238,7 @@ end
 local lastAttacker = setmetatable({}, { __mode = "k" }) -- [humanoid] = {player, time}
 
 local function onCharacter(player, char)
+	guard:Reset(player) -- respawn: new baseline, never a violation
 	local hum = char:WaitForChild("Humanoid")
 	-- debris chunks pass through players
 	for _, d in ipairs(char:GetDescendants()) do
@@ -260,6 +272,10 @@ end
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(char) onCharacter(player, char) end)
 	DataService.Load(player)
+end)
+Players.PlayerRemoving:Connect(function(player)
+	guard:Remove(player)
+	violationLog[player] = nil
 end)
 for _, p in ipairs(Players:GetPlayers()) do
 	p.CharacterAdded:Connect(function(char) onCharacter(p, char) end)
@@ -344,6 +360,9 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 		-- remember each player's share of the damage (rewards are split by it)
 		local key = "Dmg_" .. attackerPlayer.UserId
 		target:SetAttribute(key, (target:GetAttribute(key) or 0) + math.min(damage, hp))
+		-- M0.1 (M5): hit count, for the minimum-contribution rule
+		local hk = "Hits_" .. attackerPlayer.UserId
+		target:SetAttribute(hk, (target:GetAttribute(hk) or 0) + 1)
 	end
 	hp -= damage
 	target:SetAttribute("Health", hp)
@@ -546,8 +565,11 @@ RunService.Heartbeat:Connect(function(dt)
 		local char = p.Character
 		local root = char and char:FindFirstChild("HumanoidRootPart")
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
-		if root and hum and hum.Health > 0 and p:GetAttribute("Loaded") then
-			processWielder(p, char, root, now, filterChars)
+		if root and hum and hum.Health > 0 and p:GetAttribute("Loaded") and not p:GetAttribute("Handoff") then
+			-- M0.1: H1 movement sanity; M1 no credit while an AFK handoff is in progress
+			if guard:Check(p, root.Position, hum.WalkSpeed, os.clock()) then
+				processWielder(p, char, root, now, filterChars)
+			end
 		end
 	end
 

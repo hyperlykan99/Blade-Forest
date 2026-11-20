@@ -2,6 +2,18 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-20 — M0.1 Foundations Corrections (DEV PLACE ONLY, v29)
+- Checkpoint **v23** "M0.1 PRE-CORRECTIONS"; result **v29**. Branch `m0.1/foundations-corrections` (not merged). Script backups in `ServerStorage.M01Backups`.
+- H2: per-player serialized writes (`ProfileWriter`) plus a persistent monotonic `_WriteSeq` fence in `SessionStore.Write`; older snapshots can no longer overwrite newer data or confirmed purchases.
+- H3: leaving during first-time migration/backup releases the lock without writing (`left_during_build`).
+- H1: `MovementGuard` pauses chopping credit on impossible movement (server WalkSpeed × 1.35); island travel, push-back and respawn exempt. Join-lag false positives found in testing and fixed (teleport path tracking).
+- M1: AFK hop = confirmed save-and-release, teleport, resume on failure; 5-min minimum interval; client session stats sanitised, display only.
+- H6: playtime-gift visit stored in the profile; rejoin within 30 min resumes; max 3 paying visits per UTC day.
+- M5: Treant/Blade King HP count only nearby players; Treant rewards need ≥2% damage or ≥12 hits. Reward amounts unchanged.
+- Tests: M0.1 64/64, M0 regression 107/107, real-DataStore locks 11/11, plus live single-client checks. Not run: cross-server, real teleport, real receipts, two-player, iPhone.
+- Dev save: one 5-min gift claimed in testing (+8,000,000 Logs by the unchanged formula); `LastIsland` ended as TimberHaven (pre-existing join-lag bug, documented).
+- Not published; production untouched. Results: `docs/m0/M01_FOUNDATIONS_CORRECTIONS_RESULTS.md`.
+
 ## 2026-11-20 — M0 Foundations (DEV PLACE ONLY, v23)
 - Checkpoint **v18** "M0 PRE-FOUNDATIONS"; result **v23**. Branch `m0/foundations` (not merged).
 - Persistence: session-locked saves (`SessionStore`, UpdateAsync lease 300 s), fail-closed loading, bounded retries and a bounded shutdown save.

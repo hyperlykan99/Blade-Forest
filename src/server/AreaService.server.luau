@@ -7,6 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local guard = require(script.Parent:WaitForChild("MovementGuard")).shared -- M0.1: sanctioned push-back
 local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Notify")
 
 local lastSafe = {}
@@ -24,6 +25,7 @@ while true do
 			if power < (area.RequiredPower or 0) then
 				-- not allowed here: send back
 				local back = lastSafe[player] or CFrame.new(0, 5, 16)
+				guard:Allow(player, 2, nil, back.Position, player.Character:GetPivot().Position) -- M0.1 (H1): server-sanctioned push-back
 				player.Character:PivotTo(back)
 				NotifyRemote:FireClient(player, string.format("🔒 %s needs %d Power", area.Name, area.RequiredPower), "death")
 			else

@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local Progress = require(script.Parent:WaitForChild("Progress"))
+local Gifts = require(script.Parent:WaitForChild("PlaytimeGifts")) -- M0.1 (H6): visit kept in the profile
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local NotifyRemote = Remotes:WaitForChild("Notify")
 local Meta = Remotes:FindFirstChild("Meta") or Instance.new("RemoteFunction")
@@ -26,23 +27,21 @@ local function applyPrefs(player, d)
 end
 
 --------------------------------------------------------------------
--- Session gifts (per server visit)
+-- Playtime gifts (M0.1, H6): progress lives in the profile (d.Playtime), so
+-- it survives AFK server hops and quick rejoins (see PlaytimeGifts).
+-- The client still reads SessionStart / GiftsClaimed attributes as before.
 --------------------------------------------------------------------
-local giftsClaimed = {} -- [player] = { [index] = true }
-local sessionStart = {}
-
 local function giftState(player)
-	local claimed = giftsClaimed[player] or {}
-	local elapsed = os.time() - (sessionStart[player] or os.time())
-	local ready = false
-	local parts = {}
-	for i, g in ipairs(Config.PlaytimeGifts) do
-		if claimed[i] then table.insert(parts, tostring(i))
-		elseif elapsed >= g.Minutes * 60 then ready = true end
-	end
-	player:SetAttribute("GiftsClaimed", table.concat(parts, ","))
 	local d = DataService.Get(player)
-	local dailyReady = d and d.Daily.LastDay < today()
+	if not d then return end
+	local pt = d.Playtime
+	local ready = false
+	for i in ipairs(Config.PlaytimeGifts) do
+		if Gifts.CanClaim(pt, i, Config.PlaytimeGifts) then ready = true end
+	end
+	player:SetAttribute("GiftsClaimed", Gifts.ClaimedList(pt, Config.PlaytimeGifts))
+	player:SetAttribute("SessionStart", workspace:GetServerTimeNow() - pt.Seconds)
+	local dailyReady = d.Daily.LastDay < today()
 	player:SetAttribute("DailyReady", dailyReady == true)
 	player:SetAttribute("GiftReady", ready or dailyReady == true)
 end
@@ -90,12 +89,10 @@ Meta.OnServerInvoke = function(player, action, a, b)
 		return true, d.Daily.Streak
 
 	elseif action == "ClaimGift" then
-		local g = Config.PlaytimeGifts[a]
+		local g = type(a) == "number" and Config.PlaytimeGifts[a] or nil
 		if not g then return false, "?" end
-		giftsClaimed[player] = giftsClaimed[player] or {}
-		if giftsClaimed[player][a] then return false, "Already claimed" end
-		if os.time() - (sessionStart[player] or os.time()) < g.Minutes * 60 then return false, "Not yet!" end
-		giftsClaimed[player][a] = true
+		local ok, why = Gifts.Claim(d.Playtime, a, Config.PlaytimeGifts)
+		if not ok then return false, why end
 		Progress.Grant(player, g, "Gift")
 		giftState(player)
 		return true
@@ -202,12 +199,12 @@ end
 -- Join
 --------------------------------------------------------------------
 local function onPlayer(player)
-	sessionStart[player] = os.time()
 	player:SetAttribute("SessionStart", workspace:GetServerTimeNow())
 	task.spawn(function()
 		while player.Parent and not player:GetAttribute("Loaded") do task.wait(0.25) end
 		local d = DataService.Get(player)
 		if not d then return end
+		Gifts.Begin(d.Playtime, os.time(), today()) -- resume the visit or start a new one
 		applyPrefs(player, d)
 		player:SetAttribute("Rebirths", d.Rebirths or 0)
 		questReady(player)
@@ -225,7 +222,9 @@ end
 Players.PlayerAdded:Connect(onPlayer)
 for _, p in ipairs(Players:GetPlayers()) do onPlayer(p) end
 Players.PlayerRemoving:Connect(function(p)
-	giftsClaimed[p], sessionStart[p], lastAction[p] = nil, nil, nil
+	lastAction[p] = nil
+	local d = DataService.Get(p)
+	if d and d.Playtime then d.Playtime.LastSeen = os.time() end
 end)
 
 -- play time + gift/quest badges, once a minute
@@ -236,6 +235,7 @@ task.spawn(function()
 			local d = DataService.Get(p)
 			if d then
 				d.Stats.PlaySeconds += 60
+				Gifts.Tick(d.Playtime, 60, os.time())
 				Progress.Add(p, "Minutes", 1)
 				giftState(p)
 				questReady(p)
@@ -288,7 +288,10 @@ if game:GetService("RunService"):IsStudio() then
 			for _, e in ipairs(Config.Events) do if e.Id == arg then task.spawn(startEvent, e) return true end end
 		end
 		if cmd == "SessionBack" then -- pretend everyone has played arg minutes
-			for p in pairs(sessionStart) do sessionStart[p] -= arg * 60 giftState(p) end
+			for _, p in ipairs(Players:GetPlayers()) do
+				local d = DataService.Get(p)
+				if d then Gifts.Tick(d.Playtime, arg * 60, os.time()) giftState(p) end
+			end
 			return true
 		end
 		return false

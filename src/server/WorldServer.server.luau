@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local BossRules = require(game:GetService("ServerScriptService"):WaitForChild("BossRules")) -- M0.1 (M5)
 local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes").Notify
 local Enemies = workspace:WaitForChild("Enemies")
 
@@ -323,7 +324,14 @@ local function spawnBoss()
 	local anims = defaultAnims()
 	model.Name = "Blade King"
 	local hum = model:FindFirstChildOfClass("Humanoid")
-	local hp = math.clamp(8000 + 3000 * #Players:GetPlayers(), 8000, 60000)
+	-- M0.1 (M5): scale by players near the arena, not everyone online (AFK players elsewhere)
+	local entries = {}
+	for _, p in ipairs(Players:GetPlayers()) do
+		local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+		table.insert(entries, { pos = root and root.Position })
+	end
+	local nearby = BossRules.InRange(entries, Config.ArenaCenter, BossRules.KING_RANGE)
+	local hp = math.clamp(8000 + 3000 * nearby, 8000, 60000)
 	hum.MaxHealth = hp
 	hum.Health = hp
 	hum.WalkSpeed = 11

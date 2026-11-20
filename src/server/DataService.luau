@@ -22,6 +22,7 @@ local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local SessionStore = require(script.Parent:WaitForChild("SessionStore"))
 local SaveMigrations = require(script.Parent:WaitForChild("SaveMigrations"))
+local ProfileWriter = require(script.Parent:WaitForChild("ProfileWriter")) -- M0.1 serialized, sequence-fenced saves
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local DataSync = Remotes:WaitForChild("DataSync")
 local GetData = Remotes:WaitForChild("GetData")
@@ -40,7 +41,7 @@ if store then
 	sessions = SessionStore.new({ store = store })
 end
 DataService.AUTOSAVE = 60 -- seconds; also refreshes the session lease (SessionStore.LEASE = 300)
-local saving = {}    -- [player] = true while a save is in flight
+local writers = {}   -- [player] = ProfileWriter (M0.1: one serialized writer per profile)
 local lost = {}      -- [player] = true once another session took the profile
 local Analytics      -- optional, set via DataService.SetAnalytics
 
@@ -92,6 +93,8 @@ local DEFAULT = {
 	CrateOrigins = { Earned = 0, Paid = 0, Legacy = 0 }, -- origin of FreeCrates
 	Analytics = { Onboard = {}, Prog = {} }, -- analytics bookkeeping, no personal data
 	Collections = {}, -- reserved for later collectible systems
+	-- M0.1 (H6): playtime-gift visit kept across server hops (see PlaytimeGifts)
+	Playtime = { Seconds = 0, Claimed = {}, LastSeen = 0, Day = 0, Visits = 0 },
 	_Meta = { Applied = { ["4"] = true } },
 }
 
@@ -123,7 +126,7 @@ end
 function DataService.Snapshot(data)
 	local snap = {}
 	for k, v in pairs(data) do
-		if k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" then
+		if k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" and k ~= "_WriteSeq" then
 			snap[k] = deepCopy(v)
 		end
 	end
@@ -686,7 +689,21 @@ local function finishLoad(player, data)
 	DataService.Sync(player)
 end
 
-function DataService.Load(player)
+-- Releases a lock this server just acquired WITHOUT changing the record:
+-- `raw` is the untouched record returned by Acquire (nil/empty for a new key).
+local function releaseUntouched(ss, player, raw)
+	task.spawn(function()
+		local st = ss:Write(profileKey(player), raw or {}, true)
+		if st ~= "ok" then
+			warn("[DataService] could not release untouched lock for", player.UserId, st, "- it expires after SessionStore.LEASE")
+		end
+	end)
+end
+
+-- ss: optional SessionStore override (M0.1 tests drive this with a mock store
+-- and a stand-in player table; in game it is always called with one argument)
+function DataService.Load(player, ss)
+	local sessions = ss or sessions
 	if not sessions then
 		if RunService:IsStudio() then
 			-- Studio with API access off: play on a throwaway profile that is never saved
@@ -700,59 +717,60 @@ function DataService.Load(player)
 		end
 		return kick(player, MSG_DOWN)
 	end
-	local status, raw = sessions:Acquire(profileKey(player))
+	local status, raw, info = sessions:Acquire(profileKey(player))
 	if not player.Parent then
 		-- left while loading: release the lock we may have just taken
-		if status == "ok" then
-			task.spawn(function()
-				local base = raw or {}
-				sessions:Write(profileKey(player), base, true)
-			end)
-		end
-		return
+		if status == "ok" then releaseUntouched(sessions, player, raw) end
+		return "left"
 	end
-	if status == "locked" then return kick(player, MSG_LOCKED) end
-	if status == "corrupt" then return kick(player, MSG_CORRUPT) end
-	if status ~= "ok" then return kick(player, MSG_DOWN) end
+	if status == "locked" then kick(player, MSG_LOCKED) return "locked" end
+	if status == "corrupt" then kick(player, MSG_CORRUPT) return "corrupt" end
+	if status ~= "ok" then kick(player, MSG_DOWN) return "error" end
 
-	local ok, data, how = DataService.BuildProfile(raw, player)
+	local ok, data, how = DataService.BuildProfile(raw, player, sessions)
 	if not ok then
 		-- release the lock without writing anything new
-		task.spawn(function()
-			if raw then sessions:Write(profileKey(player), raw, true) else
-				sessions:Write(profileKey(player), {}, true)
-			end
-		end)
-		return kick(player, data)
+		releaseUntouched(sessions, player, raw)
+		kick(player, data)
+		return "build_failed"
 	end
+	-- M0.1 (H3): BuildProfile yields while it writes the first-time migration
+	-- backup. If the player left meanwhile, PlayerRemoving has already run with
+	-- no profile to release, so release the lock here, writing back the
+	-- untouched original record (the migrated copy is discarded).
+	if not player.Parent then
+		releaseUntouched(sessions, player, raw)
+		return "left_during_build"
+	end
+	data._WriteSeq = info and info.Seq or tonumber(data._WriteSeq) or 0
+	if ss then return "ok", data end -- test drive: never register stand-in players
+	writers[player] = ProfileWriter.new({ sessions = sessions, key = profileKey(player), data = data, seq = data._WriteSeq })
 	player:SetAttribute("SaveFormat", how) -- "new" | "migrated" | "current" (diagnostics)
 	finishLoad(player, data)
+	return "ok"
 end
 
 -- Saves now. release=true also releases the session lock.
 -- Returns true only when the write was confirmed by the DataStore.
+-- M0.1 (H2): writes are serialized per profile by ProfileWriter (no overlap,
+-- each write copies the newest data when it starts) and fenced by a
+-- persistent write sequence in SessionStore.
 function DataService.SaveNow(player, release)
 	local d = profiles[player]
-	if not d or not sessions or d._NoSave or lost[player] then return false end
-	local t = os.clock()
-	while saving[player] and os.clock() - t < 30 do task.wait(0.1) end
-	if lost[player] then return false end
-	saving[player] = true
-	local copy = deepCopy(d)
-	copy._NoSave = nil
-	local status, err = sessions:Write(profileKey(player), copy, release)
-	saving[player] = nil
-	if status == "ok" then
-		return true
-	end
-	if status == "lost" then
-		lost[player] = true
-		warn("[DataService] session lost for", player.UserId, "- this server will not save again")
-		if Analytics then pcall(Analytics.SaveFailed, player, "SessionLost") end
-		kick(player, MSG_LOST)
-	else
-		warn("[DataService] save failed for", player.UserId, err)
-		if Analytics then pcall(Analytics.SaveFailed, player, "Error") end
+	local w = writers[player]
+	if not d or not w or d._NoSave or lost[player] then return false end
+	local ok, status, err = w:Save(release)
+	if ok then return true end
+	if status == "lost" or status == "stale" then
+		if not lost[player] then
+			lost[player] = true
+			warn("[DataService] session lost for", player.UserId, "(" .. status .. ") - this server will not save again")
+			if Analytics then pcall(Analytics.SaveFailed, player, status == "stale" and "Stale" or "SessionLost") end
+			kick(player, MSG_LOST)
+		end
+	elseif status ~= "released" then
+		warn("[DataService] save failed for", player.UserId, status, err)
+		if Analytics then pcall(Analytics.SaveFailed, player, status == "queue_timeout" and "QueueTimeout" or "Error") end
 	end
 	return false
 end
@@ -763,12 +781,54 @@ end
 
 -- true while this server is the authoritative owner of the player's profile
 function DataService.IsActive(player)
-	return profiles[player] ~= nil and not lost[player] and player:GetAttribute("Loaded") == true
+	local w = writers[player]
+	return profiles[player] ~= nil and w ~= nil and not w.lost and not w.released and not lost[player]
+		and player:GetAttribute("Loaded") == true
 end
 
 function DataService.CanPersist(player)
 	local d = profiles[player]
-	return d ~= nil and sessions ~= nil and not d._NoSave and not lost[player]
+	local w = writers[player]
+	return d ~= nil and w ~= nil and not d._NoSave and not lost[player] and not w.lost and not w.released
+end
+
+-- number of saves queued or in flight (autosave skips busy profiles)
+function DataService.PendingSaves(player)
+	local w = writers[player]
+	return w and w:Pending() or 0
+end
+
+--------------------------------------------------------------------
+-- M0.1 (M1) AFK server-hop handoff
+--   HandoffRelease: blocks rewards (attribute "Handoff"), makes a confirmed
+--   final save that releases the lock. Only then may the player teleport.
+--   ResumeAfterHandoff: teleport failed -> take the lock back if nobody wrote
+--   since; otherwise the player is kicked (their saved data is intact).
+--------------------------------------------------------------------
+function DataService.HandoffRelease(player)
+	local w = writers[player]
+	if not w or not DataService.CanPersist(player) then return false, "not_active" end
+	player:SetAttribute("Handoff", true)
+	local ok, status = DataService.SaveNow(player, true)
+	if not ok then
+		player:SetAttribute("Handoff", nil)
+		return false, status or "save_failed"
+	end
+	return true
+end
+
+function DataService.ResumeAfterHandoff(player)
+	local w = writers[player]
+	if not w or not w.released then return false, "not_released" end
+	local res = w:Resume()
+	if res == "ok" then
+		player:SetAttribute("Handoff", nil)
+		return true
+	end
+	warn("[DataService] could not resume after handoff for", player.UserId, res)
+	lost[player] = true
+	kick(player, res == "locked" and MSG_LOCKED or MSG_LOST)
+	return false, res
 end
 
 function DataService.SetAnalytics(a) Analytics = a end
@@ -778,7 +838,8 @@ local function releasePlayer(player)
 	if releasing[player] then return end
 	releasing[player] = true
 	if Analytics then pcall(Analytics.OnLeaving, player) end
-	if profiles[player] then
+	local w = writers[player]
+	if profiles[player] and w and not w.released then
 		local ok = DataService.SaveNow(player, true)
 		if not ok and not lost[player] and DataService.CanPersist(player) then
 			-- one more attempt; if it still fails the lease expires after SessionStore.LEASE
@@ -787,6 +848,7 @@ local function releasePlayer(player)
 		end
 	end
 	profiles[player] = nil
+	writers[player] = nil
 	lost[player] = nil
 	releasing[player] = nil
 end
@@ -814,7 +876,8 @@ task.spawn(function()
 	while true do
 		task.wait(DataService.AUTOSAVE)
 		for _, p in ipairs(Players:GetPlayers()) do
-			if profiles[p] and not saving[p] then task.spawn(DataService.Save, p) end
+			local w = writers[p]
+			if profiles[p] and w and w:Pending() == 0 and not w.released then task.spawn(DataService.Save, p) end
 		end
 	end
 end)

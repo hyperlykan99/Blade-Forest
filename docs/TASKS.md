@@ -15,6 +15,13 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [ ] Server-side purchase gate before any product goes live. [Claude, after approval]
 - [ ] iPhone and two-device validation. [Owner]
 
+## M0.1 Foundations Corrections (dev v29, branch `m0.1/foundations-corrections`)
+- [x] H2 serialized writes + write-sequence fence; H3 migration lock leak; H1 movement sanity; M1 AFK handoff; H6 playtime gifts in profile; M5 boss scaling/minimum contribution. [Claude]
+- [ ] Owner review of `docs/m0/M01_FOUNDATIONS_CORRECTIONS_RESULTS.md` (incl. the visit cap and the Treant eligibility rule). [Owner]
+- [ ] Decide on the pre-existing CurrentIsland/LastIsland join-lag bug (results §5). [Owner]
+- [ ] Real two-server validation: lock/fence races, AFK teleport hop, Treant/King with 2+ players. [Owner/Claude]
+- [ ] Real receipt test once products exist. [Owner/Claude]
+
 ## Security
 - [x] Quarantine the malicious scripts in `ServerStorage.*Imports` / `BoardTemplate` (M0-E, dev v23): 37 roots destroyed, 53 disabled, models kept. Manifest in `docs/m0/M0_SECURITY_MANIFEST.tsv`. [Claude]
 - [ ] Decide whether to delete the now-inert import folders entirely. [Owner]

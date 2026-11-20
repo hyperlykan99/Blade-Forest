@@ -5,7 +5,7 @@
 -- before (v3 servers simply ignore the extra field).
 --
 --   Acquire(key)  -> "ok", data | "locked", info | "corrupt" | "error", err
---   Write(key, data, release) -> "ok" | "lost" | "error", err
+--   Write(key, data, release, seq) -> "ok" | "lost" | "stale" | "error", err
 --
 -- Rules
 --   * Every read/write goes through UpdateAsync, so the lock check and the
@@ -16,6 +16,12 @@
 --     taken over. The old owner's next write then sees a foreign session and
 --     returns "lost": it never overwrites the newer data.
 --   * Release clears `_Session` in the same atomic write as the final save.
+--   * M0.1 (H2) write-sequence fence: every profile write may carry a
+--     monotonically increasing `seq`, persisted in the record as `_WriteSeq`.
+--     A write whose seq is LOWER than the stored one is refused ("stale"), so
+--     an older snapshot can never overwrite a newer one, even across servers
+--     or after retries. An equal seq is accepted (idempotent retry of the same
+--     write). Writes without a seq keep the stored `_WriteSeq` unchanged.
 --   * Transient errors retry with bounded exponential backoff. Nothing here
 --     ever writes a default/empty profile over an existing one.
 --
@@ -118,8 +124,13 @@ function SessionStore:Acquire(key)
 		end)
 		if not ok then return "error", err end
 		if status == "ok" then
-			data._Session = nil
-			if info.New or next(data) == nil then data = nil end
+			data._Session = nil -- `_WriteSeq` stays so the caller continues the sequence
+			-- M0.1: the stored write sequence, so a caller starting from a new/empty
+			-- record continues the sequence instead of being fenced as "stale"
+			info.Seq = tonumber(data._WriteSeq) or 0
+			local hasContent = false
+			for k in pairs(data) do if k ~= "_WriteSeq" then hasContent = true break end end
+			if info.New or not hasContent then data = nil end
 			if info.TookOverStale then
 				self.log("took over stale session for " .. key .. " (previous job " .. tostring(info.Previous and info.Previous.Job) .. ")")
 			end
@@ -137,10 +148,13 @@ end
 
 -- Write `data` for `key` only while this session still owns it.
 -- release = true clears the lock in the same atomic write.
---   "ok" | "lost" (another session owns the key; nothing written) | "error", err
-function SessionStore:Write(key, data, release)
+-- seq (optional, M0.1): monotonic write number; refused if lower than stored.
+--   "ok" | "lost" (another session owns the key; nothing written)
+--   | "stale" (a newer write already landed; nothing written) | "error", err
+function SessionStore:Write(key, data, release, seq)
 	local payload = deepCopy(data)
 	payload._Session = nil
+	payload._WriteSeq = nil
 	local okSize, encoded = pcall(HttpService.JSONEncode, HttpService, payload)
 	if not okSize then return "error", "profile is not JSON-encodable: " .. tostring(encoded) end
 	if #encoded > SessionStore.MAX_BYTES then return "error", "profile too large: " .. #encoded .. " bytes" end
@@ -160,7 +174,14 @@ function SessionStore:Write(key, data, release)
 				status = "lost"
 				return nil
 			end
+			local stored = tonumber(old._WriteSeq) or 0
+			if seq ~= nil and seq < stored then
+				-- an older snapshot arriving after a newer one: refuse (H2 fence)
+				status = "stale"
+				return nil
+			end
 			local rec = deepCopy(payload)
+			rec._WriteSeq = (seq ~= nil) and seq or old._WriteSeq
 			rec._Session = (not release) and self:_stamp(now) or nil
 			status = "ok"
 			return rec

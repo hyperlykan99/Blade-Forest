@@ -13,6 +13,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local guard = require(script.Parent:WaitForChild("MovementGuard")).shared -- M0.1: sanctioned teleports
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local NotifyRemote = Remotes:WaitForChild("Notify")
 
@@ -110,6 +111,7 @@ local function place(player, isl)
 	if player.Character ~= char or not root.Parent or hum.Health <= 0 then return false, "Character changed during travel" end
 	-- M-1: choose the landing slot and move in one step; nothing from here to PivotTo yields
 	local cf, slot = freeSpot(isl, player)
+	guard:Allow(player, 3, nil, cf.Position, root.Position) -- M0.1 (H1): server-sanctioned teleport to cf
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
 	char:PivotTo(cf)

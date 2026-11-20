@@ -2,7 +2,7 @@
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
 > This is a shared, human-readable status page, not a live connection or an automatic lock.
-> Last documented snapshot: **2026-11-20 03:30 PST** (Claude, end of M0 Foundations). Written on branch `m0/foundations` (not merged to `main`). **Re-verify Studio before editing.**
+> Last documented snapshot: **2026-11-20 04:50 PST** (Claude, end of M0.1 Foundations Corrections). Written on branch `m0.1/foundations-corrections` (based on `m0/foundations`; not merged to `main`). **Re-verify Studio before editing.**
 
 ## Quick dashboard
 
@@ -11,16 +11,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev:** **v23** "M0 FOUNDATIONS" (Team Create save, Open Cloud `updateTime` 2026-11-20T11:22:18.739Z). Checkpoint **v18** relabelled "M0 PRE-FOUNDATIONS". v19–v22 probably Team Create auto-saves of the M0 session (unverified); v17 still unexplained. **Production:** documented v48; not touched. Production `updateTime` last read 2026-11-19 21:53 PST (2026-11-18T15:12:30.520Z); re-read on 2026-11-20 was blocked by the permission classifier |
-| Active AI editor | **Claude** (M0.1 Foundations Corrections, claimed 2026-11-20 04:15 PST, branch `m0.1/foundations-corrections`) |
-| Last handoff author / time | **Claude / 2026-11-20 03:30 PST** (M0 Foundations) |
-| Last confirmed gameplay edit | **Dev place only:** v23, M0 server persistence/receipt/policy/analytics scripts plus quarantine of malicious imported scripts. No gameplay tuning changed. Production: none since the P0 baseline |
-| Current task | **M0.1 corrections in progress** (H2, H3, H1, M1, H6, M5; owner-approved, dev place only). Checkpoint: dev v23 relabelled "M0.1 PRE-CORRECTIONS"; script backups in `ServerStorage.M01Backups` |
-| Next action | Owner: review M0 results. Pending: (1) real cross-server lock test (≥50 cycles), (2) server-side purchase gate before any commerce, (3) keep or roll back the extra dev Logs from the smoke test (pre-M0 copy in `bk3_p_394034825`), (4) confirm v17/v19–v22 in Version History, (5) optional private dev publish for iPhone/2-device. **M1 NOT authorized.** |
-| Code source of truth | **Roblox dev place** (v23). Branch `m0/foundations` holds checksum-matched exports of all changed and new scripts (see results §2). `main` does not contain `src/` changes |
+| Most recent documented place version | **Dev:** **v29** "M0.1 FOUNDATIONS CORRECTIONS" (Team Create save; dev Open Cloud `updateTime` 2026-11-20T12:42:47.246Z). Checkpoint **v23** relabelled "M0.1 PRE-CORRECTIONS (checkpoint = M0 v23 state)". v24–v28 not saved explicitly by Claude (probably Team Create auto-saves, unverified). Earlier: v18 "M0 PRE-FOUNDATIONS"; v17 and v19–v22 unexplained/auto-saves. **Production:** documented v48; not accessed or touched |
+| Active AI editor | **None** (Claude released the editor at 2026-11-20 04:50 PST after M0.1; claim it here before editing) |
+| Last handoff author / time | **Claude / 2026-11-20 04:50 PST** (M0.1 Foundations Corrections) |
+| Last confirmed gameplay edit | **Dev place only:** v29, M0.1 corrections: serialized + sequence-fenced saves, migration lock-leak fix, movement sanity for chopping credit, confirmed AFK lock handoff, profile-stored playtime gifts, Treant/Blade King proximity scaling and Treant minimum contribution. No economy formulas or reward amounts changed. Production: none since the P0 baseline |
+| Current task | **M0.1 complete — waiting for owner review** of `docs/m0/M01_FOUNDATIONS_CORRECTIONS_RESULTS.md`. Script backups of the pre-M0.1 state in `ServerStorage.M01Backups` |
+| Next action | Owner: review M0 and M0.1 results. Decide: (1) visit cap (3 paying playtime visits/UTC day) and Treant eligibility (≥2% or ≥12 hits); (2) the pre-existing CurrentIsland/LastIsland join-lag bug (M0.1 results §5); (3) keep or roll back the extra dev Logs (836,279 → 8,836,279 from one gift claim in M0.1; earlier M0 smoke test; pre-M0 copy in `bk3_p_394034825`). Pending validation: real cross-server locks/fence (≥50 cycles), real AFK teleport, real receipts, two-player bosses, iPhone. **M1 NOT authorized.** |
+| Code source of truth | **Roblox dev place** (v29). Branch `m0.1/foundations-corrections` holds checksum-matched exports of all M0.1 changed and new scripts (results §2). `main` does not contain `src/` changes |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Owner review of M0. Cross-server locking, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
+| Blockers | Owner review of M0 and M0.1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
 
 ## Who is responsible
 
