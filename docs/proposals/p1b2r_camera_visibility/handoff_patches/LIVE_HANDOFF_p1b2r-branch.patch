@@ -1,0 +1,113 @@
+--- a/docs/LIVE_HANDOFF.md
++++ b/docs/LIVE_HANDOFF.md
+@@ -2,7 +2,7 @@
+ 
+ > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+ > This is a shared, human-readable status page, not a live connection or an automatic lock.
+-> Last documented snapshot: **2026-11-18**. Status below is from the repository docs, **not an independently verified current Studio inspection**.
++> Last documented snapshot: **2026-11-19 21:20 PST** (Claude, end of P1b.2r). The dashboard reflects Claude's verified session records for P1b.2 and P1b.2r. **Re-verify Studio before editing**; Studio was closed when this was written.
+ 
+ ## Quick dashboard
+ 
+@@ -10,17 +10,17 @@
+ | --- | --- |
+ | Project | Blade Forest |
+ | Repository | `hyperlykan99/Blade-Forest` (`main`) |
+-| Roblox place | `73142469975141` (Team Create) |
+-| Most recent documented place version | **48** (verify before working) |
+-| Active AI editor | **Claude**: P0 isolation and backup (claimed 2026-11-18 20:15 PST) |
+-| Last handoff author / time | **Claude / 2026-11-18 ~20:05 PST** (M2 technical validation, read-only) |
+-| Last confirmed gameplay edit | **Not verified here**; Claude reported no gameplay edits in its repo-setup session |
+-| Current task | **P0 only** (per `P0_ISOLATION_AND_BACKUP.md`): offline backup, separate private dev experience, isolation check, script export. Production must not be saved or published |
+-| Next action | Owner and ChatGPT: review M2 §8. Approve or revise the island coordinates, the Island 1 reuse mapping and the candidate gates. Construction (P0 dev copy) needs explicit owner approval |
+-| Code source of truth | **Roblox place** until source scripts are exported and validated into `src/` |
++| Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
++| Most recent documented place version | **Dev:** v15 (P1b.2r result; checkpoint v14 "P1b.2r PRE-DENSE-REDISTRIBUTION"), as reported by Studio's save. The dev place's Open Cloud `updateTime` was 2026-11-19T09:59:41.986Z when last checked; it did not change for the v15 save, so **confirm v15 in Version History**. **Production:** documented v48 (HUD handoff); not re-queried. Production `updateTime` 2026-11-18T15:12:30.520Z |
++| Active AI editor | **None** (Claude released after P1b.2r, 2026-11-19 21:20 PST) |
++| Last handoff author / time | **Claude / 2026-11-19 21:20 PST** (P1b.2r dense-forest redistribution) |
++| Last confirmed gameplay edit | **Dev place only:** v15 (P1b.2r: 620 Crystal Wilds trees moved into 4 dense zones; no script/terrain/data changes). Checkpoint v14. Production: none since the P0 baseline (`updateTime` 2026-11-18T15:12:30.520Z, re-checked 2026-11-19 21:15 PST) |
++| Current task | **None claimed.** P1b.2r done on branch `p1b2r/dense-forest` @ `a893300` (not merged). Results: `docs/p1b2r/P1B2R_RESULTS.md` on that branch |
++| Next action | Owner: review P1b.2r (camera visibility in Z2/Z3, ~30% Studio FPS drop in zones, ~4x income, respawn effect/tag drift = B1); decide merge and a private dev publish for iPhone. **P1b.3 NOT authorized.** Two-player unverified |
++| Code source of truth | **Roblox dev place** (v15). Exported scripts are checksum-matched to Studio on `p1b2/crystal-wilds` and `p1b2r/dense-forest` (P1b.2r changed no scripts). `main` does not yet contain `src/` changes (no merge approved) |
+ | Documentation source of truth | GitHub `docs/` |
+-| Working scripts in GitHub? | **Not yet**, per `CURRENT_STATUS.md`; recheck before relying on this |
+-| Blockers | Script export outstanding; owner-managed commerce/API setup; suspicious unused imported scripts awaiting review |
++| Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline), then `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed for P1b.2) → `p1b2r/dense-forest` @ `a893300` (no script changes; tree tooling and manifests). Pending design branch: `proposal/p1b2-dense-forest` @ `63937f9` |
++| Blockers | Owner decisions pending: P1b.2r camera visibility (Z2/Z3), merge strategy for `p1b2r/dense-forest`, private dev publish for iPhone, B1 respawn effect/tag drift. Still open: owner-managed commerce/API setup; suspicious unused imported scripts awaiting review. Two-player and iPhone testing unverified |
+ 
+ ## Who is responsible
+ 
+@@ -32,7 +32,7 @@
+ ## Start-of-session checklist (Claude or Codex)
+ 
+ 1. Pull/read the latest `docs/LIVE_HANDOFF.md`, `docs/AI_HANDOFF.md`, `docs/CURRENT_STATUS.md`, `docs/TASKS.md`, and latest commit/PR status.
+-2. Inspect Roblox Studio: verify place ID `73142469975141`, current saved place version, Edit mode (not Play), and which scripts/objects exist. **MCP access alone does not confirm same session or current content.**
++2. Inspect Roblox Studio: verify the **dev** place `103379930563763` / universe `10777797608` (never edit production `73142469975141`), current saved place version, Edit mode (not Play), and which scripts/objects exist. **MCP access alone does not confirm same session or current content.**
+ 3. Check for unsaved Studio changes and another AI's unfinished edits. If the handoff is stale or conflicting, **ask the owner rather than overwrite**.
+ 4. Before editing, fill `Active AI editor`, `Current task`, and the working time under **Current session**. Commit this documentation update when possible.
+ 5. Observe the safety/architecture rules in `AI_HANDOFF.md`: server-authoritative rewards; compatible DataService saves; Creator Store assets; no secrets or force-push; Edit mode only.
+@@ -46,35 +46,45 @@
+ 4. Commit and push doc changes; include the Git commit SHA/link. If push fails, paste the handoff in the chat and explicitly mark it **not synced**.
+ 5. Set `Active AI editor` to **None**, `Current task` to **None claimed**, and give the next AI one specific next action.
+ 
++## Claude → Codex handoff (2026-11-18 22:20 PST)
++
++- **Studio state:** dev place `Blade Forest - Island Dev` (place 103379930563763 / universe 10777797608, PRIVATE), **Edit mode, saved version 7**. No edits since v7; only playtests ran afterwards. A final `save_place` check timed out on the device and was **not retried**. If Studio shows unsaved changes, they are not Claude's: inspect before saving.
++- **Studio API access:** ON for the dev experience (verified working 22:10 PST).
++- **Dev test data:** the account 394034825 dev save holds the Void weapon, a Crystal Wilds unlock and `LastIsland = CrystalWilds` (dev DataStore only).
++- **Code:** branch `p1a/island-prototype` @ `3511a5c` matches Studio v7 (BladeConfig 55,586 B, DataService 19,574 B, TravelService 7,991 B; checksums in commit messages). Studio-only objects: `Workspace.Islands` (18 parts, Persistent models).
++- **Test hooks (Studio only):** `ServerStorage.DevTravel:Invoke(player, islandId, {unlock=,cooldown=,same=})`, `ServerStorage.DevGrant:Invoke(player, "Get"|"Save"|"AddWeapon", ...)`. Note: a command-bar `require(DataService)` returns a separate copy with no players; use DevGrant `Get`.
++- **Production:** 73142469975141 untouched; `updateTime` `2026-11-18T15:12:30.520Z` (last checked 22:05 PST).
++- **Not authorized:** P1b, gameplay/economy/monetization changes, production edits, asset imports, deleting import folders.
++
+ ## Current session (claim before editing)
+ 
+ | Item | Entry |
+ | --- | --- |
+-| AI | Claude |
+-| Started (date/time/timezone) | 2026-11-18 19:05 America/Los_Angeles |
+-| Task / owner approval | Script export (approved, waiting on file); economy and monetization audit, read-only (approved 2026-11-18, completed) |
+-| Studio place ID and saved version checked | Place `73142469975141` / universe `10777481912` confirmed; Edit mode, not running. Saved version not re-queried (last documented: 48). 34 scripts / 393,047 bytes, identical to Claude's previous inventory, so no code changes since |
+-| Git branch / starting commit | `main` @ `e1c0b5d` |
+-| Scripts or objects being edited | None in Studio (export only reads) |
++| AI | None (released) |
++| Started (date/time/timezone) | — |
++| Task / owner approval | — (last: P1b.2r Option A, owner-approved, completed 2026-11-19) |
++| Studio place ID and saved version checked | Last check: dev 103379930563763 / 10777797608, Edit mode, v15 saved (Studio reported). Studio closed afterwards |
++| Git branch / starting commit | — |
++| Scripts or objects being edited | None |
+ | Work in progress / unsaved changes | None from Claude |
+-| Tests and results | Studio state re-checked 2026-11-18 (Edit mode, 34 scripts / 393,047 B unchanged). M2: read-only survey of map, terrain, streaming, trees, NPCs, bosses and spawns; island sim `docs/m2_island_sim.py` (200 seeds × 4 archetypes × 2 luck variants × 6 gates). No Studio writes and no saves |
+-| Risks / blockers | Export needs the owner to attach an `.rbxlx` (Mac folder access denied). Audit found: all 9 dev products have `ProductId = 0` (none purchasable); `SetAsync` without session lock; paid-random gating gaps once log packs go live. See the report |
++| Tests and results | See `docs/p1b2r/P1B2R_RESULTS.md` on `p1b2r/dense-forest` |
++| Risks / blockers | See dashboard |
+ 
+ ## Latest completed handoff
+ 
+ | Item | Entry |
+ | --- | --- |
+-| From AI | Claude (repo setup; summarized by ChatGPT) |
+-| Date | 2026-11-18 |
+-| What was completed | Repo skeleton, docs, Rojo configuration, regular Git push |
+-| Gameplay changes | None reported in that session |
+-| Current Studio version | 48 **as documented**, not freshly checked |
+-| Files edited in GitHub | `README.md`, `docs/GAME_DESIGN.md`, `docs/CURRENT_STATUS.md`, `docs/CHANGELOG.md`, `docs/AI_HANDOFF.md`, `docs/TASKS.md`, Rojo setup, `.gitignore` |
+-| Gameplay files modified | None reported in repo setup |
+-| Tests | Git push reported successful; no new gameplay tests reported |
+-| Commit | Check latest `main` commit in GitHub; not recorded here |
+-| Incomplete | 34 Luau scripts still need safe export to `src/` if source-file handoff is desired |
+-| Next AI instruction | Verify Studio state/version; do not assume this snapshot reflects later edits |
++| From AI | Claude |
++| Date | 2026-11-19 (P1b.2r redistribution 01:50–03:00 PST; docs and release 21:20 PST) |
++| What was completed | Dev place only: the existing 620 Crystal Wilds tree instances were moved with `PivotTo` into Z1–Z4 (155/155/150/140) plus pockets P1–P4 (5 each); mean nearest neighbour 5.17–5.23 per zone |
++| Gameplay changes | Tree positions only. No script, terrain, data, economy, combat or monetization changes |
++| Current Studio version | Dev **v15** (Studio-reported; confirm in Version History). Checkpoint **v14**. Production unchanged (`updateTime` 2026-11-18T15:12:30.520Z, checked 2026-11-19 21:15 PST) |
++| Files edited in GitHub | `p1b2r/dense-forest` @ `a893300`: `tools/p1b2r_dense_redistribution/*`, `docs/p1b2r/*`, dense manifest promoted to `docs/p1b_tree_spots_crystal_wilds.csv`, v12 archived as `docs/p1b_tree_spots_crystal_wilds_v12_sparse.csv`. `main` @ `25260c2`: CHANGELOG, TASKS, blueprint §13, this page |
++| Gameplay files modified | None |
++| Tests | One Studio client: T-D1–T-D10. T-D6 camera visibility **partial** (Z2/Z3 obscured); Studio FPS about 30% lower in zones. Two-player and iPhone not run |
++| Commit | `a893300` (branch), `25260c2` (main) |
++| Incomplete | Camera visibility design (in review); B1 effect/tag drift; merge decision; iPhone validation |
++| Next AI instruction | Do not edit Studio until the owner approves a camera fix. Verify dev v15 and production `updateTime` first. P1b.3 not authorized |
+ 
+ ## Known security warning
+ 
