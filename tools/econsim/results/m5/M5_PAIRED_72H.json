@@ -1,0 +1,438 @@
+{
+  "agents_per_arm": 2,
+  "hours": 72.0,
+  "runs": {
+    "free-active": {
+      "M4": {
+        "8": {
+          "earned": 14305291541.175148,
+          "power": 2134.0,
+          "t_cw": 0.31666666666666665,
+          "t_fr": 0.8583333333333333,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "24": {
+          "earned": 78931054689.63339,
+          "power": 2993.5,
+          "t_cw": 0.31666666666666665,
+          "t_fr": 0.8583333333333333,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "72": {
+          "earned": 460593349336.14514,
+          "power": 5818.0,
+          "t_cw": 0.31666666666666665,
+          "t_fr": 0.8583333333333333,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        }
+      },
+      "M5": {
+        "8": {
+          "earned": 20263930439.567703,
+          "power": 2134.0,
+          "t_cw": 0.23333333333333334,
+          "t_fr": 1.7416666666666667,
+          "m5_souls": 305.5,
+          "m5_depth": 3.0,
+          "m5_tokens": 20.0,
+          "m5_materials": 3.0,
+          "m5_net_logs": {
+            "contracts": 183380000.0,
+            "trials": -30441883.124794185,
+            "expedition": -29079383.3457418,
+            "events": 490630319.7810873,
+            "story": 376625050.0
+          }
+        },
+        "24": {
+          "earned": 87665934525.8486,
+          "power": 2134.0,
+          "t_cw": 0.23333333333333334,
+          "t_fr": 1.7416666666666667,
+          "m5_souls": 384.5,
+          "m5_depth": 3.0,
+          "m5_tokens": 68.0,
+          "m5_materials": 3.0,
+          "m5_net_logs": {
+            "contracts": 576080000.0,
+            "trials": -399349820.5367144,
+            "expedition": -584452797.287132,
+            "events": 2382074147.180646,
+            "story": 376625050.0
+          }
+        },
+        "72": {
+          "earned": 362021612631.8871,
+          "power": 3281.05,
+          "t_cw": 0.23333333333333334,
+          "t_fr": 1.7416666666666667,
+          "m5_souls": 707.5,
+          "m5_depth": 3.5,
+          "m5_tokens": 212.0,
+          "m5_materials": 10.0,
+          "m5_net_logs": {
+            "contracts": 2196730000.0,
+            "trials": -2148345541.8469667,
+            "expedition": -3290197168.623953,
+            "events": 10237889279.0061,
+            "story": 376625050.0
+          }
+        }
+      }
+    },
+    "free-afk": {
+      "M4": {
+        "8": {
+          "earned": 7712434043.992548,
+          "power": 2320.0,
+          "t_cw": 0.22916666666666666,
+          "t_fr": 500000000.575,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "24": {
+          "earned": 47679805762.9716,
+          "power": 2320.0,
+          "t_cw": 0.22916666666666666,
+          "t_fr": 8.991666666666665,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "72": {
+          "earned": 216046086956.69415,
+          "power": 2477.5,
+          "t_cw": 0.22916666666666666,
+          "t_fr": 8.991666666666665,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        }
+      },
+      "M5": {
+        "8": {
+          "earned": 11691525741.543638,
+          "power": 3652.0,
+          "t_cw": 0.12083333333333333,
+          "t_fr": 500000000.35833335,
+          "m5_souls": 217.5,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 23600000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 410221515.2008837,
+            "story": 207826526.25
+          }
+        },
+        "24": {
+          "earned": 69895941207.51758,
+          "power": 3652.0,
+          "t_cw": 0.12083333333333333,
+          "t_fr": 10.391666666666666,
+          "m5_souls": 271.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 101780000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 2569830374.2487755,
+            "story": 376701526.25
+          }
+        },
+        "72": {
+          "earned": 330790099567.60016,
+          "power": 4972.45,
+          "t_cw": 0.12083333333333333,
+          "t_fr": 10.391666666666666,
+          "m5_souls": 311.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 424080000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 11870806059.194378,
+            "story": 376701526.25
+          }
+        }
+      }
+    },
+    "paid-active": {
+      "M4": {
+        "8": {
+          "earned": 54338104857.566055,
+          "power": 2134.0,
+          "t_cw": 0.07083333333333333,
+          "t_fr": 0.6125,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "24": {
+          "earned": 271620083455.1289,
+          "power": 4162.0,
+          "t_cw": 0.07083333333333333,
+          "t_fr": 0.6125,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "72": {
+          "earned": 1954816347492.6523,
+          "power": 9167.0,
+          "t_cw": 0.07083333333333333,
+          "t_fr": 0.6125,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        }
+      },
+      "M5": {
+        "8": {
+          "earned": 61769456167.4917,
+          "power": 2477.5,
+          "t_cw": 0.0875,
+          "t_fr": 1.6041666666666667,
+          "m5_souls": 305.5,
+          "m5_depth": 3.0,
+          "m5_tokens": 22.0,
+          "m5_materials": 3.0,
+          "m5_net_logs": {
+            "contracts": 183380000.0,
+            "trials": -94567479.73807266,
+            "expedition": -117261108.92761624,
+            "events": 2072992088.1230798,
+            "story": 376736000.0
+          }
+        },
+        "24": {
+          "earned": 270957790393.99213,
+          "power": 2506.0,
+          "t_cw": 0.0875,
+          "t_fr": 1.6041666666666667,
+          "m5_souls": 384.5,
+          "m5_depth": 3.0,
+          "m5_tokens": 70.0,
+          "m5_materials": 3.0,
+          "m5_net_logs": {
+            "contracts": 576080000.0,
+            "trials": -1629820657.9588304,
+            "expedition": -2252296728.9811583,
+            "events": 9329638918.43269,
+            "story": 376736000.0
+          }
+        },
+        "72": {
+          "earned": 1578195168497.6714,
+          "power": 5887.5,
+          "t_cw": 0.0875,
+          "t_fr": 1.6041666666666667,
+          "m5_souls": 740.5,
+          "m5_depth": 5.0,
+          "m5_tokens": 214.0,
+          "m5_materials": 14.0,
+          "m5_net_logs": {
+            "contracts": 2617780000.0,
+            "trials": -11881876924.656536,
+            "expedition": -24915278054.47715,
+            "events": 53260027849.77406,
+            "story": 376736000.0
+          }
+        }
+      }
+    },
+    "paid-afk": {
+      "M4": {
+        "8": {
+          "earned": 30244378400.95518,
+          "power": 2320.0,
+          "t_cw": 0.03333333333333333,
+          "t_fr": 500000000.5208333,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "24": {
+          "earned": 181916270064.06036,
+          "power": 2964.5,
+          "t_cw": 0.03333333333333333,
+          "t_fr": 8.804166666666667,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        },
+        "72": {
+          "earned": 1390920880516.5793,
+          "power": 5585.5,
+          "t_cw": 0.03333333333333333,
+          "t_fr": 8.804166666666667,
+          "m5_souls": 0.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 0.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 0.0,
+            "story": 0.0
+          }
+        }
+      },
+      "M5": {
+        "8": {
+          "earned": 37448807805.36171,
+          "power": 2571.0,
+          "t_cw": 0.10416666666666666,
+          "t_fr": 500000000.2708333,
+          "m5_souls": 217.5,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 17600000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 1228489834.7805147,
+            "story": 207861000.0
+          }
+        },
+        "24": {
+          "earned": 241261535470.0835,
+          "power": 3842.0,
+          "t_cw": 0.10416666666666666,
+          "t_fr": 8.120833333333334,
+          "m5_souls": 273.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 96080000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 8888797323.939528,
+            "story": 400861000.0
+          }
+        },
+        "72": {
+          "earned": 1892207379269.7214,
+          "power": 9624.0,
+          "t_cw": 0.10416666666666666,
+          "t_fr": 8.120833333333334,
+          "m5_souls": 320.0,
+          "m5_depth": 0.0,
+          "m5_tokens": 0.0,
+          "m5_materials": 0.0,
+          "m5_net_logs": {
+            "contracts": 541380000.0,
+            "trials": 0.0,
+            "expedition": 0.0,
+            "events": 69248807036.56963,
+            "story": 400861000.0
+          }
+        }
+      }
+    }
+  }
+}

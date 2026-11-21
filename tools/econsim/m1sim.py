@@ -303,20 +303,30 @@ def area_choice(p, st, mode):
     return best, rate
 
 
+def normalized_weights(rows, key):
+    weights = np.array([row[key] for row in rows])
+    return weights / weights.sum()
+
+
+TRAIT_WEIGHTS = {name: normalized_weights(C["traits"], name) for name in ("SoulWeight", "Weight")}
+PET_WEIGHTS = normalized_weights(C["pets"], "Weight")
+
+
 def roll_trait(rng, souls_crate=False):
     key = "SoulWeight" if souls_crate else "Weight"
-    w = np.array([t[key] for t in C["traits"]]); w = w / w.sum()
-    return C["traits"][rng.choice(len(w), p=w)]
+    return C["traits"][rng.choice(len(C["traits"]), p=TRAIT_WEIGHTS[key])]
 
 
 def roll_pet(rng):
-    w = np.array([x["Weight"] for x in C["pets"]]); w = w / w.sum()
-    return C["pets"][rng.choice(len(w), p=w)]
+    return C["pets"][rng.choice(len(C["pets"]), p=PET_WEIGHTS)]
 
 
 def equip_best_pets(p):
     slots = int(C["MaxPetsEquipped"]) + (1 if "VIP" in p["passes"] else 0)
     p["pets_eq"] = sorted(p["pets"], key=lambda x: -(x["Logs"] + 2 * x["Luck"]))[:slots]
+    # The simulator never trades or unequips, and slot capacity is fixed
+    # per agent. Excluded copies can never enter the equipped set later.
+    p["pets"] = list(p["pets_eq"])
 
 
 def income(p, st=None):

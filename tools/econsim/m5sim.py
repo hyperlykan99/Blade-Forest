@@ -86,11 +86,11 @@ class Projection:
             out += share * base._rp(p, max(luck, regional_luck), island)
         return out
 
-    def rewards(self, p, t, dt, trees_per_second, unit):
+    def rewards(self, p, t, dt, trees_per_second, unit, income_rate=None):
         s = p["m5"]
         rng = s["rng"]
         afk = s["mode"] == "afk"
-        if p["isl_max"] >= 1 and t >= s["colossus_check"] and not p["kills"].get("CrystalColossus"):
+        if income_rate is None and p["isl_max"] >= 1 and t >= s["colossus_check"] and not p["kills"].get("CrystalColossus"):
             s["colossus_check"] = t + 1800
             if p["power"] >= 400 and rng.random() < (.15 if afk else .65):
                 p["kills"]["CrystalColossus"] = 1
@@ -133,7 +133,7 @@ class Projection:
                 s["token_earned"] += tokens
                 s["tokens"] += tokens
                 # Two trials use 120 s of play time. Estimate forgone current forest chops.
-                _, _, inc = base.income(p)
+                inc = base.income(p)[2] if income_rate is None else income_rate
                 cost = inc * 120
                 earned -= cost
                 s["delta"]["trials"] -= cost
@@ -184,13 +184,83 @@ def scenario(args):
     return f"{scen}-{mode}", data
 
 
+def anchored_scenario(scen, mode, hours):
+    """Long-horizon issuance against the checked-in M2 median progression anchors."""
+    path = Path(__file__).parent / "results/m2" / f"res_{scen}_{mode}.json"
+    rows = json.loads(path.read_text())
+    if hours > rows[-1]["h"]:
+        raise ValueError("Anchored projection stops at the final baseline horizon")
+
+    def median_at(key, h):
+        prev_t, prev_value = 0, 0
+        for row in rows:
+            t, value = row["h"], row[key][1]
+            if h <= t:
+                f = (h - prev_t) / (t - prev_t)
+                return prev_value + f * (value - prev_value)
+            prev_t, prev_value = t, value
+        return prev_value
+
+    def unlock(key):
+        return next((r[key][1] for r in rows if r[key][1] < 1e8), math.inf)
+
+    crystal, frost = unlock("t_cw"), unlock("t_fr")
+    actor = {"power": 5, "souls": 0, "trees": {}, "kills": {}, "isl_max": 0}
+    model = Projection(True)
+    model.begin(actor, mode, 21, 0)
+    state = actor["m5"]
+    cap = base.P["Pools"]["TempLogsMax"]
+    baseline_event = base.EVENT_NONE + sum(w * min(cap, lg) for w, lg, _ in base.EVENT_SLICES)
+    lw_cap = base.P["Pools"]["TempLuckMax"]
+    baseline_luck = base.EVENT_NONE + sum(w * min(lw_cap, lk) for w, _, lk in base.EVENT_SLICES)
+    mean_luck_uplift = 0
+    for i in range(math.ceil(hours * 12)):
+        t = i / 12
+        dt_h = min(1/12, hours-t)
+        if dt_h <= 0:
+            break
+        actor["isl_max"] = 2 if t >= frost else 1 if t >= crystal else 0
+        actor["power"] = max(5, median_at("power", t))
+        unit = max(base.P["PriceTiers"][0]["Unit"], median_at("unit", t))
+        dt = dt_h * 3600
+        area = ("PineForest", "CrystalCanyon", "FrostPeaks")[actor["isl_max"]]
+        island = base.ISL_ORDER[actor["isl_max"]]
+        tree_rate = max(0, median_at("trees_s", t))
+        actor["trees"][area] = actor["trees"].get(area, 0) + tree_rate * dt
+        lg, lk = model.event(t * 3600, island)
+        event_logs = base.EVENT_NONE * min(cap, lg)
+        event_logs += sum(w * min(cap, max(lg, g)) for w, g, _ in base.EVENT_SLICES)
+        event_luck = base.EVENT_NONE * min(lw_cap, lk)
+        event_luck += sum(w * min(lw_cap, max(lk, k)) for w, _, k in base.EVENT_SLICES)
+        delta = median_at("earned", t + dt_h) - median_at("earned", t)
+        state["delta"]["events"] += delta * (event_logs / baseline_event - 1)
+        mean_luck_uplift += dt_h * (event_luck / baseline_luck - 1)
+        inc = max(0, median_at("income", t) / 3600)
+        model.rewards(actor, t * 3600, dt, tree_rate, unit, income_rate=inc)
+
+    baseline = median_at("earned", hours)
+    issuance = sum(state["delta"].values())
+    return {"baseline_logs": baseline, "m5_net_logs": state["delta"], "m5_souls": state["souls"],
+            "m5_tokens": state["token_earned"], "m5_materials": state["materials"], "m5_depth": state["depth"],
+            "total_logs_overlay": baseline + issuance, "relative_net_issuance": issuance / baseline,
+            "regional_raw_luck_exposure": mean_luck_uplift / hours,
+            "anchor_crystal_unlock_h": crystal, "anchor_frost_unlock_h": frost, "anchor_end_power": median_at("power", hours)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--agents", type=int, default=6)
     parser.add_argument("--hours", type=float, default=200)
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--anchored", action="store_true", help="Fast issuance forecast using checked-in M2 medians")
     args = parser.parse_args()
+    if args.agents < 1 or args.jobs < 1 or not math.isfinite(args.hours) or args.hours <= 0:
+        parser.error("Agents, jobs, and hours must be positive")
     combos = [(s, m, args.agents, args.hours) for s in ("free", "paid") for m in ("active", "afk")]
+    if args.anchored:
+        output = {f"{s}-{m}": anchored_scenario(s, m, args.hours) for s, m, _, _ in combos}
+        print(json.dumps({"method": "M2 median-anchored issuance overlay", "hours": args.hours, "runs": output}, indent=2))
+        return
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         output = dict(pool.map(scenario, combos))
     print(json.dumps({"agents_per_arm": args.agents, "hours": args.hours, "runs": output}, indent=2))

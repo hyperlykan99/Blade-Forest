@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **2026-11-20 PST · Codex M5 gameplay loop.** The private dev M5 cloud save is confirmed by timestamp. The editor is released in Edit mode. See the [M5 results and rollback](m5/M5_GAMEPLAY_LOOP_RESULTS.md).
 > **2026-11-20 PST · Codex M4 construction.** Private dev saved as **v52** with the verified v2 world active. The editor is released. See the [M4 results and rollback notes](m4/M4_COMPLETE_WORLD_RESULTS.md).
 > **2026-11-20 PST · Codex M3 implementation.** The private dev place has the 72-node Tech Tree, 100 Mastery levels, 12 traits, 21 pets and Golden/Rainbow evolution. The editor is released. See the [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
 > Last documented snapshot: **2026-11-20 16:15 PST** (Claude, end of M1 Unified Economy & Progression). Written on branch `m1/unified-economy-progression` (based on `m0.1/foundations-corrections`; not merged to `main`). **Re-verify Studio before editing.**
@@ -13,16 +14,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Private dev v52**, confirmed by Studio Team Create. Open Cloud update `2026-11-21T02:47:44.314Z`. |
-| Active AI editor | **Codex** (owner-authorized M5 construction) |
-| Last handoff author / time | **Codex / 2026-11-20 PST** (M4 World Construction) |
-| Last confirmed gameplay edit | Private dev v52 has both replacement islands, the Crystal annex, three progression boss integrations and the reversible world switch. |
-| Current task | M5 gameplay-loop construction on private dev only. |
-| Next action | Review the v52 M4 results. Begin M5 only on a new owner instruction. |
-| Code source of truth | Private dev v52 and Git branch `m4/complete-world-construction`. The implementation SHA is `2f50bfbf340b8cd104a083f6c7db308da526158a`. |
+| Most recent documented place version | **Private dev M5 saved state**, cloud update `2026-11-21T03:15:54.138Z`. Team Create reported no unsaved changes. Numeric M5 save version unverified. Last confirmed numbered baseline **v52**. |
+| Active AI editor | **None** (M5 saved and editor released) |
+| Last handoff author / time | **Codex / 2026-11-20 PST** (M5 Gameplay Loop) |
+| Last confirmed gameplay edit | Private dev v2 with 30 story steps, UTC Contracts, isolated Trials, playable Frostbound Expeditions and three regional events. |
+| Current task | **None claimed.** M5 construction and essential checks are complete. |
+| Next action | Review the M5 results. Begin M6 only on a new owner instruction. |
+| Code source of truth | Private dev M5 and branch `m5/contracts-trials-expeditions-events`, Studio source at `baa5ba0cc109f88456889259308be6936e9226aa`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Live boss-clear persistence, sustained multi-client combat, mobile performance and comparative live Frost earnings remain unverified. |
+| Blockers | Numeric M5 save version, sustained mobile/multiplayer play, live reward persistence and cross-server leaderboard writes remain unverified. Trial weapon IDs are unallocated. |
 
 ## Who is responsible
 
@@ -81,15 +82,22 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | Codex |
+| AI | None (released) |
 | Started (date/time/timezone) | — |
-| Task / owner approval | Owner-authorized M4 world construction and private save complete. |
-| Studio place ID and saved version checked | Dev `103379930563763` / `10777797608`, Edit mode, **saved v52**, startup flag `v2`. |
-| Git branch / starting commit | `m4/complete-world-construction` from completed M3 implementation `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0` and its handoff. |
+| Task / owner approval | Owner-authorized M5 gameplay loop and private save complete. |
+| Studio place ID and saved version checked | Private dev `103379930563763` / `10777797608`, Edit mode, v2. Cloud timestamp `2026-11-21T03:15:54.138Z`. Numeric save version unverified. |
+| Git branch / starting commit | `m5/contracts-trials-expeditions-events`, from M4 `2f50bfbf340b8cd104a083f6c7db308da526158a` and its v52 handoff. |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | None. Team Create saved the v2 flag and construction as v52. |
-| Tests and results | [M4 results](m4/M4_COMPLETE_WORLD_RESULTS.md) records the v2 and legacy boots, 2,030 new trees, all routes, boss smoke and reward fixtures. |
-| Risks / blockers | See M4 results. Roll back layouts with the startup flag and use the pre-M4 checkpoint for a full restore. |
+| Work in progress / unsaved changes | None reported by Studio. |
+| Tests and results | [M5 results](m5/M5_GAMEPLAY_LOOP_RESULTS.md) records the source checks, profile fixtures, short client smoke and economy projection. |
+| Risks / blockers | See M5 results. `ServerStorage.M5Rollback` holds 10 checked pre-M5 source copies. |
+
+## Codex → next editor (2026-11-20 PST, M5)
+
+- Start with the [M5 gameplay-loop results](m5/M5_GAMEPLAY_LOOP_RESULTS.md). The private place stays on the v2 world layout.
+- The additive `M5` profile holds story, Contract, Trial and Expedition ledgers. Keep it intact during source rollback. The isolated arena folders exist at runtime and clean up with their player leases.
+- The 120-weapon catalog is intact. Three Trial weapon slots await an owner allocation within the catalog. The two M5 material IDs are available for future design.
+- To restore M4, use the documented private v52 or the 10 pre-M5 copies in `ServerStorage.M5Rollback`.
 
 ## Codex → next editor (2026-11-20 PST, M4)
 
