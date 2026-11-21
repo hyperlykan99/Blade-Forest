@@ -174,7 +174,8 @@ end
 -- nothing comes from the client.
 --------------------------------------------------------------------
 local ReceiptProcessor = require(script.Parent:WaitForChild("ReceiptProcessor"))
-local receipts = ReceiptProcessor.new({
+local Gifting = require(script.Parent:WaitForChild("M7Gifting"))
+local receiptDeps = {
 	getPlayer = function(userId) return Players:GetPlayerByUserId(userId) end,
 	product = function(productId) return Config.ProductByProductId[productId] end,
 	isActive = DataService.IsActive,
@@ -193,10 +194,25 @@ local receipts = ReceiptProcessor.new({
 		DataService.Sync(player)
 	end,
 	report = function(player, outcome, key) Analytics.Receipt(player, outcome, key) end,
-})
+}
+local receipts = ReceiptProcessor.new(receiptDeps)
+local giftDeps=table.clone(receiptDeps)
+giftDeps.current={}
+giftDeps.processor=Gifting.Processor(giftDeps)
+local giftReceipt=Gifting.New(giftDeps)
 
 local function processReceipt(receipt)
-	local decision, why = receipts.process(receipt)
+	local decision,why
+	if Gifting.CanOffer(receipt.ProductId) then
+		local buyer=Players:GetPlayerByUserId(receipt.PlayerId)
+		if not buyer or giftDeps.current[buyer] then return Enum.ProductPurchaseDecision.NotProcessedYet end
+		giftDeps.current[buyer]=receipt
+		local ok,out,reason=pcall(giftReceipt,receipt)
+		giftDeps.current[buyer]=nil
+		if ok then decision,why=out,reason else decision,why=Enum.ProductPurchaseDecision.NotProcessedYet,"gift_receipt_unavailable" end
+	else
+		decision,why=receipts.process(receipt)
+	end
 	if decision ~= Enum.ProductPurchaseDecision.PurchaseGranted then
 		warn("[Store] receipt deferred:", why)
 	end

@@ -3,6 +3,7 @@ local Players=game:GetService("Players")
 local ReplicatedStorage=game:GetService("ReplicatedStorage")
 local Storage=game:GetService("ServerStorage")
 local M=require(ReplicatedStorage:WaitForChild("M5Design"))
+local Guilds=require(script.Parent:WaitForChild("M7Guilds"))
 local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local C=require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
@@ -18,7 +19,7 @@ local v=Vector3.new
 local arenas=Instance.new("Folder")
 arenas.Name="M5RunArenas"
 arenas.Parent=workspace
-local R={Root=arenas,PartyCapacity=1}
+local R={Root=arenas,PartyCapacity=4}
 local active,slots={},{}
 
 local function clearAttributes(p)
@@ -70,9 +71,9 @@ local function spawnTree(job,index)
 	local angle=(job.Depth+job.Score+index)%4*math.pi/2
 	local spot=job.Center+v(x,0,z)
 	local obj=Tree.Tree(id,CFrame.new(spot)*CFrame.Angles(0,angle,0),.78,C,Art,1)
-	local health=exp and math.floor(M.DepthHealth(job.Depth)*(index==1 and job.Depth>=8 and 1.6 or 1)) or ({4,6,8})[job.Tier]
+	local health=exp and math.floor(M.DepthHealth(job.Depth)*job.Scale*(index==1 and job.Depth>=8 and 1.6 or 1)) or ({4,6,8})[job.Tier]
 	obj.Name=exp and "Frostwood · "..job.Depth or "Trial timber"
-	obj:SetAttribute("M5Target",job.Player.UserId)
+	obj:SetAttribute("M5Target",job.Slot)
 	obj:SetAttribute("Strength",nil)
 	obj:SetAttribute("Health",health)
 	obj:SetAttribute("MaxHealth",health)
@@ -81,23 +82,38 @@ local function spawnTree(job,index)
 	job.Targets[obj]=index
 	obj.Parent=job.Trees
 end
+local function setAll(job,key,value)
+	for p in pairs(job.Participants) do if p.Parent then p:SetAttribute(key,value) end end
+end
 local function populate(job)
 	local n=job.Kind=="Trial" and 12 or M.DepthTrees(job.Depth)
 	job.Remaining=n
+	job.Participation={} job.DepthDamage=0
 	for i=1,n do spawnTree(job,i) end
-	job.Player:SetAttribute("M5RunTrees",n)
+	setAll(job,"M5RunTrees",n)
 end
 local function pushPhase(job,phase)
 	job.Phase=phase
-	job.Player:SetAttribute("M5RunPhase",phase)
+	setAll(job,"M5RunPhase",phase)
 end
-local function dispose(job)
-	local p=job.Player
+local function remove(job,p)
 	if active[p]~=job then return end
 	active[p]=nil
-	slots[job.Slot]=nil
-	if job.Arena then job.Arena:Destroy() end
+	job.Participants[p]=nil
 	if p.Parent then clearAttributes(p) end
+	if next(job.Participants)==nil then
+		slots[job.Slot]=nil
+		if job.Arena then job.Arena:Destroy() end
+	else
+		if job.Player==p then
+			for _,peer in ipairs(job.Order) do if job.Participants[peer] then job.Player=peer break end end
+		end
+		if job.Kind=="Expedition" then
+			local remaining=0
+			for _ in pairs(job.Participants) do remaining+=1 end
+			job.Scale=1+.55*(remaining-1)
+		end
+	end
 end
 
 local function writeBoard(p,week,kind,value)
@@ -108,12 +124,11 @@ local function writeBoard(p,week,kind,value)
 	end)
 end
 
-local finish
-finish=function(job,reason,returnPlayer)
-	local p=job.Player
-	if active[p]~=job or job.Closing then return end
-	job.Closing=true
-	pushPhase(job,"Returning")
+local function finish(job,p,reason,returnPlayer)
+	local member=job.Participants[p]
+	if active[p]~=job or not member or member.Closing then return end
+	member.Closing=true
+	if p.Parent then p:SetAttribute("M5RunPhase","Returning") end
 	local d=Data.Get(p)
 	if d and reason=="Finished" and job.Kind=="Trial" then
 		local now=os.time()
@@ -130,52 +145,55 @@ finish=function(job,reason,returnPlayer)
 		Data.Sync(p)
 		if best then writeBoard(p,w.Key,"Trial",w.Trial) end
 		notify:FireClient(p,string.format("Trial finished · %s · %d trees · +%d Tokens",M.Trial.Ranks[rank] or "Unranked",job.Score,tokens),"rare_Epic")
-	elseif job.Kind=="Expedition" and job.BoardDirty and d then
+	elseif job.Kind=="Expedition" and member.BoardDirty and d then
 		local w=State.Weekly(d,os.time())
 		writeBoard(p,w.Key,"Depth",w.Depth)
 	end
-	if returnPlayer and p.Parent and p.Character==job.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+	if returnPlayer and p.Parent and p.Character==member.Character and member.Character:FindFirstChild("HumanoidRootPart") then
 		local call=Storage:FindFirstChild("M5Return")
 		for _=1,2 do
 			local called,ok=false,false
-			if call then called,ok=pcall(call.Invoke,call,p,job.Island) end
+			if call then called,ok=pcall(call.Invoke,call,p,member.Island) end
 			if called and ok then break end
-			if not p.Parent or p.Character~=job.Character then break end
+			if not p.Parent or p.Character~=member.Character then break end
 			task.wait(.35)
 		end
-		if p.Character==job.Character and (p.Character:GetPivot().Position-job.Center).Magnitude<85 then
-			-- Guaranteed recovery through the normal authoritative CharacterAdded path.
-			local hum=p.Character:FindFirstChildOfClass("Humanoid")
+		if p.Character==member.Character and (member.Character:GetPivot().Position-job.Center).Magnitude<85 then
+			local hum=member.Character:FindFirstChildOfClass("Humanoid")
 			if hum then hum.Health=0 end
 		end
 	end
-	dispose(job)
+	remove(job,p)
 end
 
 local function depthComplete(job)
-	local p=job.Player
-	local d=Data.Get(p)
-	if not d then return end
 	local now=os.time()
-	local w=State.Weekly(d,now)
-	local budget=State.Budget(d,now)
-	local frontier=job.Depth>w.Depth
-	d.M5.DepthEver=math.max(d.M5.DepthEver,job.Depth)
-	w.Depth=math.max(w.Depth,job.Depth)
-	job.BoardDirty=job.BoardDirty or frontier
-	if frontier and budget.DepthClaims<M.Expedition.RewardClaimsPerDay then
-		budget.DepthClaims+=1
-		local reward=M.DepthReward(job.Depth)
-		reward.Material=M.Expedition.Material
-		if job.Depth%3==0 then
-			M6Inventory.AddRune(d,M6Inventory.RollRune(job.Depth>=15 and 4 or job.Depth>=9 and 3 or 2,Random.new()),1)
+	for p,member in pairs(job.Participants) do
+		local d=Data.Get(p)
+		local performance=job.Participation[p]
+		if not d or member.Closing or not performance then continue end
+		if performance.Damage<job.DepthDamage*.02 and performance.Hits<12 then continue end
+		local w=State.Weekly(d,now)
+		local budget=State.Budget(d,now)
+		local frontier=job.Depth>w.Depth
+		d.M5.DepthEver=math.max(d.M5.DepthEver,job.Depth)
+		w.Depth=math.max(w.Depth,job.Depth)
+		member.BoardDirty=member.BoardDirty or frontier
+		if frontier and budget.DepthClaims<M.Expedition.RewardClaimsPerDay then
+			budget.DepthClaims+=1
+			local reward=M.DepthReward(job.Depth)
+			reward.Material=M.Expedition.Material
+			if job.Depth%3==0 then
+				M6Inventory.AddRune(d,M6Inventory.RollRune(job.Depth>=15 and 4 or job.Depth>=9 and 3 or 2,Random.new()),1)
+			end
+			Guilds.Record(d,"Depth",1,p:GetAttribute("M7GuildId"))
+			Rewards.Grant(p,d,reward,"Expedition depth "..job.Depth.." cleared")
+		else
+			Data.Sync(p)
 		end
-		Rewards.Grant(p,d,reward,"Expedition depth "..job.Depth.." cleared")
-	else
-		Data.Sync(p)
 	end
 	pushPhase(job,"DepthClear")
-	p:SetAttribute("M5RunTrees",0)
+	setAll(job,"M5RunTrees",0)
 end
 
 function R.Deal(player,target,damage)
@@ -183,19 +201,25 @@ function R.Deal(player,target,damage)
 	if not player then return true end
 	local job=active[player]
 	local index=job and job.Targets[target]
-	if not job or not index or target:GetAttribute("M5Target")~=player.UserId or job.Phase~="Active"
-		or player.Character~=job.Character or os.clock()>=job.Deadline or player:GetAttribute("Handoff") then return true end
-	local root=player.Character:FindFirstChild("HumanoidRootPart")
+	local member=job and job.Participants[player]
+	if not member or member.Closing or not index or target:GetAttribute("M5Target")~=job.Slot or job.Phase~="Active"
+		or player.Character~=member.Character or os.clock()>=job.Deadline or player:GetAttribute("Handoff") then return true end
+	local root=member.Character:FindFirstChild("HumanoidRootPart")
 	if not root or (root.Position-job.Center).Magnitude>87 then return true end
 	local hp=target:GetAttribute("Health") or 0
 	if hp<=0 then return true end
 	local hits=job.Kind=="Trial" and 4 or math.clamp(damage,0,1e9)
+	if hits<=0 or hits~=hits then return true end
+	local actual=math.min(hp,hits)
+	local performance=job.Participation[player] or {Damage=0,Hits=0}
+	performance.Damage+=actual performance.Hits+=1
+	job.Participation[player]=performance job.DepthDamage+=actual
 	target:SetAttribute("Health",hp-hits)
 	if hp<=hits then
 		job.Targets[target]=nil
 		target:Destroy()
 		job.Score+=1
-		player:SetAttribute("M5RunScore",job.Score)
+		setAll(job,"M5RunScore",job.Score)
 		if job.Kind=="Trial" then
 			task.delay(1.6,function()
 				if active[player]==job and job.Phase=="Active" and os.clock()<job.Deadline then
@@ -204,16 +228,15 @@ function R.Deal(player,target,damage)
 			end)
 		else
 			job.Remaining-=1
-			player:SetAttribute("M5RunTrees",job.Remaining)
+			setAll(job,"M5RunTrees",job.Remaining)
 			if job.Remaining==0 then depthComplete(job) end
 		end
 	end
 	return true
 end
 
-function R.Enter(player,kind)
-	if kind~="Trial" and kind~="Expedition" then return false,"Unknown run" end
-	if active[player] or player:GetAttribute("M5Run") then return false,"Finish your current run first" end
+local function eligible(player,kind)
+	if active[player] or player:GetAttribute("M5Run") then return nil,"Finish your current run first" end
 	local d=Data.Get(player)
 	local char=player.Character
 	local root=char and char:FindFirstChild("HumanoidRootPart")
@@ -222,76 +245,109 @@ function R.Enter(player,kind)
 	if not d or not player:GetAttribute("Loaded") or not C.IslandById[island] or not root or not hum or hum.Health<=0
 		or player:GetAttribute("Handoff") or player:GetAttribute("IslandArrivalPending")
 		or player:GetAttribute("IslandTravelling") or (player:GetAttribute("CombatUntil") or 0)>workspace:GetServerTimeNow() then
-		return false,"Return to a safe island area first"
+		return nil,"Return to a safe island area first"
 	end
 	if kind=="Expedition" and (not Layout.Enabled() or island~="FrostboundReach"
 		or not d.UnlockedIslands.FrostboundReach or (player:GetAttribute("Power") or 0)<C.GetIslandRequiredPower(C.IslandById.FrostboundReach)
 		or (root.Position-M.Expedition.Entry).Magnitude>18) then
-		return false,"Enter from the Frostbound Expedition Gate"
+		return nil,"Every member must be at the Frostbound Expedition Gate and meet its requirements"
 	end
+	return {Island=island,Character=char,Root=root,Humanoid=hum,Tier=M.IslandTier(d.UnlockedIslands)}
+end
+
+local function start(players,kind)
+	local roster={}
+	for _,p in ipairs(players) do
+		local member,why=eligible(p,kind)
+		if not member then return false,p.DisplayName.." · "..why end
+		roster[p]=member
+	end
+	local leader=players[1]
 	local slot=reserve()
-	local job={Kind=kind,Slot=slot,Tier=M.IslandTier(d.UnlockedIslands),Phase="Loading",Island=island,
-		Player=player,Character=char,Depth=1,Score=0,Targets={},Deadline=math.huge,
+	local job={Kind=kind,Slot=slot,Tier=roster[leader].Tier,Phase="Loading",Player=leader,Participants=roster,Order=players,
+		Depth=1,Score=0,Targets={},Deadline=math.huge,Scale=1+.55*(#players-1),
 		Center=v(15000+((slot-1)%8)*M.Expedition.SlotStride,60,6000+math.floor((slot-1)/8)*M.Expedition.SlotStride)}
-	active[player]=job
-	player:SetAttribute("M5Run",kind)
-	player:SetAttribute("M5RunOrigin",island)
-	Data.RecalcMultipliers(player)
+	for p,member in pairs(roster) do
+		active[p]=job
+		p:SetAttribute("M5Run",kind) p:SetAttribute("M5RunOrigin",member.Island)
+		Data.RecalcMultipliers(p)
+	end
 	pushPhase(job,"Loading")
-	local built,issue=pcall(function()
-		buildArena(job)
-		populate(job)
-	end)
+	local built,issue=pcall(function() buildArena(job) populate(job) end)
 	if not built then
-		dispose(job)
+		for _,p in ipairs(players) do remove(job,p) end
 		warn("[M5] Arena construction failed: "..tostring(issue))
 		return false,"Arena could not be constructed"
 	end
-	local streamed=pcall(player.RequestStreamAroundAsync,player,job.Center,7)
-	if not streamed or active[player]~=job or player.Character~=char or hum.Health<=0 or not player.Parent then
-		dispose(job)
-		return false,"Arena could not load"
+	local pending=0
+	for _,p in ipairs(players) do
+		local member=roster[p]
+		pending+=1
+		task.spawn(function()
+			local ok=pcall(p.RequestStreamAroundAsync,p,job.Center,7)
+			member.Streamed=ok and p.Parent~=nil and active[p]==job and p.Character==member.Character and member.Humanoid.Health>0
+			pending-=1
+		end)
 	end
-	local at=job.Center+v(0,4,28)
-	Guard:Allow(player,3,nil,at,root.Position)
-	root.AssemblyLinearVelocity=v(0,0,0)
-	root.AssemblyAngularVelocity=v(0,0,0)
-	char:PivotTo(CFrame.new(at))
+	while pending>0 do task.wait() end
+	for _,p in ipairs(players) do
+		local member=roster[p]
+		if not member or not member.Streamed or active[p]~=job or member.Humanoid.Health<=0 or p.Character~=member.Character then
+			for _,peer in ipairs(players) do remove(job,peer) end
+			return false,"A party member could not load the arena"
+		end
+	end
+	for i,p in ipairs(players) do
+		local member=roster[p]
+		local at=job.Center+v((i-(#players+1)/2)*8,4,28)
+		Guard:Allow(p,3,nil,at,member.Root.Position)
+		member.Root.AssemblyLinearVelocity=v(0,0,0)
+		member.Root.AssemblyAngularVelocity=v(0,0,0)
+		member.Character:PivotTo(CFrame.new(at))
+		p:SetAttribute("M5RunDepth",job.Depth) p:SetAttribute("M5RunScore",0)
+		Data.ApplyMovement(p)
+		member.Humanoid.Died:Once(function() if active[p]==job then finish(job,p,"Death",false) end end)
+	end
 	local seconds=kind=="Trial" and M.Trial.Seconds or M.Expedition.Seconds
 	job.Deadline=os.clock()+seconds
-	player:SetAttribute("M5RunEnds",workspace:GetServerTimeNow()+seconds)
-	player:SetAttribute("M5RunDepth",job.Depth)
-	player:SetAttribute("M5RunScore",0)
-	Data.ApplyMovement(player)
+	setAll(job,"M5RunEnds",workspace:GetServerTimeNow()+seconds)
 	pushPhase(job,"Active")
-	task.delay(seconds,function() if active[player]==job then finish(job,"Finished",true) end end)
-	hum.Died:Once(function() if active[player]==job then finish(job,"Death",false) end end)
+	task.delay(seconds,function()
+		for p in pairs(job.Participants) do task.spawn(finish,job,p,"Finished",true) end
+	end)
 	return true
 end
-
+function R.Enter(player,kind)
+	if kind~="Trial" and kind~="Expedition" then return false,"Unknown run" end
+	return start({player},kind)
+end
+function R.EnterParty(players)
+	if #players<2 or #players>R.PartyCapacity then return false,"Expedition parties have two to four members" end
+	return start(players,"Expedition")
+end
 function R.Next(player)
 	local j=active[player]
 	if not j or j.Kind~="Expedition" or j.Phase~="DepthClear" or os.clock()>=j.Deadline then return false,"Clear this depth first" end
+	if j.Player~=player then return false,"The expedition leader starts the next depth" end
 	j.Depth+=1
-	player:SetAttribute("M5RunDepth",j.Depth)
+	setAll(j,"M5RunDepth",j.Depth)
 	populate(j)
 	pushPhase(j,"Active")
 	return true
 end
-
 function R.Exit(player)
 	local job=active[player]
-	if not job or job.Phase=="Loading" or job.Closing then return false,"No active run to exit" end
-	finish(job,"Exit",true)
+	if not job or job.Phase=="Loading" or job.Participants[player].Closing then return false,"No active run to exit" end
+	finish(job,player,"Exit",true)
 	return true
 end
-
-function R.PartyExtension() return { Capacity=R.PartyCapacity, Availability="Solo" } end
+function R.PartyExtension() return {Capacity=R.PartyCapacity,Availability="Solo and party"} end
 local function bind(player)
 	player.CharacterRemoving:Connect(function(char)
 		local job=active[player]
-		if job and job.Character==char then
-			if job.Closing then dispose(job) else finish(job,"Death",false) end
+		local member=job and job.Participants[player]
+		if member and member.Character==char then
+			if member.Closing or job.Phase=="Loading" then remove(job,player) else finish(job,player,"Death",false) end
 		end
 	end)
 end
@@ -299,6 +355,6 @@ Players.PlayerAdded:Connect(bind)
 for _,p in ipairs(Players:GetPlayers()) do bind(p) end
 Players.PlayerRemoving:Connect(function(p)
 	local job=active[p]
-	if job then dispose(job) end
+	if job then remove(job,p) end
 end)
 return R

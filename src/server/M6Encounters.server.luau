@@ -11,6 +11,7 @@ local Data=require(script.Parent:WaitForChild("DataService"))
 local H=require(script.Parent:WaitForChild("M6Hits"))
 local Guard=require(script.Parent:WaitForChild("MovementGuard")).shared
 local World=require(script.Parent:WaitForChild("M4WorldRuntime"))
+local Parties=require(script.Parent:WaitForChild("M7Parties"))
 local Rules=require(script.Parent:WaitForChild("BossRules"))
 local Progress=require(script.Parent:WaitForChild("Progress"))
 local A=require(Storage:WaitForChild("M4Architecture"))
@@ -45,7 +46,7 @@ local function eligible(job,p,margin)
 	local root,hum=human(p)
 	if not root or flat(root.Position,job.Center)>(margin or 62) or math.abs(root.Position.Y-job.Center.Y)>22 then return false end
 	if job.Heart then
-		if heartholders[p]~=job or not job.Members[p] then return false end
+		if heartholders[p]~=job or not job.Members[p] or not job.Members[p].Arrived then return false end
 	else
 		if p:GetAttribute("M5Run") or p:GetAttribute("CurrentIsland")~=job.Spec.Island or (p:GetAttribute("Power") or 0)<job.Spec.Power then return false end
 	end
@@ -317,54 +318,86 @@ local function newJob(spec,at,heart,cycle)
 	return job
 end
 
-local function enter(p,point)
+local function validateHeart(p,point)
 	local d=Data.Get(p)
 	local root,hum=human(p)
-	if not d or not root or p:GetAttribute("Handoff") or p:GetAttribute("IslandArrivalPending")
+	if not d or not root or not p:GetAttribute("Loaded") or p:GetAttribute("Handoff") or p:GetAttribute("IslandArrivalPending")
 		or p:GetAttribute("IslandTravelling") or p:GetAttribute("CurrentIsland")~="FrostboundReach"
 		or not d.UnlockedIslands.FrostboundReach or (p:GetAttribute("Power") or 0)<D.Heart.Power
 		or (p:GetAttribute("CombatUntil") or 0)>workspace:GetServerTimeNow()
 		or p:GetAttribute("M5Run") or d.M6.Keys<1 or (root.Position-point).Magnitude>16 then
-		return false,"Bring a Winter Key and 2,000 Power to the sanctum"
+		return nil,"Bring a Winter Key and 2,000 Power to the sanctum"
+	end
+	return {Character=p.Character,Root=root,Humanoid=hum}
+end
+local function makeHeart(now)
+	local slot=1
+	while heartSlots[slot] do slot+=1 end
+	heartSlots[slot]=true
+	local center=V(-13500+((slot-1)%8)*170,81,5900+math.floor((slot-1)/8)*170)
+	local job=newJob(D.Heart,center,true,0)
+	job.ArenaSlot=slot
+	floor(job.Arena,"Winter ring",center-V(0,1,0),V(112,2,112),rink)
+	for i=1,8 do
+		local a=i*math.pi/4
+		local pos=center+V(math.cos(a)*49,7,math.sin(a)*49)
+		A.Part(job.Arena,"Ice monolith",V(3,15,3),CFrame.new(pos),D.Heart.Color,Enum.Material.Glacier)
+	end
+	job.Launch=now+D.HeartQueue job.Deadline=job.Launch+D.HeartLength
+	return job
+end
+local offsets={V(-9,0,27),V(9,0,27),V(-9,0,34),V(9,0,34)}
+local function enterGroup(players,point,isParty)
+	local info={}
+	for _,p in ipairs(players) do
+		local ready,why=validateHeart(p,point)
+		if not ready then return false,p.DisplayName.." · "..why end
+		info[p]=ready
 	end
 	local now=os.clock()
-	local j=heartLobby
+	local j=isParty and nil or heartLobby
 	local count=0
 	if j then for _ in pairs(j.Members) do count+=1 end end
-	if not j or now>j.Launch or count>=D.HeartCapacity or j.Closed then
-		local slot=1
-		while heartSlots[slot] do slot+=1 end
-		heartSlots[slot]=true
-		local center=V(-13500+((slot-1)%8)*170,81,5900+math.floor((slot-1)/8)*170)
-		j=newJob(D.Heart,center,true,0)
-		j.ArenaSlot=slot
-		floor(j.Arena,"Winter ring",center-V(0,1,0),V(112,2,112),rink)
-		for i=1,8 do
-			local a=i*math.pi/4
-			local pos=center+V(math.cos(a)*49,7,math.sin(a)*49)
-			A.Part(j.Arena,"Ice monolith",V(3,15,3),CFrame.new(pos),D.Heart.Color,Enum.Material.Glacier)
-		end
-		j.Launch=now+D.HeartQueue j.Deadline=j.Launch+D.HeartLength
-		heartLobby=j
+	if isParty or not j or now>j.Launch or count>=D.HeartCapacity or j.Closed then
+		j=makeHeart(now)
+		if not isParty then heartLobby=j end
 	end
-	local offsets={V(-9,0,27),V(9,0,27),V(-9,0,34),V(9,0,34)}
-	local slot=1
 	local used={}
 	for _,member in pairs(j.Members) do used[member.Slot]=true end
-	while used[slot] do slot+=1 end
-	local char=p.Character
-	j.Members[p]={Slot=slot,Arrived=false}
-	heartholders[p]=j
-	p:SetAttribute("M5Run","Heart") p:SetAttribute("M5RunOrigin","FrostboundReach")
-	p:SetAttribute("M6HeartPhase","Gathering") p:SetAttribute("M6HeartEnd",workspace:GetServerTimeNow()+math.max(0,j.Deadline-now))
-	Data.RecalcMultipliers(p)
-	local streamed=pcall(p.RequestStreamAroundAsync,p,j.Center,6)
-	if not streamed or j.Closed or p.Character~=char or not p.Parent or hum.Health<=0 then exitHeart(p,j,false) return false,"Sanctum loading failed" end
-	local at=j.Center+offsets[slot]+V(0,4,0)
-	Guard:Allow(p,3,nil,at,root.Position)
-	root.AssemblyLinearVelocity=V(0,0,0) root.AssemblyAngularVelocity=V(0,0,0)
-	char:PivotTo(CFrame.new(at)) j.Members[p].Arrived=true
-	hum.Died:Once(function() exitHeart(p,j,false) end)
+	for _,p in ipairs(players) do
+		local slot=1 while used[slot] do slot+=1 end
+		used[slot]=true
+		j.Members[p]={Slot=slot,Arrived=false}
+		heartholders[p]=j
+		p:SetAttribute("M5Run","Heart") p:SetAttribute("M5RunOrigin","FrostboundReach")
+		p:SetAttribute("M6HeartPhase","Gathering") p:SetAttribute("M6HeartEnd",workspace:GetServerTimeNow()+math.max(0,j.Deadline-now))
+		Data.RecalcMultipliers(p)
+	end
+	local streams=0
+	for _,p in ipairs(players) do
+		streams+=1
+		task.spawn(function()
+			local data=info[p]
+			data.Streamed=pcall(p.RequestStreamAroundAsync,p,j.Center,6)
+			streams-=1
+		end)
+	end
+	while streams>0 do task.wait() end
+	for _,p in ipairs(players) do
+		local data=info[p]
+		if not data.Streamed or j.Closed or p.Character~=data.Character or not p.Parent or data.Humanoid.Health<=0 or not j.Members[p] then
+			for _,peer in ipairs(players) do exitHeart(peer,j,false) end
+			return false,"A player could not load the Sanctum"
+		end
+	end
+	for _,p in ipairs(players) do
+		local data=info[p]
+		local at=j.Center+offsets[j.Members[p].Slot]+V(0,4,0)
+		Guard:Allow(p,3,nil,at,data.Root.Position)
+		data.Root.AssemblyLinearVelocity=V(0,0,0) data.Root.AssemblyAngularVelocity=V(0,0,0)
+		data.Character:PivotTo(CFrame.new(at)) j.Members[p].Arrived=true
+		data.Humanoid.Died:Once(function() exitHeart(p,j,false) end)
+	end
 	return true
 end
 local returnSignal=Instance.new("BindableFunction")
@@ -390,7 +423,7 @@ if anchor then
 	prompt.HoldDuration=.45 prompt.RequiresLineOfSight=false prompt.MaxActivationDistance=12 prompt.Parent=anchor
 	Proximity.PromptTriggered:Connect(function(pr,p)
 		if pr~=prompt then return end
-		local ok,why=enter(p,anchor.Position)
+		local ok,why=enterGroup({p},anchor.Position,false)
 		if not ok then Notify:FireClient(p,why,"death") end
 	end)
 end
@@ -398,28 +431,51 @@ local bridge=newModel(fightRoot,"Hydra Annex")
 floor(bridge,"Hydra bridge",V(3061,-1,-350),V(35,2,15),rink)
 floor(bridge,"Hydra arena",D.Raids[2].Position-V(0,1,0),V(114,2,102),rink)
 workspace:SetAttribute("M6RaidAnnexReady",true)
+local function openRaid(spec,start,done)
+	if raidCycle==start then return end
+	if raidJob then finish(raidJob,false) end
+	raidDef,raidCycle,raidFinished=spec,start,false
+	workspace:SetAttribute("M6RaidName",spec.Name)
+	workspace:SetAttribute("M6RaidIsland",spec.Island)
+	workspace:SetAttribute("M6RaidEnd",done)
+	workspace:SetAttribute("M6RaidNext",start+D.RaidPeriod)
+	if os.time()<done then Notify:FireAllClients(spec.Name.." · raid window is open","boss") end
+end
+local function startRaid(spec,start,done,near)
+	raidJob=newJob(spec,spec.Position,false,start)
+	raidFinished=true
+	raidJob.Deadline=os.clock()+(done-os.time())
+	mount(raidJob,#near)
+end
+local partyEntry=Instance.new("BindableFunction")
+partyEntry.Name="M7EncounterEntry"
+partyEntry.OnInvoke=function(leader,mode)
+	local members,why=Parties.Ready(leader)
+	if not members then return false,why end
+	if mode=="Heart" and anchor then return enterGroup(members,anchor.Position,true) end
+	if mode~="Raid" then return false,"Encounter unavailable" end
+	local utc=os.time()
+	local spec,start,done=D.RaidAt(utc)
+	if utc>=done then return false,"The raid window is closed" end
+	local probe={Spec=spec,Center=spec.Position}
+	for _,p in ipairs(members) do
+		if not eligible(probe,p) then return false,p.DisplayName.." must meet the raid power minimum and gather at the arena" end
+	end
+	openRaid(spec,start,done)
+	if raidFinished and not raidJob then return false,"This raid is already resolved" end
+	if not raidJob then startRaid(spec,start,done,fighters(probe)) end
+	for _,p in ipairs(members) do Notify:FireClient(p,"Party rallied · "..spec.Name,"boss") end
+	return true
+end
+partyEntry.Parent=Storage
 while true do
 	task.wait(.65)
 	local utc,now=os.time(),os.clock()
 	local spec,start,done=D.RaidAt(utc)
-	if raidCycle~=start then
-		if raidJob then finish(raidJob,false) end
-		raidDef,raidCycle,raidFinished=spec,start,false
-		workspace:SetAttribute("M6RaidName",spec.Name)
-		workspace:SetAttribute("M6RaidIsland",spec.Island)
-		workspace:SetAttribute("M6RaidEnd",done)
-		workspace:SetAttribute("M6RaidNext",start+D.RaidPeriod)
-		Notify:FireAllClients(spec.Name.." · raid window is open","boss")
-	end
+	openRaid(spec,start,done)
 	if not raidFinished and not raidJob and utc<done then
-		local probe={Spec=raidDef,Center=raidDef.Position}
-		local here=fighters(probe)
-		if #here>0 then
-			raidJob=newJob(raidDef,raidDef.Position,false,start)
-			raidFinished=true
-			raidJob.Deadline=now+(done-utc)
-			mount(raidJob,#here)
-		end
+		local here=fighters({Spec=raidDef,Center=raidDef.Position})
+		if #here>0 then startRaid(raidDef,start,done,here) end
 	end
 	for job in pairs(jobs) do
 		local closing=false

@@ -10,6 +10,7 @@ local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Not
 local Mastery = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 
 local Events=require(script.Parent:WaitForChild("M5EventTelemetry"))
+local Guilds=require(script.Parent:WaitForChild("M7Guilds"))
 local M6=require(ReplicatedStorage:WaitForChild("M6Design"))
 local I=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local P = {}
@@ -55,6 +56,8 @@ for _, q in ipairs(Config.WeeklyQuests) do byId[q.Id] = q end
 P.QuestById = byId
 
 function P.Add(player, stat, n)
+	local social=DataService.Get(player)
+	if social and stat=="Boss" then Guilds.Record(social,"Boss",n or 1,player:GetAttribute("M7GuildId")) end
 	local d = DataService.Get(player)
 	if not d then return end
 	n = n or 1
@@ -94,6 +97,7 @@ function P.TreeChopped(player, typeId, mutId)
 	end
 	local first = not d.Trees[typeId]
 	d.Trees[typeId] = (d.Trees[typeId] or 0) + 1
+	Guilds.Record(d,"Trees",1,player:GetAttribute("M7GuildId"))
 	Events.Chop(player,Config.AreaIsland[tt.Area])
 	local material=M6.MaterialByIsland[Config.AreaIsland[tt.Area]]
 	if material then

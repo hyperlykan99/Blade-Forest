@@ -7,6 +7,7 @@
 --   Extras:InvokeServer("SawmillInfo")            -> { Rate, Cap, Today, LogsPerSoul }
 
 local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
+local SocialItems=require(script.Parent:WaitForChild("M7Items"))
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -71,7 +72,9 @@ Extras.OnServerInvoke = function(player, action, a, b)
 		local results = {}
 		for _ = 1, n do
 			local p = Config.RollPet(rng, island)
-			d.Pets[p.Id] = (d.Pets[p.Id] or 0) + 1
+			local before=d.Pets[p.Id] or 0
+			d.Pets[p.Id] = before + 1
+			if not Policy.LogsArePaidCurrency() then SocialItems.Credit(d,"Pet",p.Id,before,d.Pets[p.Id],true) end
 			d.Stats.PetsHatched = (d.Stats.PetsHatched or 0) + 1
 			table.insert(results, p.Id)
 			-- auto-equip into a free slot
@@ -128,11 +131,14 @@ Extras.OnServerInvoke = function(player, action, a, b)
 		return true
 
 	elseif action == "EvolvePet" then
+		if type(a)~="string" or SocialItems.Protected(d,"Pet",a) then return false,"Retrieve this pet from your vault first" end
+		local before=d.Pets[a] or 0
 		local ok, result = Character.Evolve(d, Config, a, function(cost)
 			return DataService.SpendSouls(player, cost)
 		end)
 		if not ok then return false, result end
 		DataService.Sync(player)
+		SocialItems.Credit(d,"Pet",a,before,d.Pets[a] or 0,false)
 		NotifyRemote:FireClient(player, "Evolution complete • " .. result.Name, "rare_Legendary")
 		return true, result.Id
 

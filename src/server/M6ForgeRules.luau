@@ -4,6 +4,7 @@ local Http=game:GetService("HttpService")
 local D=require(RS:WaitForChild("M6Design"))
 local I=require(RS:WaitForChild("M6Inventory"))
 local C=require(RS:WaitForChild("BladeConfig"))
+local SocialItems=require(script.Parent:WaitForChild("M7Items"))
 local F={}
 local function payable(d,costs)
 	local ok,why=I.Check(d,costs)
@@ -27,13 +28,15 @@ function F.Salvage(d,weaponId,count,now)
 	local w=C.WeaponById[weaponId]
 	local entry=w and d.Weapons[weaponId]
 	if type(count)~="number" or count%1~=0 or count<1 or count>10 then return false,"Select 1–10 duplicates" end
-	if not entry or w.Exclusive or not w.Future.Forgeable or d.Favorites[weaponId] or (entry.Copies or 0)<count then
+	if not entry or w.Exclusive or not w.Future.Forgeable or d.Favorites[weaponId] or SocialItems.Protected(d,"Weapon",weaponId) or (entry.Copies or 0)<count then
 		return false,"Only spare, non-favorite eligible copies can be salvaged"
 	end
 	local budget=I.Day(d,now)
 	if budget.Salvage+count>D.SalvagesPerDay then return false,"Daily salvage budget exceeded" end
 	local rarity=C.RarityById[w.Rarity].Order
+	local before=entry.Copies
 	entry.Copies-=count budget.Salvage+=count
+	SocialItems.Credit(d,"Weapon",weaponId,before,entry.Copies,false)
 	local material=D.MaterialByIsland[w.Island] or "Bark"
 	I.AddMaterial(d,material,count*math.clamp(math.ceil(rarity/2),1,4))
 	d.Essence.Total+=count*math.clamp(rarity*3,3,24)
@@ -57,6 +60,7 @@ function F.Awaken(d,weaponId)
 	end
 	I.ApplyCosts(d,rule.Costs)
 	item.Stage=stage
+	item.TradeLocked=true item.Bound=true
 	return true,"Awakening "..({"I","II","III"})[stage]
 end
 function F.Socket(d,weaponId,slot,runeId)

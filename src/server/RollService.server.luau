@@ -58,7 +58,7 @@ local function rollOnce(player)
 		d.AltarGuarantee[altar] = true
 	end
 
-	local result = DataService.AddWeapon(player, weapon.Id, d.Settings.AutoSellBelow)
+	local result = DataService.AddWeapon(player, weapon.Id, d.Settings.AutoSellBelow, not guaranteed)
 	result.Rarity = weapon.Rarity
 	result.OneIn = weapon.OneIn
 	result.Lucky = lucky

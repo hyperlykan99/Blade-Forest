@@ -46,6 +46,8 @@ local writers = {}   -- [player] = ProfileWriter (M0.1: one serialized writer pe
 local lost = {}      -- [player] = true once another session took the profile
 local Analytics      -- optional, set via DataService.SetAnalytics
 
+local SocialItems=require(script.Parent:WaitForChild("M7Items"))
+local TradeJournal=require(script.Parent:WaitForChild("M7Journal"))
 local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local Progression = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 
@@ -93,6 +95,7 @@ local DEFAULT = {
 	IslandProgress = {}, -- [islandId] = { ... } reserved for P1c objectives
 	-- v4 (M0) additions; see SaveMigrations
 	WeaponItems = {}, -- M6 references an awakened representative without consuming the stack
+	M7=SocialItems.Default,
 	M6={
 		Schema=1,ItemByWeapon={},Materials={},Runes={},Acquired={},Keys=0,Revision=0,TrialBest=0,
 		RaidSlots={},BossClears={},HeartWeek=-1,Daily={Key=-1,ChopCount={},ChopGrants={},Salvage=0,Raids=0,Heart=0},
@@ -158,7 +161,7 @@ end
 function DataService.Snapshot(data)
 	local snap = {}
 	for k, v in pairs(data) do
-		if k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" and k ~= "_WriteSeq" then
+		if k ~= "M7" and k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" and k ~= "_WriteSeq" then
 			snap[k] = deepCopy(v)
 		end
 	end
@@ -603,11 +606,14 @@ function DataService.Fuse(player, id)
 	local d = profiles[player]
 	local entry = d and d.Weapons[id]
 	if not entry then return false, "Not owned" end
+	if SocialItems.Protected(d,"Weapon",id) then return false,"Retrieve this weapon from your vault first" end
+	local before=entry.Copies
 	if entry.Star >= Config.MaxStar then
 		-- crafting: max-star + spare copies -> SHINY
 		if entry.Shiny then return false, "MAX" end
 		if entry.Copies < Config.ShinyCopies then return false, string.format("Need %d copies", Config.ShinyCopies) end
 		entry.Copies -= Config.ShinyCopies
+		SocialItems.Credit(d,"Weapon",id,before,entry.Copies,false)
 		entry.Shiny = true
 		DataService.ApplyEquip(player)
 		DataService.Sync(player)
@@ -615,6 +621,7 @@ function DataService.Fuse(player, id)
 		return true, "Shiny"
 	end
 	local gained = fuseEntry(entry)
+	SocialItems.Credit(d,"Weapon",id,before,entry.Copies,false)
 	if gained == 0 then
 		return false, string.format("Need %d copies", Config.FuseCost[entry.Star + 1])
 	end
@@ -625,7 +632,7 @@ end
 
 -- Give a weapon (from a roll, pack, etc). Handles dupes, auto-fuse and selling extras past max star.
 -- autoSellBelow (rarity id, optional): a DUPLICATE below this rarity is sold instead of kept.
-function DataService.AddWeapon(player, id, autoSellBelow)
+function DataService.AddWeapon(player, id, autoSellBelow, earnedSpare)
 	local d = profiles[player]
 	if not d or not Config.WeaponById[id] then return nil end
 	local result = { Id = id, IsNew = false, StarsGained = 0, Sold = 0 }
@@ -633,7 +640,9 @@ function DataService.AddWeapon(player, id, autoSellBelow)
 	local w = Config.WeaponById[id]
 	local sellBelow = autoSellBelow and Config.RarityById[autoSellBelow]
 	local fav = d.Favorites and d.Favorites[id] == true -- M2: favorites are never sold
-	if entry and sellBelow and not fav and Config.RarityById[w.Rarity].Order < sellBelow.Order then
+	local before=entry and entry.Copies or 0
+	local protected=SocialItems.Protected(d,"Weapon",id)
+	if entry and sellBelow and not fav and not protected and Config.RarityById[w.Rarity].Order < sellBelow.Order then
 		entry.Pulled += 1
 		result.Sold = DataService.AddCoins(player, sellValue(id), nil, true)
 		result.AutoSold = true
@@ -649,17 +658,18 @@ function DataService.AddWeapon(player, id, autoSellBelow)
 	else
 		entry.Pulled += 1
 		entry.Copies += 1
-		if d.Settings.AutoFuse then
+		if d.Settings.AutoFuse and not protected then
 			result.StarsGained = fuseEntry(entry)
 		end
 		-- max star: keep up to ShinyCopies spares for Shiny crafting, sell the rest
 		local keep = entry.Shiny and 0 or Config.ShinyCopies
 		if fav then keep = Config.WeaponFuture.MaxFavoriteCopies end -- M2: keep favorite copies (bounded)
-		if entry.Star >= Config.MaxStar and entry.Copies > keep then
+		if not protected and entry.Star >= Config.MaxStar and entry.Copies > keep then
 			result.Sold = DataService.AddCoins(player, sellValue(id) * (entry.Copies - keep), nil, true)
 			entry.Copies = keep
 		end
 	end
+	if not result.IsNew then SocialItems.Credit(d,"Weapon",id,before,entry.Copies,earnedSpare==true) end
 	result.Star = entry.Star
 	result.Copies = entry.Copies
 	DataService.ApplyEquip(player)
@@ -886,6 +896,7 @@ local function prepare(data)
 		if type(data[key]) ~= "table" then data[key] = nil end
 	end
 	if type(data.M6)~="table" then data.M6=nil end
+	if type(data.M7)~="table" then data.M7=nil end
 	reconcile(data, DEFAULT)
 	local weekly = type(data.M5.Weekly) == "table" and data.M5.Weekly
 	data.M6.TrialBest = math.max(tonumber(data.M6.TrialBest) or 0, tonumber(weekly and weekly.Trial) or 0)
@@ -1047,6 +1058,12 @@ function DataService.Load(player, ss)
 		releaseUntouched(sessions, player, raw)
 		return "left_during_build"
 	end
+	if not ss and not TradeJournal.Recover(data,player.UserId) then
+		releaseUntouched(sessions, player, raw)
+		kick(player, "Your trade inventory is synchronizing. Please rejoin shortly.")
+		return "trade_recovery_failed"
+	end
+	if not player.Parent then releaseUntouched(sessions,player,raw) return "left_during_recovery" end
 	data._WriteSeq = info and info.Seq or tonumber(data._WriteSeq) or 0
 	if ss then return "ok", data end -- test drive: never register stand-in players
 	writers[player] = ProfileWriter.new({ sessions = sessions, key = profileKey(player), data = data, seq = data._WriteSeq })
@@ -1112,7 +1129,7 @@ end
 --------------------------------------------------------------------
 function DataService.HandoffRelease(player)
 	local w = writers[player]
-	if not w or not DataService.CanPersist(player) or player:GetAttribute("M5Run") then return false, "not_active" end
+	if not w or not DataService.CanPersist(player) or player:GetAttribute("M5Run") or profiles[player].M7.Trade.Pending then return false, "not_active" end
 	player:SetAttribute("Handoff", true)
 	local ok, status = DataService.SaveNow(player, true)
 	if not ok then
