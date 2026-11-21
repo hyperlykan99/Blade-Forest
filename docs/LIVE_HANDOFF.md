@@ -18,7 +18,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **M8 v69**, Team Create confirmed. Cloud update `2026-11-21T23:37:41.438Z`. |
-| Active AI editor | None. Studio is in Edit mode. |
+| Active AI editor | Codex, owner-authorized QA |
 | Last handoff author / time | Codex, M8 Final Content. Cloud update `2026-11-21T23:37:41.438Z`. |
 | Last confirmed gameplay edit | Eight-week Verdant Oath season, permanent collection edition, 28 achievements and skippable onboarding. |
 | Current task | None claimed. M8 source, private save and essential checks are recorded. |
