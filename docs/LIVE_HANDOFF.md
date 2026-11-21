@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **Codex M8 final content.** Private development saved as **v69**. Studio is in Edit mode and the editor is released. See the [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md).
 > **Codex M7 social systems.** Private development cloud save confirmed. Studio is in Edit mode and the editor is released. See the [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md).
 > **2026-11-20 PST · Codex M6 endgame.** The private dev place is saved as **v60**. The editor is released in Edit mode. See the [M6 results](m6/M6_ENDGAME_RESULTS.md).
 > **2026-11-20 PST · Codex M5 gameplay loop.** The private dev M5 cloud save is confirmed by timestamp. The editor is released in Edit mode. See the [M5 results and rollback](m5/M5_GAMEPLAY_LOOP_RESULTS.md).
@@ -16,16 +17,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | M7 cloud update `2026-11-21T23:19:38.431Z`. Team Create confirmed no unsaved changes. Numeric M7 version unverified. |
-| Active AI editor | Codex, owner-authorized M8 construction |
-| Last handoff author / time | Codex, M7 Social Systems. Cloud update `2026-11-21T23:19:38.431Z`. |
-| Last confirmed gameplay edit | Parties and three group encounter entry paths, 30-member guilds, profiles, titles, auras and six vault slots. Real trading and paid gifting are disabled. |
-| Current task | None claimed. M7 source, private save and essential checks are recorded. |
-| Next action | Read the M7 results and await owner direction before beginning M8. |
-| Code source of truth | Private dev M7 and `m7/social-guilds-trading-vaults`, implementation `34ef2e9a101b3a3c8ed40f24c04c5f48666f4c11`. |
+| Most recent documented place version | **M8 v69**, Team Create confirmed. Cloud update `2026-11-21T23:37:41.438Z`. |
+| Active AI editor | None. Studio is in Edit mode. |
+| Last handoff author / time | Codex, M8 Final Content. Cloud update `2026-11-21T23:37:41.438Z`. |
+| Last confirmed gameplay edit | Eight-week Verdant Oath season, permanent collection edition, 28 achievements and skippable onboarding. |
+| Current task | None claimed. M8 source, private save and essential checks are recorded. |
+| Next action | Await owner direction for comprehensive testing. M7 trading and paid gifting stay disabled. |
+| Code source of truth | Private dev v69 and `m8/seasons-collection-final-content`, implementation `2d719aa97093481a719c23f1c625811132b830f9`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Numeric M7 save version, cross-server trading and guild tests, purchase validation, full party encounters and mobile QA remain unverified. |
+| Blockers | Comprehensive device and gameplay testing, seasonal dashboard telemetry, and existing Silvershore Saber mesh permission remain unverified or unresolved. |
 
 ## Who is responsible
 
@@ -85,14 +86,20 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Started | M7 started from M6 v60 |
-| Task / owner approval | Owner-authorized M7 social systems and private save |
-| Studio place ID and saved version checked | `103379930563763` / `10777797608`, v2 world, Edit mode, cloud update `2026-11-21T23:19:38.431Z`. Numeric M7 version unverified. |
-| Git branch / baseline | `m7/social-guilds-trading-vaults`, M6 `47fcd18b689cf7590d923e8dff8d37dcbb62b27a` |
+| Started | M8 started from the confirmed private M7 cloud save |
+| Task / owner approval | Owner-authorized M8 final content, essential checks and private save |
+| Studio place ID and saved version checked | `103379930563763` / `10777797608`, v2 world, Edit mode, v69, cloud update `2026-11-21T23:37:41.438Z` |
+| Git branch / baseline | `m8/seasons-collection-final-content`, M7 implementation `34ef2e9a101b3a3c8ed40f24c04c5f48666f4c11` |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | Team Create confirmed no unsaved changes |
-| Tests and results | [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md) records the compile, Studio smoke and detached recovery suite |
-| Risks / blockers | Keep trading and paid gifting disabled. The rollback checkpoint is recorded at `2026-11-21T04:49:59.443Z` and includes 13 inert original sources. |
+| Work in progress / unsaved changes | M8 save confirmed by Team Create |
+| Tests and results | [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md) records the 17 source checks, profile fixture, UI smoke and economy projection |
+| Risks / blockers | Rollback checkpoint cloud update `2026-11-21T23:25:31.493Z`. `ServerStorage.M8Rollback` holds 13 source copies. Full device testing and live reward checks remain open. |
+
+## Codex → next editor (M8)
+
+- Private development v69 has the M8 implementation at `2d719aa97093481a719c23f1c625811132b830f9`, also recorded as `Workspace.M8DevBuild`.
+- The Verdant Oath tracks an eight-week UTC season with a seven-day reward grace period. Preserve `M8` profile fields and existing edition IDs during future source updates.
+- [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md) includes the rollback procedure, validation limits, existing mesh warning and economy estimates.
 
 ## Codex → next editor (M7)
 
