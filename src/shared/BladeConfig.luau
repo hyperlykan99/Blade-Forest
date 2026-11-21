@@ -6,6 +6,7 @@ local Config = {}
 local EC = require(script.Parent:WaitForChild("EconomyConfig"))
 Config.Economy = EC
 local M4 = require(script.Parent:WaitForChild("M4Layout"))
+local M6 = require(script.Parent:WaitForChild("M6Design"))
 
 --------------------------------------------------------------------
 -- World
@@ -440,10 +441,10 @@ Config.StarMult = { [0] = 1, 1.15, 1.35, 1.6, 2.0, 2.5 }
 Config.ShinyCopies = 5
 Config.ShinyMult = 1.5
 
-function Config.GetWeaponPower(id, star, shiny)
+function Config.GetWeaponPower(id, star, shiny, awakening)
 	local w = Config.WeaponById[id]
 	if not w then return 0 end
-	return w.Power * (Config.StarMult[star or 0] or 1) * (shiny and Config.ShinyMult or 1)
+	return w.Power * (Config.StarMult[star or 0] or 1) * (shiny and Config.ShinyMult or 1) * (M6.AwakeningMultiplier[awakening or 0] or 1)
 end
 
 Config.Pity = { Epic = 100, Legendary = 1000 }
@@ -605,7 +606,8 @@ function Config.GetStats(wielder)
 	if wielder:IsA("Player") then
 		local weapon = Config.WeaponById[wielder:GetAttribute("EquippedBlade") or ""] or Config.WeaponById[Config.StarterWeapon]
 		local star = wielder:GetAttribute("EquippedStar") or 0
-		local power = weapon.Power * (Config.StarMult[star] or 1) * (wielder:GetAttribute("EquippedShiny") and Config.ShinyMult or 1)
+		local stage=wielder:GetAttribute("EquippedAwakening") or 0
+		local power=Config.GetWeaponPower(weapon.Id,star,wielder:GetAttribute("EquippedShiny"),stage)
 		local dmgMult = Config.GetValue("Damage", Config.GetLevel(wielder, "Damage"))
 		local rawSpeed = Config.GetValue("Speed", Config.GetLevel(wielder, "Speed"))
 		local speed = math.min(rawSpeed, Config.MaxSpinSpeed)
@@ -614,6 +616,7 @@ function Config.GetStats(wielder)
 			Blade = weapon,
 			Star = star,
 			Shiny = wielder:GetAttribute("EquippedShiny") == true,
+			Awakening=stage,
 			Power = power,
 			-- BladesOff = player stopped their blades (BLADES button); level is capped in case of old saves
 			Blades = wielder:GetAttribute("BladesOff") and 0 or (math.floor(Config.GetValue("Blades", math.min(Config.GetLevel(wielder, "Blades"), Config.ById.Blades.MaxLevel))) + (wielder:GetAttribute("BonusBlades") or 0)),
@@ -1107,6 +1110,7 @@ Config.TravelCooldown = 3
 
 -- island whose horizontal bounds contain pos, or nil (open water / void)
 function Config.GetIslandAt(pos)
+	if workspace:GetAttribute("M6RaidAnnexReady") and pos.X>=3041 and pos.X<=3181 and math.abs(pos.Z+350)<=55 then return Config.IslandById.CrystalWilds end
 	if M4.Enabled() and M4.Contains(M4.Timber,pos,8) then return Config.IslandById.TimberHaven end
 	if workspace:GetAttribute("M4ColossusReady")==true and M4.Contains(M4.Crystal,pos,4) then
 		return Config.IslandById.CrystalWilds
@@ -1149,6 +1153,7 @@ for _, w in ipairs(W) do
 	w.Altar = (w.OneIn and not w.Exclusive and w.Id ~= Config.StarterWeapon) and w.Island or nil
 	w.Source = w.SoulCost and "SoulShop" or (w.Exclusive and "StarterPack") or (w.Id == Config.StarterWeapon and "Starter") or "Altar"
 	if Config.AttunementWeapon[w.Id] then w.Source = "Altar + Divine Attunement" end
+	w.AcquisitionRoutes=M6.Routes[w.Id] or {}
 	w.VfxTier = Config.RarityById[w.Rarity].Order - 1
 	w.Future = {
 		Forgeable = not w.Exclusive, -- may become a forge input/output (M6)
@@ -1172,6 +1177,7 @@ function Config.AcquireText(w)
 	if Config.AttunementWeapon[w.Id] then
 		t = t .. "  •  or Divine Attunement: " .. Config.FormatNumber(EC.Essence.AttuneCost) .. " Altar Essence"
 	end
+	if #w.AcquisitionRoutes>0 then t..="  •  "..table.concat(w.AcquisitionRoutes,"  •  ") end
 	return t
 end
 

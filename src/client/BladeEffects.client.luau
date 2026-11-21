@@ -131,7 +131,7 @@ local function tierFx(core, b, tier, idx, isLocal, lowGfx)
 	end
 end
 
-local function makeBlade(bladeType, scale, shiny, idx, isLocal)
+local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 	idx = idx or 1
 	local lowGfx = player:GetAttribute("Pref_Graphics") == "Low"
 	local tier = bladeType.VfxTier or 0
@@ -210,14 +210,35 @@ local function makeBlade(bladeType, scale, shiny, idx, isLocal)
 		end
 		if idx > 1 and not isLocal then e:Destroy() end
 	end
+	local aura
+	if stage>0 and idx==1 then
+		local spectral=({Color3.fromRGB(142,221,255),Color3.fromRGB(196,159,255),Color3.fromRGB(255,218,146)})[stage]
+		trail.Color=ColorSequence.new(spectral,b.EdgeColor or spectral)
+		trail.Lifetime+=.04*stage
+		if not lowGfx then
+			aura=Instance.new("Highlight")
+			aura.Name="AwakeningAura"
+			aura.Adornee=model aura.DepthMode=Enum.HighlightDepthMode.Occluded
+			aura.OutlineColor=spectral aura.FillColor=spectral aura.FillTransparency=.89
+			aura.OutlineTransparency=.31 aura.Parent=model
+			for ring=1,stage-1 do
+				local radius=(1.1+ring*.26)*scale
+				local ringPart=vpart(Vector3.new(.055,radius,radius),spectral,Enum.Material.Neon,.45)
+				ringPart.Shape=Enum.PartType.Cylinder ringPart.Name="AwakeningRing" ringPart.Parent=model
+				table.insert(parts,ringPart)
+				table.insert(offsets,CFrame.new(0,0,-len*.22*ring)*CFrame.Angles(0,math.pi/2,0))
+			end
+		end
+	end
 	model.Parent = folder
-	return { Model = model, Parts = parts, Offsets = offsets, Len = len, Scale = scale }
+	return { Model = model, Parts = parts, Offsets = offsets, Len = len, Scale = scale, Aura=aura, Stage=stage }
 end
 
 local visuals = {} -- [wielder] = { Key = string, List = {...} }
 
 local function setBlades(wielder, stats)
-	local key = stats.Blade.Id .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "") .. "_" .. tostring(player:GetAttribute("Pref_Graphics"))
+	local stage=stats.Awakening or 0
+	local key = stats.Blade.Id .. "_" .. stage .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "") .. "_" .. tostring(player:GetAttribute("Pref_Graphics"))
 	local v = visuals[wielder]
 	if v and v.Key ~= key then
 		for _, b in ipairs(v.List) do b.Model:Destroy() end
@@ -228,7 +249,7 @@ local function setBlades(wielder, stats)
 		visuals[wielder] = v
 	end
 	local n = stats and stats.Blades or 0
-	while #v.List < n do table.insert(v.List, makeBlade(stats.Blade, stats.Scale, stats.Shiny, #v.List + 1, wielder == player)) end
+	while #v.List < n do table.insert(v.List, makeBlade(stats.Blade, stats.Scale, stats.Shiny, #v.List + 1, wielder == player,stage)) end
 	while #v.List > n do table.remove(v.List).Model:Destroy() end
 	return v.List
 end
@@ -256,6 +277,10 @@ local function drawWielder(wielder, char, now, seen)
 	local stats = Config.GetStats(wielder)
 	local blades = Config.GetBlades(root.CFrame, stats, now)
 	local list = setBlades(wielder, stats)
+	local first=list[1]
+	if first and first.Aura and first.Stage==3 then
+		first.Aura.FillTransparency=player:GetAttribute("Pref_ReducedMotion") and .86 or .86+math.sin(now*3)*.07
+	end
 	local movedParts, movedCFrames = {}, {}
 	for i, bl in ipairs(blades) do
 		local v = list[i]

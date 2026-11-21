@@ -358,6 +358,19 @@ function E.BossReward(bossId, unit, share, isTop, logMultBase)
 end
 
 --------------------------------------------------------------------
+-- Additional Souls use a capped additive pool for combat grants only.
+function E.M6CombatSouls(base,bonuses)
+	return math.floor(math.max(0,num(base))*(1+E.soft(math.clamp(num(bonuses.Souls),0,.22),.35)))
+end
+function E.M6BossReward(unit,share,heart,enhanced)
+	share=math.clamp(num(share),0,1)
+	local logs=enhanced and 1.75 or heart and .48 or .62
+	local souls=enhanced and 100 or heart and 35 or 48
+	return {Logs=math.floor(math.max(0,num(unit))*logs),Souls=math.min(120,math.floor(souls+share*16)),
+		XP=enhanced and 1400 or heart and 500 or 640,
+		Materials=(enhanced and 24 or heart and 7 or 10)+math.floor(share*5)}
+end
+
 -- M5 reward values are tier Units and bounded raw currency. The callers own
 -- their daily/weekly budgets and record claims before entering this calculation.
 function E.M5Reward(unit,plan)

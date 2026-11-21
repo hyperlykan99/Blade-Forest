@@ -3,6 +3,7 @@ local Players=game:GetService("Players")
 local ReplicatedStorage=game:GetService("ReplicatedStorage")
 local Storage=game:GetService("ServerStorage")
 local M=require(ReplicatedStorage:WaitForChild("M5Design"))
+local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local C=require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
 local Data=require(script.Parent:WaitForChild("DataService"))
@@ -69,7 +70,7 @@ local function spawnTree(job,index)
 	local angle=(job.Depth+job.Score+index)%4*math.pi/2
 	local spot=job.Center+v(x,0,z)
 	local obj=Tree.Tree(id,CFrame.new(spot)*CFrame.Angles(0,angle,0),.78,C,Art,1)
-	local health=exp and M.DepthHealth(job.Depth) or ({4,6,8})[job.Tier]
+	local health=exp and math.floor(M.DepthHealth(job.Depth)*(index==1 and job.Depth>=8 and 1.6 or 1)) or ({4,6,8})[job.Tier]
 	obj.Name=exp and "Frostwood · "..job.Depth or "Trial timber"
 	obj:SetAttribute("M5Target",job.Player.UserId)
 	obj:SetAttribute("Strength",nil)
@@ -125,6 +126,7 @@ finish=function(job,reason,returnPlayer)
 		d.M5.Tokens+=tokens
 		local best=job.Score>w.Trial
 		w.Trial=math.max(w.Trial,job.Score)
+		d.M6.TrialBest=math.max(d.M6.TrialBest,job.Score)
 		Data.Sync(p)
 		if best then writeBoard(p,w.Key,"Trial",w.Trial) end
 		notify:FireClient(p,string.format("Trial finished · %s · %d trees · +%d Tokens",M.Trial.Ranks[rank] or "Unranked",job.Score,tokens),"rare_Epic")
@@ -165,6 +167,9 @@ local function depthComplete(job)
 		budget.DepthClaims+=1
 		local reward=M.DepthReward(job.Depth)
 		reward.Material=M.Expedition.Material
+		if job.Depth%3==0 then
+			M6Inventory.AddRune(d,M6Inventory.RollRune(job.Depth>=15 and 4 or job.Depth>=9 and 3 or 2,Random.new()),1)
+		end
 		Rewards.Grant(p,d,reward,"Expedition depth "..job.Depth.." cleared")
 	else
 		Data.Sync(p)
@@ -208,7 +213,7 @@ end
 
 function R.Enter(player,kind)
 	if kind~="Trial" and kind~="Expedition" then return false,"Unknown run" end
-	if active[player] then return false,"Finish your current run first" end
+	if active[player] or player:GetAttribute("M5Run") then return false,"Finish your current run first" end
 	local d=Data.Get(player)
 	local char=player.Character
 	local root=char and char:FindFirstChild("HumanoidRootPart")

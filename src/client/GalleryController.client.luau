@@ -12,6 +12,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local M6Inventory = require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local Economy = require(ReplicatedStorage:WaitForChild("Economy"))
 local T = require(ReplicatedStorage:WaitForChild("UITheme"))
 local C = T.Color
@@ -136,7 +137,7 @@ end
 
 local function sortKey(w)
 	local e = owned(w.Id)
-	local pw = Config.GetWeaponPower(w.Id, e and e.Star or 0, e and e.Shiny)
+	local pw = Config.GetWeaponPower(w.Id, e and e.Star or 0, e and e.Shiny, myData and M6Inventory.Stage(myData, w.Id))
 	return pw
 end
 
@@ -226,7 +227,9 @@ function refreshDetail()
 	local luck = player:GetAttribute("LuckMult") or 1
 	local p = Economy.WeaponOdds(id, luck)
 	local lines = {}
-	table.insert(lines, string.format("⚡ Power %s", Config.FormatNumber(Config.GetWeaponPower(id, e and e.Star or 0, e and e.Shiny))))
+	local stage = myData and M6Inventory.Stage(myData, id) or 0
+	table.insert(lines, string.format("⚡ Power %s", Config.FormatNumber(Config.GetWeaponPower(id, e and e.Star or 0, e and e.Shiny, stage))))
+	if stage > 0 then table.insert(lines, string.format("Awakening %s  •  %d rune sockets", ({"I", "II", "III"})[stage], stage)) end
 	if p and p > 0 then
 		table.insert(lines, string.format("🎲 %s base  •  you: 1 in %s per roll at its altar", Config.FormatOneIn(w.OneIn), Config.FormatNumber(math.floor(1 / p + 0.5))))
 	end

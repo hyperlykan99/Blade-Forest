@@ -46,6 +46,7 @@ local writers = {}   -- [player] = ProfileWriter (M0.1: one serialized writer pe
 local lost = {}      -- [player] = true once another session took the profile
 local Analytics      -- optional, set via DataService.SetAnalytics
 
+local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local Progression = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 
 local DEFAULT = {
@@ -91,7 +92,11 @@ local DEFAULT = {
 	LastIsland = "TimberHaven",
 	IslandProgress = {}, -- [islandId] = { ... } reserved for P1c objectives
 	-- v4 (M0) additions; see SaveMigrations
-	WeaponItems = {}, -- future per-item weapon identity (empty until M6)
+	WeaponItems = {}, -- M6 references an awakened representative without consuming the stack
+	M6={
+		Schema=1,ItemByWeapon={},Materials={},Runes={},Acquired={},Keys=0,Revision=0,TrialBest=0,
+		RaidSlots={},BossClears={},HeartWeek=-1,Daily={Key=-1,ChopCount={},ChopGrants={},Salvage=0,Raids=0,Heart=0},
+	},
 	RetiredWeapons = {}, -- catalog-missing weapons parked instead of deleted
 	CrateOrigins = { Earned = 0, Paid = 0, Legacy = 0 }, -- origin of FreeCrates
 	Analytics = { Onboard = {}, Prog = {} }, -- analytics bookkeeping, no personal data
@@ -255,7 +260,7 @@ function DataService.BestPower(d)
 	local best = 0
 	for id, entry in pairs(d.Weapons) do
 		if Config.WeaponById[id] then
-			best = math.max(best, Config.GetWeaponPower(id, entry.Star or 0, entry.Shiny))
+			best = math.max(best, Config.GetWeaponPower(id, entry.Star or 0, entry.Shiny,M6Inventory.Stage(d,id)))
 		end
 	end
 	return best
@@ -297,7 +302,7 @@ function DataService.EconomyContext(player, d)
 		EventLogs = math.max(workspace:GetAttribute("EventLogs") or 1, regionalLogs),
 		EventLuck = math.max(workspace:GetAttribute("EventLuck") or 1, regionalLuck),
 		PvP = player and player:GetAttribute("PvP") == true,
-		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = { Character = extra },
+		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = { Character = extra, Runes = M6Inventory.Bonuses(d) },
 	}
 end
 
@@ -309,6 +314,12 @@ function DataService.RecalcMultipliers(player)
 	updateIndexEditions(player, d)
 	local ctx = DataService.EconomyContext(player, d)
 	local logs = Economy.LogsBreakdown(ctx)
+	local mutation=ctx.Extra.Runes.Mutation
+	if mutation and mutation>0 then
+		ctx.Extra.Mutation={Logs=mutation}
+		player:SetAttribute("M6MutationLogs",round2(Economy.LogsBreakdown(ctx).Total))
+		ctx.Extra.Mutation=nil
+	else player:SetAttribute("M6MutationLogs",nil) end
 	local luck = Economy.LuckBreakdown(ctx)
 	local names = {}
 	for _, id in ipairs(d.EquippedPets or {}) do if Config.PetById[id] then table.insert(names, id) end end
@@ -521,15 +532,15 @@ end
 --------------------------------------------------------------------
 -- Weapons, stars, equip
 --------------------------------------------------------------------
-local function weaponPower(id, entry)
-	return Config.GetWeaponPower(id, entry and entry.Star or 0, entry and entry.Shiny)
+local function weaponPower(id,entry,data)
+	return Config.GetWeaponPower(id,entry and entry.Star or 0,entry and entry.Shiny,M6Inventory.Stage(data,id))
 end
 
 function DataService.BestWeapon(data)
 	local bestId, bestPower = Config.StarterWeapon, -1
 	for id, entry in pairs(data.Weapons) do
 		if Config.WeaponById[id] then
-			local p = weaponPower(id, entry)
+			local p=weaponPower(id,entry,data)
 			if p > bestPower then bestId, bestPower = id, p end
 		end
 	end
@@ -543,10 +554,13 @@ function DataService.ApplyEquip(player)
 		d.Equipped = DataService.BestWeapon(d)
 	end
 	local entry = d.Weapons[d.Equipped]
+	local old=player:GetAttribute("EquippedBlade")
 	player:SetAttribute("EquippedBlade", d.Equipped)
 	player:SetAttribute("EquippedStar", entry and entry.Star or 0)
 	player:SetAttribute("EquippedShiny", (entry and entry.Shiny) or nil)
-	player:SetAttribute("Power", math.floor(weaponPower(d.Equipped, entry)))
+	player:SetAttribute("EquippedAwakening",M6Inventory.Stage(d,d.Equipped))
+	player:SetAttribute("Power",math.floor(weaponPower(d.Equipped,entry,d)))
+	if old~=d.Equipped then DataService.RecalcMultipliers(player) end
 end
 
 function DataService.Equip(player, id)
@@ -654,6 +668,27 @@ function DataService.AddWeapon(player, id, autoSellBelow)
 	return result
 end
 
+function DataService.M6Weapon(player,id,route)
+	local d=profiles[player]
+	if not d or d.Weapons[id] or not Config.WeaponById[id] then return false end
+	local result=DataService.AddWeapon(player,id,nil)
+	if result then d.M6.Acquired[id]=route end
+	return result~=nil
+end
+function DataService.RefreshM6(player)
+	local d=profiles[player]
+	if not d then return end
+	local ls=player:FindFirstChild("leaderstats")
+	local souls=ls and ls:FindFirstChild("Souls")
+	if souls then souls.Value=d.Souls end
+	DataService.ApplyEquip(player)
+	DataService.RecalcMultipliers(player)
+	DataService.Sync(player)
+end
+function DataService.M6MobSouls(player,amount)
+	local d=profiles[player]
+	return d and Economy.M6CombatSouls(amount,M6Inventory.Bonuses(d)) or amount
+end
 function DataService.SetSetting(player, key, value)
 	local d = profiles[player]
 	if not d then return false end
@@ -850,7 +885,10 @@ local function prepare(data)
 	for _, key in ipairs({ "Mastery", "TechTree", "PetGolden", "PetRainbow", "TraitOffer" }) do
 		if type(data[key]) ~= "table" then data[key] = nil end
 	end
+	if type(data.M6)~="table" then data.M6=nil end
 	reconcile(data, DEFAULT)
+	local weekly = type(data.M5.Weekly) == "table" and data.M5.Weekly
+	data.M6.TrialBest = math.max(tonumber(data.M6.TrialBest) or 0, tonumber(weekly and weekly.Trial) or 0)
 	if type(data.TechTree.Nodes) ~= "table" then data.TechTree.Nodes = {} end
 	-- P1a islands: grandfather legacy progress (BestArea) into island unlocks. Only ever adds.
 	do

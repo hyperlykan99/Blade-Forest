@@ -1,0 +1,277 @@
+{
+  "method": "M5 200-hour median anchored affordability and issuance overlay",
+  "assumptions": [
+    "M2 tree rates and island gate medians anchor the checked-in M5 overlay",
+    "Daily farm caps apply per island; active routes visit every unlocked island",
+    "One assumed successful raid each active day solo or two with teammates, 38% contribution in co-op",
+    "Assumes seasonal costs and rewards as written and an eligible five-star at 28h free or 22h paid",
+    "Mastery eligibility and baseline Essence and Souls accrual are scenario inputs",
+    "Account-wide forked economies are modeled; no live telemetry or playtest DPS calibration",
+    "Optional rune sensitivity assumes 7% effective Logs bonus during 35% of income"
+  ],
+  "runs": {
+    "free-active": {
+      "play_hours": 200,
+      "hours_per_day": 4,
+      "baseline_m5_logs": 998528334739,
+      "earned_inventory": {
+        "Bark": 4255,
+        "Crystal": 4275,
+        "Souls": 7969,
+        "Essence": 112500,
+        "ExpeditionFrostCore": 196,
+        "TrialSeal": 50,
+        "SigilBark": 17,
+        "Frost": 5427,
+        "SigilCrystal": 17,
+        "SigilFrost": 16
+      },
+      "spent_inventory": {
+        "Bark": 115,
+        "Essence": 49250,
+        "Souls": 4380,
+        "Crystal": 215,
+        "SigilBark": 14,
+        "SigilCrystal": 14,
+        "SigilFrost": 14,
+        "Frost": 245,
+        "ExpeditionFrostCore": 24
+      },
+      "ending_inventory": {
+        "Bark": 4140,
+        "Crystal": 4060,
+        "Souls": 3589,
+        "Essence": 63250,
+        "ExpeditionFrostCore": 172,
+        "TrialSeal": 50,
+        "SigilBark": 3,
+        "Frost": 5182,
+        "SigilCrystal": 3,
+        "SigilFrost": 2
+      },
+      "first_affordable_play_hours": {
+        "Forge 1": 4,
+        "Etched craft": 8,
+        "Forge 2": 16,
+        "Winter Key": 24,
+        "Awakening 1": 28,
+        "Awakening 2": 32,
+        "Forge 3": 44,
+        "Awakening 3": 68,
+        "Forge 4": 112
+      },
+      "encounter_clears": {
+        "Bark": 17,
+        "Crystal": 17,
+        "Frost": 16,
+        "Heart weekly": 7,
+        "Heart repeat": 7
+      },
+      "rune_issuance": {
+        "Etched raid": 17,
+        "Refined raid": 33,
+        "Etched craft": 1,
+        "Refined expedition": 16,
+        "Ancient Heart": 7,
+        "Radiant Heart": 7
+      },
+      "raid_damage_share_assumption": 1,
+      "encounter_logs_granted": 5127100000,
+      "logs_displaced": 38046071380,
+      "logs_net_change_pct": -3.297,
+      "logs_net_change_with_rune_sensitivity_pct": -0.847
+    },
+    "free-afk": {
+      "play_hours": 200,
+      "hours_per_day": 8,
+      "baseline_m5_logs": 562415788117,
+      "earned_inventory": {
+        "Frost": 2000,
+        "Souls": 3600,
+        "Essence": 108000
+      },
+      "spent_inventory": {},
+      "ending_inventory": {
+        "Frost": 2000,
+        "Souls": 3600,
+        "Essence": 108000
+      },
+      "first_affordable_play_hours": {},
+      "encounter_clears": {},
+      "rune_issuance": {},
+      "raid_damage_share_assumption": null,
+      "encounter_logs_granted": 0,
+      "logs_displaced": 0,
+      "logs_net_change_pct": 0.0,
+      "logs_net_change_with_rune_sensitivity_pct": 0.0
+    },
+    "paid-active": {
+      "play_hours": 200,
+      "hours_per_day": 4,
+      "baseline_m5_logs": 2411434641155,
+      "earned_inventory": {
+        "Bark": 4255,
+        "Crystal": 4255,
+        "Frost": 6127,
+        "Souls": 8569,
+        "Essence": 151200,
+        "ExpeditionFrostCore": 300,
+        "TrialSeal": 50,
+        "SigilBark": 17,
+        "SigilCrystal": 17,
+        "SigilFrost": 16
+      },
+      "spent_inventory": {
+        "Bark": 275,
+        "Essence": 149250,
+        "Souls": 6980,
+        "Crystal": 295,
+        "SigilBark": 14,
+        "SigilCrystal": 14,
+        "SigilFrost": 14,
+        "Frost": 325,
+        "ExpeditionFrostCore": 24,
+        "TrialSeal": 3
+      },
+      "ending_inventory": {
+        "Bark": 3980,
+        "Crystal": 3960,
+        "Frost": 5802,
+        "Souls": 1589,
+        "Essence": 1950,
+        "ExpeditionFrostCore": 276,
+        "TrialSeal": 47,
+        "SigilBark": 3,
+        "SigilCrystal": 3,
+        "SigilFrost": 2
+      },
+      "first_affordable_play_hours": {
+        "Forge 1": 4,
+        "Etched craft": 8,
+        "Forge 2": 16,
+        "Awakening 1": 24,
+        "Winter Key": 24,
+        "Awakening 2": 28,
+        "Forge 3": 40,
+        "Awakening 3": 64,
+        "Forge 4": 108,
+        "Forge 5": 200
+      },
+      "encounter_clears": {
+        "Bark": 17,
+        "Crystal": 17,
+        "Frost": 16,
+        "Heart weekly": 7,
+        "Heart repeat": 7
+      },
+      "rune_issuance": {
+        "Refined expedition": 17,
+        "Etched raid": 17,
+        "Refined raid": 33,
+        "Etched craft": 1,
+        "Ancient Heart": 7,
+        "Radiant Heart": 7
+      },
+      "raid_damage_share_assumption": 1,
+      "encounter_logs_granted": 5593200000,
+      "logs_displaced": 99723149636,
+      "logs_net_change_pct": -3.903,
+      "logs_net_change_with_rune_sensitivity_pct": -1.453
+    },
+    "paid-afk": {
+      "play_hours": 200,
+      "hours_per_day": 8,
+      "baseline_m5_logs": 1553657747795,
+      "earned_inventory": {
+        "Frost": 2000,
+        "Souls": 4200,
+        "Essence": 144000
+      },
+      "spent_inventory": {},
+      "ending_inventory": {
+        "Frost": 2000,
+        "Souls": 4200,
+        "Essence": 144000
+      },
+      "first_affordable_play_hours": {},
+      "encounter_clears": {},
+      "rune_issuance": {},
+      "raid_damage_share_assumption": null,
+      "encounter_logs_granted": 0,
+      "logs_displaced": 0,
+      "logs_net_change_pct": 0.0,
+      "logs_net_change_with_rune_sensitivity_pct": 0.0
+    },
+    "free-active-cooperative": {
+      "play_hours": 200,
+      "hours_per_day": 4,
+      "baseline_m5_logs": 998528334739,
+      "earned_inventory": {
+        "Bark": 4363,
+        "Crystal": 4394,
+        "Souls": 10029,
+        "Essence": 112500,
+        "ExpeditionFrostCore": 196,
+        "TrialSeal": 50,
+        "SigilBark": 33,
+        "SigilCrystal": 34,
+        "Frost": 5494,
+        "SigilFrost": 33
+      },
+      "spent_inventory": {
+        "Bark": 115,
+        "Essence": 49250,
+        "Souls": 4380,
+        "Crystal": 215,
+        "Frost": 245,
+        "ExpeditionFrostCore": 24,
+        "SigilBark": 14,
+        "SigilCrystal": 14,
+        "SigilFrost": 14
+      },
+      "ending_inventory": {
+        "Bark": 4248,
+        "Crystal": 4179,
+        "Souls": 5649,
+        "Essence": 63250,
+        "ExpeditionFrostCore": 172,
+        "TrialSeal": 50,
+        "SigilBark": 19,
+        "SigilCrystal": 20,
+        "Frost": 5249,
+        "SigilFrost": 19
+      },
+      "first_affordable_play_hours": {
+        "Forge 1": 4,
+        "Etched craft": 8,
+        "Forge 2": 12,
+        "Forge 3": 24,
+        "Winter Key": 24,
+        "Awakening 1": 28,
+        "Awakening 2": 36,
+        "Awakening 3": 56,
+        "Forge 4": 88
+      },
+      "encounter_clears": {
+        "Bark": 33,
+        "Crystal": 34,
+        "Frost": 33,
+        "Heart weekly": 7,
+        "Heart repeat": 7
+      },
+      "rune_issuance": {
+        "Etched raid": 33,
+        "Refined raid": 67,
+        "Etched craft": 1,
+        "Refined expedition": 16,
+        "Ancient Heart": 7,
+        "Radiant Heart": 7
+      },
+      "raid_damage_share_assumption": 0.38,
+      "encounter_logs_granted": 8537100000,
+      "logs_displaced": 52907818013,
+      "logs_net_change_pct": -4.444,
+      "logs_net_change_with_rune_sensitivity_pct": -1.994
+    }
+  }
+}

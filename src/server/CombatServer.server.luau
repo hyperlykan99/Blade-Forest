@@ -2,6 +2,7 @@
 -- Blades are drawn on clients; the server decides every hit from the same math.
 
 require(script.Parent:WaitForChild("M4WorldRuntime"))
+local M6Hits=require(script.Parent:WaitForChild("M6Hits"))
 local M5Runs=require(script.Parent:WaitForChild("M5Runs"))
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -360,7 +361,7 @@ local function killNPC(model, killer, pos)
 	elseif killer then
 		addCoins(killer, model:GetAttribute("Reward") or 10, pos)
 		local kind = CollectionService:HasTag(model, "Bandit") and "Bandit" or model:GetAttribute("Kind")
-		DataService.AddSouls(killer, soulsFor(kind), pos and pos + Vector3.new(0, 2, 0))
+		DataService.AddSouls(killer, DataService.M6MobSouls(killer,soulsFor(kind)), pos and pos + Vector3.new(0, 2, 0))
 		Progress.Add(killer, "NPCs", 1)
 	end
 	shatter(model, pos)
@@ -369,7 +370,7 @@ end
 
 local function applyDamage(attacker, target, damage, hitPos, weak)
 	local attackerPlayer = attacker:IsA("Player") and attacker or nil
-	if M5Runs.Deal(attackerPlayer,target,damage) then return end
+	if M6Hits.Deal(attackerPlayer,target,damage) or M5Runs.Deal(attackerPlayer,target,damage) then return end
 	if attackerPlayer and attackerPlayer:GetAttribute("M5Run") then return end
 	local victimInRun=Players:GetPlayerFromCharacter(target)
 	if victimInRun and victimInRun:GetAttribute("M5Run") then return end
@@ -442,7 +443,10 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 	local earned = 0
 	if attackerPlayer then
 		-- trees: logs fly into the player (client shows the +N), so no floating text here
-		earned = addCoins(attackerPlayer, target:GetAttribute("Reward") or 1, not target:GetAttribute("IsTree") and hitPos or nil) or 0
+		local raw=target:GetAttribute("Reward") or 1
+		local mutationMult=target:GetAttribute("Mutation") and attackerPlayer:GetAttribute("M6MutationLogs")
+		earned=(mutationMult and DataService.AddCoins(attackerPlayer,raw*mutationMult,nil,true)
+			or addCoins(attackerPlayer,raw,not target:GetAttribute("IsTree") and hitPos or nil)) or 0
 		if target:GetAttribute("IsTree") then
 			Telemetry.Logs(attackerPlayer, earned, "chop")
 			Telemetry.Tree(attackerPlayer)
@@ -450,7 +454,7 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 			Telemetry.Logs(attackerPlayer, earned, "other")
 		end
 		if not target:GetAttribute("IsTree") then
-			DataService.AddSouls(attackerPlayer, soulsFor(target:GetAttribute("Kind")), hitPos + Vector3.new(0, 2, 0))
+			DataService.AddSouls(attackerPlayer, DataService.M6MobSouls(attackerPlayer,soulsFor(target:GetAttribute("Kind"))), hitPos + Vector3.new(0, 2, 0))
 			Progress.Add(attackerPlayer, "NPCs", 1)
 		else
 			Progress.Add(attackerPlayer, "Trees", 1)
@@ -627,6 +631,8 @@ RunService.Heartbeat:Connect(function(dt)
 	local all = table.clone(chars)
 	table.insert(all, Breakables)
 	table.insert(all,M5Runs.Root)
+	local encounters=workspace:FindFirstChild("M6Encounters")
+	if encounters then table.insert(all,encounters) end
 	table.insert(all, Enemies)
 	local filterChars = { All = all, PlayersOnly = chars }
 

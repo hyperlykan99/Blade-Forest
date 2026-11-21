@@ -241,7 +241,8 @@ task.spawn(function()
 	while true do
 		task.wait(1)
 		local active=player:GetAttribute("M5Run")
-		local regional=workspace:GetAttribute("M5EventIsland")==player:GetAttribute("CurrentIsland") and workspace:GetAttribute("M5EventName")
+		if active~="Trial" and active~="Expedition" then active=nil end
+		local regional=workspace:GetAttribute("M5EventIsland")==player:GetAttribute("CurrentIsland") and workspace:GetAttribute("M5EventName") and not player:GetAttribute("M5Run") and workspace:GetAttribute("M5EventName")
 		hud.Visible=active~=nil or regional~=nil and regional~=false
 		if active then
 			local detail=active=="Trial" and string.format("%d trees",player:GetAttribute("M5RunScore") or 0)
