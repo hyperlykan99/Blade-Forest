@@ -1,7 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
-> **2026-11-20 PST · Codex M3 verification.** The connected private dev place matches M2 across all 54 exported Luau sources. M3 implementation was unavailable for export. See the [M3 verification](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
+> **2026-11-20 PST · Codex M3 implementation.** The private dev place has the 72-node Tech Tree, 100 Mastery levels, 12 traits, 21 pets and Golden/Rainbow evolution. The editor is released. See the [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
 > Last documented snapshot: **2026-11-20 16:15 PST** (Claude, end of M1 Unified Economy & Progression). Written on branch `m1/unified-economy-progression` (based on `m0.1/foundations-corrections`; not merged to `main`). **Re-verify Studio before editing.**
 > Last documented snapshot: **2026-11-20 04:50 PST** (Claude, end of M0.1 Foundations Corrections). Written on branch `m0.1/foundations-corrections` (based on `m0/foundations`; not merged to `main`). **Re-verify Studio before editing.**
 
@@ -12,16 +12,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev:** **v45** "M2 COMPLETE WEAPON COLLECTION (dev only, not published)" (dev Open Cloud `updateTime` 2026-11-21T01:15:19.309Z). M2 rollback checkpoint **v35** relabelled "M2 PRE-WEAPONS checkpoint (= M1 v35 state)"; v36–v44 are playtest/auto-saves. Earlier: v29 M1 checkpoint, v23 M0.1, v18 M0. **Production:** documented v48; not accessed or touched |
-| Active AI editor | **None** (Codex verification complete, editor released) |
-| Last handoff author / time | **Codex / 2026-11-20 PST** (M3 verification) |
-| Last confirmed gameplay edit | **Dev place only:** v45, M2: 120 weapons (77 new, Creator Store models, scripts stripped), VFX tiers 0–7, rarity reveals and announcements, Weapon Gallery, Favorites, Altar Essence + Divine Attunement, future-system interfaces, edition-2 index. Original 43 weapons unchanged. Production: none since the P0 baseline |
-| Current task | **None claimed.** M3 remains incomplete in the verified place and repository. |
-| Next action | Locate the reported M3 source or place and reconcile it against the verified M2 baseline before M4. |
-| Code source of truth | **Roblox dev place.** All 54 exported Luau sources match completed M2 at `ce670488172ae0a39bfff259c47bf6b74578e1d5`. Version history is restricted. Open Cloud still reports the timestamp recorded for v45, while the Edit DataModel reports 30. |
+| Most recent documented place version | **Dev M3 saved state** · Open Cloud `updateTime` `2026-11-21T02:11:29.158Z`. Team Create reported no unsaved changes. The numeric M3 version is unverified. Last numbered milestone in the handoff: **v45 (M2)**. |
+| Active AI editor | **None** (M3 construction and smoke check complete; editor released in Edit mode) |
+| Last handoff author / time | **Codex / 2026-11-20 PST** (M3 Character Progression) |
+| Last confirmed gameplay edit | **Dev only:** M3 Tech Tree, mastery, traits and pets. M2’s 120 weapon definitions and 120 BladeModels were observed in the M3 smoke session. |
+| Current task | **None claimed.** M3 implementation and handoff complete. |
+| Next action | Review the M3 results and resolve the numeric saved version through Studio Version History. M4 requires a new owner instruction. |
+| Code source of truth | **Roblox private dev place and `m3/character-progression`.** The 18 M3 source digests matched implementation commit `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0`. The two new pet rosters and all evolution model recipes are source-controlled. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Owner review of M0, M0.1 and M1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
+| Blockers | Numeric cloud save version unverified. Actual evolved-inventory DataStore persistence, restricted-account policy, mobile and multiplayer remain unverified. Earlier milestone review items remain open. |
 
 ## Who is responsible
 
@@ -82,13 +82,20 @@
 | --- | --- |
 | AI | None (released) |
 | Started (date/time/timezone) | — |
-| Task / owner approval | M3 verification and GitHub handoff complete. |
-| Studio place ID and saved version checked | Dev `103379930563763` / `10777797608`, Edit mode. Last recorded save v45 (M2). Save check reported no unsaved changes. |
-| Git branch / starting commit | `m3/character-progression` from completed M2 at `ce670488172ae0a39bfff259c47bf6b74578e1d5`. |
+| Task / owner approval | Owner-authorized M3 construction and private save complete. |
+| Studio place ID and saved version checked | `103379930563763` / `10777797608`, Edit mode. No unsaved changes. Cloud timestamp `2026-11-21T02:11:29.158Z`; numeric version unverified. |
+| Git branch / starting commit | `m3/character-progression`, starting from documentation handoff `a42477e11d81a410b54af71406f7aeb18a98ab47` on completed M2 `ce670488172ae0a39bfff259c47bf6b74578e1d5`. |
 | Scripts or objects being edited | None |
 | Work in progress / unsaved changes | None reported by Studio. |
-| Tests and results | [M3 verification](m3/M3_CHARACTER_PROGRESSION_RESULTS.md). All 54 exported sources match M2. Six traits, seven pets and one egg station were observed. |
-| Risks / blockers | Reported M3 implementation still needs to be located. Roblox version-history verification returned HTTP 403. |
+| Tests and results | [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md) covers compilation, detached progression and evolution fixtures, v4 save compatibility, and one-client functional checks. |
+| Risks / blockers | See dashboard and M3 results. |
+
+## Codex → next editor (2026-11-20 PST, M3)
+
+- The implementation commit is `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0` on `m3/character-progression`. The private place was left in Edit mode.
+- The Tech Tree uses `ReplicatedStorage.CharacterProgression`, `ServerScriptService.CharacterProgressionService` and the client Mastery controller. Mastery, node ownership, points and respec use the existing profile writer.
+- Pet models are generated by `ServerScriptService.PetModelFactory` from seven unchanged Timber templates and source-controlled Crystal/Frostbound geometry. The saved place loads 63 templates at server startup.
+- Rollback is documented M2 v45 or the 11 verified source copies in `ServerStorage.M3Rollback`. The full object and source inventory is in the [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
 
 ## Historical camera visibility handoff
 
