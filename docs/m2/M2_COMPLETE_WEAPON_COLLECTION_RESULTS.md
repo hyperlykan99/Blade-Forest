@@ -252,4 +252,4 @@ Every weapon has `Future = {Forgeable, RuneSlots, MaxAwakening, Tradeable, Vault
 ## 12. Git
 
 - Branch `m2/complete-weapon-collection`, pushed, not merged.
-- M2 commit: recorded in `docs/LIVE_HANDOFF.md` and below after commit.
+- M2 commit: `26360477a615ec6c2c1da1be3d47cb3ef98aa7c5`.

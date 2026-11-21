@@ -59,7 +59,7 @@
 ## Claude → next AI handoff (2026-11-20 ~17:40 PST, M2)
 
 - **Studio state:** dev place 103379930563763 / 10777797608, **Edit mode, saved v45**, no play session, profile lock released. One Studio client used.
-- **Branch:** `m2/complete-weapon-collection` (commit SHA in the results doc §12).
+- **Branch / commit:** `m2/complete-weapon-collection` @ `26360477a615ec6c2c1da1be3d47cb3ef98aa7c5`.
 - **What changed:** see `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`. Roster lives in `tools/m2/roster.py`; run `python3 tools/m2/gen_m2.py` to regenerate the BladeConfig M2 blocks and `docs/weapon_manifest.json`. Never hand-edit between `-- M2:BEGIN/END` markers.
 - **Test hooks (Studio only):** `require(game.ServerStorage.M2Tests).RunAll()` (run suites separately if it times out); M1/M01/M0 tests unchanged.
 - **Rollback:** dev v35, or `ServerStorage.M2Backups` (`<Name>_PreM2`, `BladeModels_PreM2`, dev profile snapshot).
