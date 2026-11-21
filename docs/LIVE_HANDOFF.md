@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **2026-11-20 PST · Codex M4 construction.** Private dev saved as **v52** with the verified v2 world active. The editor is released. See the [M4 results and rollback notes](m4/M4_COMPLETE_WORLD_RESULTS.md).
 > **2026-11-20 PST · Codex M3 implementation.** The private dev place has the 72-node Tech Tree, 100 Mastery levels, 12 traits, 21 pets and Golden/Rainbow evolution. The editor is released. See the [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
 > Last documented snapshot: **2026-11-20 16:15 PST** (Claude, end of M1 Unified Economy & Progression). Written on branch `m1/unified-economy-progression` (based on `m0.1/foundations-corrections`; not merged to `main`). **Re-verify Studio before editing.**
 > Last documented snapshot: **2026-11-20 04:50 PST** (Claude, end of M0.1 Foundations Corrections). Written on branch `m0.1/foundations-corrections` (based on `m0/foundations`; not merged to `main`). **Re-verify Studio before editing.**
@@ -12,16 +13,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev M3 saved state** · Open Cloud `updateTime` `2026-11-21T02:11:29.158Z`. Team Create reported no unsaved changes. The numeric M3 version is unverified. Last numbered milestone in the handoff: **v45 (M2)**. |
-| Active AI editor | **Codex** (owner-authorized M4 world construction) |
-| Last handoff author / time | **Codex / 2026-11-20 PST** (M3 Character Progression) |
-| Last confirmed gameplay edit | **Dev only:** M3 Tech Tree, mastery, traits and pets. M2’s 120 weapon definitions and 120 BladeModels were observed in the M3 smoke session. |
-| Current task | M4 world construction on private dev only. |
-| Next action | Review the M3 results and resolve the numeric saved version through Studio Version History. M4 requires a new owner instruction. |
-| Code source of truth | **Roblox private dev place and `m3/character-progression`.** The 18 M3 source digests matched implementation commit `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0`. The two new pet rosters and all evolution model recipes are source-controlled. |
+| Most recent documented place version | **Private dev v52**, confirmed by Studio Team Create. Open Cloud update `2026-11-21T02:47:44.314Z`. |
+| Active AI editor | **None** (M4 saved and editor released) |
+| Last handoff author / time | **Codex / 2026-11-20 PST** (M4 World Construction) |
+| Last confirmed gameplay edit | Private dev v52 has both replacement islands, the Crystal annex, three progression boss integrations and the reversible world switch. |
+| Current task | **None claimed.** M4 construction and essential checks are complete. |
+| Next action | Review the v52 M4 results. Begin M5 only on a new owner instruction. |
+| Code source of truth | Private dev v52 and Git branch `m4/complete-world-construction`. The implementation SHA is `2f50bfbf340b8cd104a083f6c7db308da526158a`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Numeric cloud save version unverified. Actual evolved-inventory DataStore persistence, restricted-account policy, mobile and multiplayer remain unverified. Earlier milestone review items remain open. |
+| Blockers | Live boss-clear persistence, sustained multi-client combat, mobile performance and comparative live Frost earnings remain unverified. |
 
 ## Who is responsible
 
@@ -80,15 +81,21 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | Codex |
+| AI | None (released) |
 | Started (date/time/timezone) | — |
-| Task / owner approval | Owner-authorized M3 construction and private save complete. |
-| Studio place ID and saved version checked | `103379930563763` / `10777797608`, Edit mode. No unsaved changes. Cloud timestamp `2026-11-21T02:11:29.158Z`; numeric version unverified. |
-| Git branch / starting commit | `m3/character-progression`, starting from documentation handoff `a42477e11d81a410b54af71406f7aeb18a98ab47` on completed M2 `ce670488172ae0a39bfff259c47bf6b74578e1d5`. |
+| Task / owner approval | Owner-authorized M4 world construction and private save complete. |
+| Studio place ID and saved version checked | Dev `103379930563763` / `10777797608`, Edit mode, **saved v52**, startup flag `v2`. |
+| Git branch / starting commit | `m4/complete-world-construction` from completed M3 implementation `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0` and its handoff. |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | None reported by Studio. |
-| Tests and results | [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md) covers compilation, detached progression and evolution fixtures, v4 save compatibility, and one-client functional checks. |
-| Risks / blockers | See dashboard and M3 results. |
+| Work in progress / unsaved changes | None. Team Create saved the v2 flag and construction as v52. |
+| Tests and results | [M4 results](m4/M4_COMPLETE_WORLD_RESULTS.md) records the v2 and legacy boots, 2,030 new trees, all routes, boss smoke and reward fixtures. |
+| Risks / blockers | See M4 results. Roll back layouts with the startup flag and use the pre-M4 checkpoint for a full restore. |
+
+## Codex → next editor (2026-11-20 PST, M4)
+
+- Private dev **v52** is saved and left in Edit mode. The verified staged geometry is in `ServerStorage.M4WorldSource`.
+- Set `Workspace.BladeWorldLayout` to `legacy` and restart a dev Studio session to restore the original layout. The Crystal annex remains available in either layout. Use `ServerStorage.M4Rollback` and the pre-M4 cloud checkpoint for a full rollback.
+- The M4 results record all 16 districts, the 620 preserved Crystal tree positions, 2,030 new choppable trees, boss and gate behavior, asset provenance, and smoke-test limits.
 
 ## Codex → next editor (2026-11-20 PST, M3)
 
