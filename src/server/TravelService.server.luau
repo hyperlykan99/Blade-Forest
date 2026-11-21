@@ -129,6 +129,7 @@ end
 
 -- bypass is only ever passed by the Studio-only DevTravel hook below
 local function travel(player, islandId, bypass)
+	if player:GetAttribute("M5Run") then return false,"Exit your run to travel" end
 	if type(islandId) ~= "string" then return false, "Bad destination" end
 	local isl = Config.IslandById[islandId]
 	if not isl then return false, "Unknown island" end
@@ -153,8 +154,9 @@ local function travel(player, islandId, bypass)
 	lastTravel[player] = now
 	local character=player.Character
 	busy[player] = character
+	player:SetAttribute("IslandTravelling",true)
 	local ok, why = place(player, isl)
-	if busy[player]==character then busy[player] = nil end
+	if busy[player]==character then busy[player]=nil player:SetAttribute("IslandTravelling",nil) end
 	if not ok then return false, why end
 	setIsland(player, isl)
 	NotifyRemote:FireClient(player, "🧭 Arrived at " .. isl.Name, "kill")
@@ -175,7 +177,7 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
 		local annex = workspace:FindFirstChild("M4ActiveWorld")
 		if not runtime.Crystal or not annex or not prompt:IsDescendantOf(annex) or not root or not anchor or not anchor:IsA("BasePart")
 			or (root.Position-anchor.Position).Magnitude>14 or spawned[player]~=player.Character
-			or player:GetAttribute("CurrentIsland")~="CrystalWilds" or player:GetAttribute("Handoff") or busy[player]
+			or player:GetAttribute("CurrentIsland")~="CrystalWilds" or player:GetAttribute("Handoff") or player:GetAttribute("M5Run") or busy[player]
 			or (player:GetAttribute("CombatUntil") or 0)>workspace:GetServerTimeNow() then return end
 		local arena = waypoint=="ColossusArena"
 		if not arena and waypoint~="CrystalPlaza" then return end
@@ -184,8 +186,9 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
 		island.ReserveKey = waypoint
 		local character=player.Character
 		busy[player]=character
+		player:SetAttribute("IslandTravelling",true)
 		local ok, why=place(player,island)
-		if busy[player]==character then busy[player]=nil end
+		if busy[player]==character then busy[player]=nil player:SetAttribute("IslandTravelling",nil) end
 		if not ok then NotifyRemote:FireClient(player,tostring(why),"death") end
 		return
 	end
@@ -194,6 +197,19 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
 	local ok, res = travel(player, to)
 	if not ok then NotifyRemote:FireClient(player, tostring(res), "death") end
 end)
+
+-- Server-only return channel for M5 arenas. It shares the normal arrival path.
+local returnFromRun=Instance.new("BindableFunction")
+returnFromRun.Name="M5Return"
+returnFromRun.OnInvoke=function(player,origin)
+	if not player:GetAttribute("M5Run") or player:GetAttribute("M5RunOrigin")~=origin then return false end
+	local island=Config.IslandById[origin] or home()
+	if not isUnlocked(player,island) then island=home() end
+	local success=place(player,island)
+	if success then setIsland(player,island) end
+	return success
+end
+returnFromRun.Parent=game:GetService("ServerStorage")
 
 local launching = {}
 local function initializeCharacter(player, char)
@@ -237,6 +253,7 @@ local function onPlayer(player)
 	player.CharacterRemoving:Connect(function()
 		releasePlayer(player)
 		launching[player],spawned[player],busy[player]=nil,nil,nil
+		player:SetAttribute("IslandTravelling",nil)
 	end)
 	update()
 end

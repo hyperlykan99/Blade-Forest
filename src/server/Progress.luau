@@ -9,6 +9,7 @@ local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Not
 
 local Mastery = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 
+local Events=require(script.Parent:WaitForChild("M5EventTelemetry"))
 local P = {}
 
 local function dayKey() return math.floor(os.time() / 86400) end
@@ -91,6 +92,7 @@ function P.TreeChopped(player, typeId, mutId)
 	end
 	local first = not d.Trees[typeId]
 	d.Trees[typeId] = (d.Trees[typeId] or 0) + 1
+	Events.Chop(player,Config.AreaIsland[tt.Area])
 	local rarity = Config.RarityById[tt.Rarity]
 	local xp = Mastery.TreeXP(rarity and rarity.Order, Config.AreaIsland[tt.Area] or d.LastIsland, mutId and Config.MutationById[mutId])
 	DataService.AddMasteryXP(player, xp + (first and 30 or 0))

@@ -19,7 +19,7 @@ while true do
 	task.wait(0.5)
 	for _, player in ipairs(Players:GetPlayers()) do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if root and player:GetAttribute("Loaded") and player:GetAttribute("CurrentIsland") and not player:GetAttribute("IslandArrivalPending") then
+		if root and player:GetAttribute("Loaded") and player:GetAttribute("CurrentIsland") and not player:GetAttribute("IslandArrivalPending") and not player:GetAttribute("M5Run") then
 			local areaId = Config.GetAreaAt(root.Position)
 			local area = Config.AreaById[areaId]
 			local power = player:GetAttribute("Power") or 0

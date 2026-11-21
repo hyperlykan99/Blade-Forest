@@ -319,6 +319,7 @@ local function runAuto(myRun)
 end
 
 local function setEnabled(on)
+	if on and player:GetAttribute("M5Run") then return end
 	if on == enabled then return end
 	enabled = on
 	runId += 1
@@ -338,6 +339,9 @@ local function setEnabled(on)
 	end
 end
 
+player:GetAttributeChangedSignal("M5Run"):Connect(function()
+	if player:GetAttribute("M5Run") then setEnabled(false) end
+end)
 button.Activated:Connect(function() setEnabled(not enabled) end)
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end

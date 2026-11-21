@@ -433,14 +433,15 @@ RARE_TIERS = ("Legendary", "Mythic", "Secret", "Divine")
 PAYBACK_H = 2.0  # A4: an upgrade is bought only if it pays back within this many hours of chopping
 
 
-def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24, 72, 200)):
+def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24, 72, 200), extension=None):
     rng = np.random.default_rng(seed)
     M = MODES[mode]
     out = {h: [] for h in checkpoints if h <= hours}
-    for _ in range(n_agents):
+    for agent in range(n_agents):
         p = new_player(rng, scen)
         p["eff"] *= M["eff"]
         refresh_weapon(p)
+        if extension: extension.begin(p, mode, seed, agent)
         t, cps, last_daily, next_treant, next_king = 0.0, list(out.keys()), -1e9, 300.0, 120.0
         roll_int = (C["FastRollInterval"] if "FastRoll" in p["passes"] else C["AutoRollInterval"])
         while cps:
@@ -451,6 +452,7 @@ def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24,
             u = unit(p)
             chop = inc * M["chop_share"] * dt
             gain = chop
+            if extension: gain += extension.chop_delta(p, area, chop, t, dt)
             p["logs_by"]["chop"] += chop
             n_trees = ts * M["chop_share"] * dt
             p["trees"][area] = p["trees"].get(area, 0) + n_trees
@@ -464,7 +466,7 @@ def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24,
             # rolls at the island altar (auto-roll in every mode)
             n_rolls = dt / roll_int
             isl = ISL_ORDER[p["isl_max"]]  # altar = highest unlocked island (AltarRule)
-            pr = roll_probs_avg(p, isl)
+            pr = roll_probs_avg(p, isl) if extension is None else extension.altar_probs(p, isl, t)
             hits = rng.poisson(n_rolls * pr)
             p["altar_rolls"][isl] += n_rolls
             g = P["Altars"][isl]["Guarantee"]
@@ -501,6 +503,7 @@ def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24,
                 last_daily = t
                 r = 2 * u
                 p["souls"] += 80; p["crates"] += 1; gain += r; p["logs_by"]["other"] += r
+            if extension: gain += extension.rewards(p, t, dt, ts, u)
             # gates: AFK players return briefly to kill the King once when it is the only missing step (assumption A7)
             for i_, isl_ in enumerate(ISL_ORDER[1:], start=1):
                 if p["isl_max"] == i_ - 1:
@@ -526,7 +529,8 @@ def simulate(scen, mode, hours, n_agents=40, seed=1, checkpoints=(0.5, 2, 8, 24,
                     rolls=p["rolls"], rarest=p["rarest"], souls=p["souls"], souls_earned_h=0, trees_s=ts_,
                     t_cw=p.get("t_CrystalWilds", 1e9), t_fr=p.get("t_FrostboundReach", 1e9),
                     t_pine=p.get("ta_PineForest", 1e9), first=dict(p["first"]), tier=price_tier(p), unit=unit(p),
-                    logs_by=dict(p["logs_by"]), soul_lv=dict(p["soul_lv"]), idx=len(p["idx_std"]), tidx=p["tidx"]))
+                    logs_by=dict(p["logs_by"]), soul_lv=dict(p["soul_lv"]), idx=len(p["idx_std"]), tidx=p["tidx"],
+                    **(extension.snapshot(p) if extension else {})))
     return out
 
 

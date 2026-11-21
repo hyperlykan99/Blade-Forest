@@ -358,6 +358,17 @@ function E.BossReward(bossId, unit, share, isTop, logMultBase)
 end
 
 --------------------------------------------------------------------
+-- M5 reward values are tier Units and bounded raw currency. The callers own
+-- their daily/weekly budgets and record claims before entering this calculation.
+function E.M5Reward(unit,plan)
+	return {
+		Logs=math.floor(math.max(0,num(unit))*math.clamp(num(plan.Logs),0,3)),
+		Souls=math.floor(math.clamp(num(plan.Souls),0,75)),
+		XP=math.floor(math.clamp(num(plan.XP),0,750)),
+		Materials=math.floor(math.clamp(num(plan.Materials),0,4)),
+	}
+end
+
 -- Index editions (H5): completion is recorded per edition and never revoked.
 -- editions = { ["Weapon/<area>/Standard/1"] = true, ... }
 --------------------------------------------------------------------

@@ -597,6 +597,11 @@ end
 
 -- Stats for a player OR an NPC model (NPCs use NPC_* attributes).
 function Config.GetStats(wielder)
+	if wielder:IsA("Player") and wielder:GetAttribute("M5Run")=="Trial" then
+		local weapon=Config.WeaponById[Config.StarterWeapon]
+		return {Blade=weapon, Star=0, Power=4, Blades=2, Speed=4.6, RawSpeed=4.6,
+			Damage=4, PvPDamage=0, Reach=6.5, Length=4.2, Scale=1, Height=Config.BladeHeightOffset}
+	end
 	if wielder:IsA("Player") then
 		local weapon = Config.WeaponById[wielder:GetAttribute("EquippedBlade") or ""] or Config.WeaponById[Config.StarterWeapon]
 		local star = wielder:GetAttribute("EquippedStar") or 0

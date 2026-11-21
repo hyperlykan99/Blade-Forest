@@ -42,7 +42,7 @@ local deps = {
 }
 
 AFKRejoin.OnServerEvent:Connect(function(player, session)
-	if busy[player] or RunService:IsStudio() then return end -- teleports do not work in Studio
+	if busy[player] or player:GetAttribute("M5Run") or RunService:IsStudio() then return end -- teleports do not work in Studio
 	busy[player] = true
 	local clean = AFKHandoff.Sanitize(session, Config.WeaponById, os.time())
 	local status = AFKHandoff.Run(player, clean, deps)

@@ -2,6 +2,7 @@
 -- Blades are drawn on clients; the server decides every hit from the same math.
 
 require(script.Parent:WaitForChild("M4WorldRuntime"))
+local M5Runs=require(script.Parent:WaitForChild("M5Runs"))
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -368,6 +369,10 @@ end
 
 local function applyDamage(attacker, target, damage, hitPos, weak)
 	local attackerPlayer = attacker:IsA("Player") and attacker or nil
+	if M5Runs.Deal(attackerPlayer,target,damage) then return end
+	if attackerPlayer and attackerPlayer:GetAttribute("M5Run") then return end
+	local victimInRun=Players:GetPlayerFromCharacter(target)
+	if victimInRun and victimInRun:GetAttribute("M5Run") then return end
 	local hum = target:FindFirstChildOfClass("Humanoid")
 
 	if hum then
@@ -621,6 +626,7 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 	local all = table.clone(chars)
 	table.insert(all, Breakables)
+	table.insert(all,M5Runs.Root)
 	table.insert(all, Enemies)
 	local filterChars = { All = all, PlayersOnly = chars }
 

@@ -102,6 +102,11 @@ local DEFAULT = {
 	IndexEditions = {}, -- ["Weapon/<area>/Standard|Mastery/<ed>"] / ["Tree/<area>/All/<ed>"] = true, never removed
 	SoulUpgrades = {}, -- [soulUpgradeId] = level (permanent, Souls)
 	BossKills = {}, -- [bossId] = kills (gate requirements)
+	M5 = {
+		Visits={}, VisitTimes={}, VisitCount=0, VisitIsland="", Landmarks={}, Quests={}, Contracts={},
+		Tokens=0, TrialFinishes=0, DepthEver=0, Streak=0, LastDaily=-2, Materials={},
+		Weekly={Key=-1,Trial=0,Depth=0,Shop={}}, Budget={Key=-1,Tokens=0,DepthClaims=0},
+	},
 	BossFirstClears = {},
 	BossSigils = {},
 	AltarRolls = {}, -- [islandId] = rolls at that altar since its progression guarantee was last used
@@ -278,11 +283,19 @@ function DataService.EconomyContext(player, d)
 		extra[channel] += traitBonus(primary, channel) + traitBonus(secondary, channel)
 	end
 	local traitLogs = 1 + (primary and primary.Mult - 1 or 0) + (secondary and secondary.Mult - 1 or 0)
+	local regionalLogs,regionalLuck=1,1
+	if player and not player:GetAttribute("M5Run") and workspace:GetAttribute("M5EventKey")
+		and player:GetAttribute("CurrentIsland")==workspace:GetAttribute("M5EventIsland")
+		and (workspace:GetAttribute("M5EventEnd") or 0)>os.time() then
+		regionalLogs=workspace:GetAttribute("M5EventLogs") or 1
+		regionalLuck=workspace:GetAttribute("M5EventLuck") or 1
+	end
 	return {
 		Levels = d.Levels, SoulUpgrades = d.SoulUpgrades, Rebirths = d.Rebirths or 0,
 		TraitMult = traitLogs, Pets = pets, Passes = passes,
 		InGroup = player and player:GetAttribute("InGroup") == true, Boosts = d.Boosts, Now = os.time(),
-		EventLogs = workspace:GetAttribute("EventLogs") or 1, EventLuck = workspace:GetAttribute("EventLuck") or 1,
+		EventLogs = math.max(workspace:GetAttribute("EventLogs") or 1, regionalLogs),
+		EventLuck = math.max(workspace:GetAttribute("EventLuck") or 1, regionalLuck),
 		PvP = player and player:GetAttribute("PvP") == true,
 		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = { Character = extra },
 	}
@@ -330,13 +343,14 @@ function DataService.RecalcAll()
 end
 workspace:GetAttributeChangedSignal("EventLogs"):Connect(DataService.RecalcAll)
 workspace:GetAttributeChangedSignal("EventLuck"):Connect(DataService.RecalcAll)
+workspace:GetAttributeChangedSignal("M5EventKey"):Connect(DataService.RecalcAll)
 
 -- M1.3: server-authoritative walk speed (Walk Speed upgrade + future capped mobility).
 -- Set on the server Humanoid, so MovementGuard and replication both use it.
 function DataService.ApplyMovement(player, mobility)
 	local d = profiles[player]
 	if not d then return end
-	local speed = Economy.WalkSpeed(d.Levels, mobility or DataService.EconomyContext(player, d).Extra.Character.Mobility)
+	local speed = player:GetAttribute("M5Run")=="Trial" and 18 or Economy.WalkSpeed(d.Levels, mobility or DataService.EconomyContext(player, d).Extra.Character.Mobility)
 	player:SetAttribute("WalkSpeedStat", speed)
 	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if hum and hum.WalkSpeed ~= speed then hum.WalkSpeed = speed end
@@ -1060,7 +1074,7 @@ end
 --------------------------------------------------------------------
 function DataService.HandoffRelease(player)
 	local w = writers[player]
-	if not w or not DataService.CanPersist(player) then return false, "not_active" end
+	if not w or not DataService.CanPersist(player) or player:GetAttribute("M5Run") then return false, "not_active" end
 	player:SetAttribute("Handoff", true)
 	local ok, status = DataService.SaveNow(player, true)
 	if not ok then
