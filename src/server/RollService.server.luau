@@ -66,6 +66,7 @@ local function rollOnce(player)
 	result.Luck = luck
 	result.Altar = altar
 	result.Guaranteed = guaranteed
+	result.Essence = DataService.AddEssence(player, Config.Attunement.PerRoll) -- M2: Divine Attunement groundwork
 	if guaranteed then
 		NotifyRemote:FireClient(player, string.format("🛡 Progression guarantee: %s! (%s altar, %d rolls)", weapon.Name,
 			Config.IslandById[altar] and Config.IslandById[altar].Name or altar, d.AltarRolls[altar]), "rare_" .. weapon.Rarity)
@@ -83,14 +84,19 @@ local function rollOnce(player)
 		Progress.Add(player, "RarePull", 1)
 	end
 
-	-- announcements
-	if weapon.OneIn >= Config.AnnounceGlobal then
+	-- announcements (M2: by rarity - Mythic+ to the server, Secret/Divine to every server;
+	-- the legacy 1-in-X thresholds still apply so nothing that was announced before goes quiet)
+	local ann = Config.Economy.Announce
+	local toGlobal = table.find(ann.Global, weapon.Rarity) ~= nil or weapon.OneIn >= Config.AnnounceGlobal
+	local toServer = table.find(ann.Server, weapon.Rarity) ~= nil or weapon.OneIn >= Config.AnnounceServer
+	if toGlobal then
 		pcall(function()
 			MessagingService:PublishAsync(GLOBAL_TOPIC, { Name = player.DisplayName, Weapon = weapon.Id, JobId = game.JobId })
 		end)
 	end
-	if weapon.OneIn >= Config.AnnounceServer then
-		NotifyRemote:FireAllClients(string.format("%s rolled %s [%s] (%s)!", player.DisplayName, weapon.Name, weapon.Rarity,
+	if toServer then
+		local icon = weapon.Rarity == "Divine" and "👑 DIVINE! " or (weapon.Rarity == "Secret" and "🌈 SECRET! " or "")
+		NotifyRemote:FireAllClients(string.format("%s%s rolled %s [%s] (%s)!", icon, player.DisplayName, weapon.Name, weapon.Rarity,
 			Config.FormatOneIn(weapon.OneIn)), "rare_" .. weapon.Rarity)
 	end
 	return result
@@ -98,10 +104,21 @@ end
 
 -- Roll() -> ok, result | ok=false, reason
 -- Roll("SetAltar", islandId) -> ok, altar   (only unlocked islands)
-RollRemote.OnServerInvoke = function(player, action, arg)
+-- M2: Roll("Favorite", weaponId, on) / Roll("Attune", islandId)
+RollRemote.OnServerInvoke = function(player, action, arg, arg2)
 	local d = DataService.Get(player)
 	if not d then return false, "Loading..." end
-	if action == "SetAltar" then
+	if action == "Favorite" then -- M2: Roll("Favorite", weaponId, on)
+		return DataService.SetFavorite(player, arg, arg2 == true)
+	elseif action == "Attune" then -- M2: Roll("Attune", islandId) -> claim that island's Attunement Divine once
+		local ok, res = DataService.Attune(player, arg)
+		if ok then
+			local w = Config.WeaponById[res.Id]
+			NotifyRemote:FireAllClients(string.format("👑 %s attuned %s at the %s altar!", player.DisplayName, w.Name,
+				Config.IslandById[arg] and Config.IslandById[arg].Name or arg), "rare_Divine")
+		end
+		return ok, res
+	elseif action == "SetAltar" then
 		if type(arg) ~= "string" or not d.UnlockedIslands[arg] or not Config.Economy.Altars[arg] then return false, "Locked" end
 		d.Settings.Altar = arg
 		player:SetAttribute("Altar", arg)

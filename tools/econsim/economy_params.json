@@ -1,447 +1,485 @@
 {
-  "_doc": "M1 economy parameters. SINGLE SOURCE OF TRUTH: m1sim.py reads this file and gen_luau.py writes src/shared/EconomyConfig.luau from it. Edit here, regenerate, re-run the simulator.",
-  "Version": 1,
-  "Pools": {
-    "PermLogsCap": 6.0,
-    "PetLogsCap": 3.0,
-    "RebirthLogsPer": 0.25,
-    "RebirthLogsCap": 3.0,
-    "TempLogsMax": 2.0,
-    "PermLuckCap": 4.0,
-    "RebirthLuckPer": 0.1,
-    "LuckHardCap": 50,
-    "TempLuckMax": 10,
-    "LuckyRollMult": 2,
-    "DamageExtraCap": 1.0,
-    "SoulsExtraCap": 1.0
+ "_doc": "M1 economy parameters. SINGLE SOURCE OF TRUTH: m1sim.py reads this file and gen_luau.py writes src/shared/EconomyConfig.luau from it. Edit here, regenerate, re-run the simulator.",
+ "Version": 1,
+ "Pools": {
+  "PermLogsCap": 6.0,
+  "PetLogsCap": 3.0,
+  "RebirthLogsPer": 0.25,
+  "RebirthLogsCap": 3.0,
+  "TempLogsMax": 2.0,
+  "PermLuckCap": 4.0,
+  "RebirthLuckPer": 0.1,
+  "LuckHardCap": 50,
+  "TempLuckMax": 10,
+  "LuckyRollMult": 2,
+  "DamageExtraCap": 1.0,
+  "SoulsExtraCap": 1.0
+ },
+ "LuckGamma": {
+  "Common": 1,
+  "Uncommon": 1,
+  "Rare": 1,
+  "Epic": 1,
+  "Legendary": 0.9,
+  "Mythic": 0.75,
+  "Secret": 0.6,
+  "Divine": 0.5
+ },
+ "LuckMinOneIn": 10,
+ "PassEffects": {
+  "2xLogs": {
+   "Logs": 2.0
   },
-  "LuckGamma": {
-    "Common": 1,
-    "Uncommon": 1,
-    "Rare": 1,
-    "Epic": 1,
-    "Legendary": 0.9,
-    "Mythic": 0.75,
-    "Secret": 0.6,
-    "Divine": 0.5
+  "VIP": {
+   "Logs": 1.1
   },
-  "LuckMinOneIn": 10,
-  "PassEffects": {
-    "2xLogs": {
-      "Logs": 2.0
-    },
-    "VIP": {
-      "Logs": 1.1
-    },
-    "2xLuck": {
-      "Luck": 2.0
-    }
+  "2xLuck": {
+   "Luck": 2.0
+  }
+ },
+ "TempSources": {
+  "Boosts": {
+   "StarterLuck": {
+    "Luck": 2
+   },
+   "LuckPotion": {
+    "Luck": 3
+   },
+   "MegaLuckPotion": {
+    "Luck": 10
+   },
+   "LogBoost": {
+    "Logs": 2
+   }
   },
-  "TempSources": {
-    "Boosts": {
-      "StarterLuck": {
-        "Luck": 2
-      },
-      "LuckPotion": {
-        "Luck": 3
-      },
-      "MegaLuckPotion": {
-        "Luck": 10
-      },
-      "LogBoost": {
-        "Logs": 2
-      }
-    },
-    "PvPLogs": 1.5
+  "PvPLogs": 1.5
+ },
+ "PriceTiers": [
+  {
+   "Tier": 1,
+   "Name": "Sapling",
+   "MinPower": 0,
+   "MaxIsland": "TimberHaven",
+   "Unit": 750
   },
-  "PriceTiers": [
-    {
-      "Tier": 1,
-      "Name": "Sapling",
-      "MinPower": 0,
-      "MaxIsland": "TimberHaven",
-      "Unit": 750
-    },
-    {
-      "Tier": 2,
-      "Name": "Pinewood",
-      "MinPower": 40,
-      "MaxIsland": "TimberHaven",
-      "Unit": 80000
-    },
-    {
-      "Tier": 3,
-      "Name": "Crystal I",
-      "MinPower": 250,
-      "MaxIsland": "CrystalWilds",
-      "Unit": 8000000
-    },
-    {
-      "Tier": 4,
-      "Name": "Crystal II",
-      "MinPower": 700,
-      "MaxIsland": "CrystalWilds",
-      "Unit": 12000000
-    },
-    {
-      "Tier": 5,
-      "Name": "Frost I",
-      "MinPower": 2000,
-      "MaxIsland": "FrostboundReach",
-      "Unit": 70000000
-    },
-    {
-      "Tier": 6,
-      "Name": "Frost II",
-      "MinPower": 3000,
-      "MaxIsland": "FrostboundReach",
-      "Unit": 80000000
-    },
-    {
-      "Tier": 7,
-      "Name": "Frost III",
-      "MinPower": 4500,
-      "MaxIsland": "FrostboundReach",
-      "Unit": 100000000
-    },
-    {
-      "Tier": 8,
-      "Name": "Frost IV",
-      "MinPower": 6500,
-      "MaxIsland": "FrostboundReach",
-      "Unit": 120000000
-    }
+  {
+   "Tier": 2,
+   "Name": "Pinewood",
+   "MinPower": 40,
+   "MaxIsland": "TimberHaven",
+   "Unit": 80000
+  },
+  {
+   "Tier": 3,
+   "Name": "Crystal I",
+   "MinPower": 250,
+   "MaxIsland": "CrystalWilds",
+   "Unit": 8000000
+  },
+  {
+   "Tier": 4,
+   "Name": "Crystal II",
+   "MinPower": 700,
+   "MaxIsland": "CrystalWilds",
+   "Unit": 12000000
+  },
+  {
+   "Tier": 5,
+   "Name": "Frost I",
+   "MinPower": 2000,
+   "MaxIsland": "FrostboundReach",
+   "Unit": 70000000
+  },
+  {
+   "Tier": 6,
+   "Name": "Frost II",
+   "MinPower": 3000,
+   "MaxIsland": "FrostboundReach",
+   "Unit": 80000000
+  },
+  {
+   "Tier": 7,
+   "Name": "Frost III",
+   "MinPower": 4500,
+   "MaxIsland": "FrostboundReach",
+   "Unit": 100000000
+  },
+  {
+   "Tier": 8,
+   "Name": "Frost IV",
+   "MinPower": 6500,
+   "MaxIsland": "FrostboundReach",
+   "Unit": 120000000
+  }
+ ],
+ "IslandOrder": [
+  "TimberHaven",
+  "CrystalWilds",
+  "FrostboundReach"
+ ],
+ "Prices": {
+  "TraitCrate": 1.0,
+  "PetEgg": 1.5,
+  "SawmillLogsPerSoul": 0.35,
+  "LogPackS": 3,
+  "LogPackM": 15,
+  "LogPackL": 60
+ },
+ "Upgrades": [
+  {
+   "Id": "Blades",
+   "Name": "+1 Blade",
+   "Base": 1,
+   "PerLevel": 1,
+   "MaxLevel": 5,
+   "BaseCost": 100,
+   "CostMult": 18,
+   "Format": "%d blades",
+   "Resets": true,
+   "Category": "Chop"
+  },
+  {
+   "Id": "Speed",
+   "Name": "Faster Spin",
+   "Base": 3,
+   "PerLevel": 0.15,
+   "MaxLevel": 50,
+   "BaseCost": 30,
+   "CostMult": 1.28,
+   "Format": "%.2f spin",
+   "Resets": true,
+   "Category": "Chop"
+  },
+  {
+   "Id": "Damage",
+   "Name": "Sharper Blades",
+   "Base": 1,
+   "PerLevel": 0.1,
+   "MaxLevel": 100,
+   "BaseCost": 40,
+   "CostMult": 1.15,
+   "Format": "x%.1f damage",
+   "Resets": true,
+   "Category": "Chop"
+  },
+  {
+   "Id": "Reach",
+   "Name": "Longer Reach",
+   "Base": 4,
+   "PerLevel": 0.2,
+   "MaxLevel": 40,
+   "BaseCost": 60,
+   "CostMult": 1.3,
+   "Format": "%.1f studs",
+   "Resets": true,
+   "Category": "Chop"
+  },
+  {
+   "Id": "Luck",
+   "Name": "Lucky Charm",
+   "Base": 1,
+   "PerLevel": 0.04,
+   "MaxLevel": 100,
+   "BaseCost": 1500,
+   "CostMult": 1.16,
+   "Format": "+%.2f luck",
+   "Resets": true,
+   "Category": "Luck"
+  },
+  {
+   "Id": "WalkSpeed",
+   "Name": "Walk Speed",
+   "Base": 16,
+   "PerLevel": 0.32,
+   "MaxLevel": 25,
+   "BaseCost": 400,
+   "CostMult": 1.42,
+   "Format": "%.1f studs/s",
+   "Resets": true,
+   "Category": "Mobility"
+  },
+  {
+   "Id": "Renewal",
+   "Name": "Forest Renewal",
+   "Base": 0,
+   "PerLevel": 0.02,
+   "MaxLevel": 20,
+   "BaseCost": 2500,
+   "CostMult": 1.45,
+   "Format": "-%d%% regrow",
+   "Resets": true,
+   "Category": "Renewal"
+  }
+ ],
+ "Rebirth": {
+  "Units": 15,
+  "Growth": 1.15,
+  "LuckPer": 0.1,
+  "MinCost": 1000000,
+  "_doc": "cost = max(MinCost, Units x Growth^n x Unit(tier))"
+ },
+ "Movement": {
+  "BaseWalkSpeed": 16,
+  "RegularMaxWalkSpeed": 24,
+  "MobilityExtraMax": 4
+ },
+ "Renewal": {
+  "MaxReduction": 0.4,
+  "Rarities": [
+   "Common",
+   "Uncommon",
+   "Rare",
+   "Epic"
   ],
-  "IslandOrder": [
-    "TimberHaven",
-    "CrystalWilds",
-    "FrostboundReach"
+  "ServerBudgetPerSecond": 10,
+  "MinRespawn": 3
+ },
+ "SoulUpgrades": [
+  {
+   "Id": "SoulBlessing",
+   "Name": "Soul Blessing",
+   "Desc": "+3% Logs per level, forever (permanent pool)",
+   "Pool": "PermLogs",
+   "PerLevel": 0.03,
+   "MaxLevel": 20,
+   "BaseCost": 200,
+   "CostMult": 1.3
+  },
+  {
+   "Id": "SoulFortune",
+   "Name": "Soul Fortune",
+   "Desc": "+0.03 Luck per level, forever (permanent pool)",
+   "Pool": "PermLuck",
+   "PerLevel": 0.03,
+   "MaxLevel": 20,
+   "BaseCost": 250,
+   "CostMult": 1.3
+  }
+ ],
+ "Altars": {
+  "TimberHaven": {
+   "Areas": [
+    "StarterGrove",
+    "PineForest"
+   ],
+   "Inherit": [],
+   "Guarantee": {
+    "Weapon": "CrimsonCrescent",
+    "Rolls": 2500,
+    "UntilPower": 250
+   }
+  },
+  "CrystalWilds": {
+   "Areas": [
+    "CrystalCanyon"
+   ],
+   "Inherit": [
+    "TimberHaven"
+   ],
+   "Guarantee": {
+    "Weapon": "Umbraxe",
+    "Rolls": 20000,
+    "UntilPower": 2000
+   }
+  },
+  "FrostboundReach": {
+   "Areas": [
+    "FrostPeaks"
+   ],
+   "Inherit": [
+    "CrystalWilds"
+   ],
+   "Guarantee": null
+  }
+ },
+ "Gates": {
+  "CrystalWilds": {
+   "Power": 250,
+   "Requirements": [
+    {
+     "Id": "king",
+     "Kind": "BossKills",
+     "Boss": "BladeKing",
+     "Count": 1,
+     "Stage": "active",
+     "Text": "Defeat the Blade King"
+    },
+    {
+     "Id": "thTrees",
+     "Kind": "TreesInAreas",
+     "Areas": [
+      "StarterGrove",
+      "PineForest"
+     ],
+     "Count": 600,
+     "Stage": "active",
+     "Text": "Chop %d Timber Haven trees"
+    }
+   ]
+  },
+  "FrostboundReach": {
+   "Power": 2000,
+   "Requirements": [
+    {
+     "Id": "colossus",
+     "Kind": "BossKills",
+     "Boss": "CrystalColossus",
+     "Count": 1,
+     "Stage": "planned",
+     "Text": "Defeat the Crystal Colossus"
+    },
+    {
+     "Id": "cwTrees",
+     "Kind": "TreesInAreas",
+     "Areas": [
+      "CrystalCanyon"
+     ],
+     "Count": 6000,
+     "Stage": "active",
+     "Text": "Chop %d Crystal Wilds trees"
+    }
+   ]
+  }
+ },
+ "AreaIsland": {
+  "StarterGrove": "TimberHaven",
+  "PineForest": "TimberHaven",
+  "CrystalCanyon": "CrystalWilds",
+  "FrostPeaks": "FrostboundReach"
+ },
+ "Bosses": {
+  "BladeKing": {
+   "LogsUnits": 0.35,
+   "Souls": 25,
+   "SoulsTop": 40
+  },
+  "Treant": {
+   "LogsUnits": 1.6,
+   "Souls": 40,
+   "SoulsTop": 150,
+   "Crates": 1
+  },
+  "LogMultExponent": 0.5,
+  "_doc": "boss Logs = LogsUnits x Unit(tier) x LogMultBase^LogMultExponent (grows with permanent progress like chopping, dampened)"
+ },
+ "TreeLadder": {
+  "Common": 1,
+  "Uncommon": 2.2,
+  "Rare": 4.7,
+  "Epic": 10,
+  "Legendary": 28,
+  "Mythic": 111,
+  "Secret": 444
+ },
+ "TreeBaseLogs": {
+  "StarterGrove": 2,
+  "PineForest": 50,
+  "CrystalCanyon": 900,
+  "FrostPeaks": 9000
+ },
+ "Codes": {
+  "RELEASE": {
+   "Souls": 100,
+   "Crates": 1
+  },
+  "BLADES": {
+   "Boost": "LuckPotion",
+   "Seconds": 1800
+  },
+  "TIMBER": {
+   "Logs": 25000
+  }
+ },
+ "Index": {
+  "Editions": "see BladeConfig.IndexEditions",
+  "WeaponStandard": {
+   "Luck": 0.08,
+   "Logs": 0.08
+  },
+  "WeaponMastery": {
+   "Luck": 0.02,
+   "Logs": 0.02
+  },
+  "Tree": {
+   "Logs": 0.05
+  },
+  "EditionScale": [
+   1.0,
+   0.5
   ],
-  "Prices": {
-    "TraitCrate": 1.0,
-    "PetEgg": 1.5,
-    "SawmillLogsPerSoul": 0.35,
-    "LogPackS": 3,
-    "LogPackM": 15,
-    "LogPackL": 60
-  },
-  "Upgrades": [
-    {
-      "Id": "Blades",
-      "Name": "+1 Blade",
-      "Base": 1,
-      "PerLevel": 1,
-      "MaxLevel": 5,
-      "BaseCost": 100,
-      "CostMult": 18,
-      "Format": "%d blades",
-      "Resets": true,
-      "Category": "Chop"
-    },
-    {
-      "Id": "Speed",
-      "Name": "Faster Spin",
-      "Base": 3,
-      "PerLevel": 0.15,
-      "MaxLevel": 50,
-      "BaseCost": 30,
-      "CostMult": 1.28,
-      "Format": "%.2f spin",
-      "Resets": true,
-      "Category": "Chop"
-    },
-    {
-      "Id": "Damage",
-      "Name": "Sharper Blades",
-      "Base": 1,
-      "PerLevel": 0.1,
-      "MaxLevel": 100,
-      "BaseCost": 40,
-      "CostMult": 1.15,
-      "Format": "x%.1f damage",
-      "Resets": true,
-      "Category": "Chop"
-    },
-    {
-      "Id": "Reach",
-      "Name": "Longer Reach",
-      "Base": 4,
-      "PerLevel": 0.2,
-      "MaxLevel": 40,
-      "BaseCost": 60,
-      "CostMult": 1.3,
-      "Format": "%.1f studs",
-      "Resets": true,
-      "Category": "Chop"
-    },
-    {
-      "Id": "Luck",
-      "Name": "Lucky Charm",
-      "Base": 1,
-      "PerLevel": 0.04,
-      "MaxLevel": 100,
-      "BaseCost": 1500,
-      "CostMult": 1.16,
-      "Format": "+%.2f luck",
-      "Resets": true,
-      "Category": "Luck"
-    },
-    {
-      "Id": "WalkSpeed",
-      "Name": "Walk Speed",
-      "Base": 16,
-      "PerLevel": 0.32,
-      "MaxLevel": 25,
-      "BaseCost": 400,
-      "CostMult": 1.42,
-      "Format": "%.1f studs/s",
-      "Resets": true,
-      "Category": "Mobility"
-    },
-    {
-      "Id": "Renewal",
-      "Name": "Forest Renewal",
-      "Base": 0,
-      "PerLevel": 0.02,
-      "MaxLevel": 20,
-      "BaseCost": 2500,
-      "CostMult": 1.45,
-      "Format": "-%d%% regrow",
-      "Resets": true,
-      "Category": "Renewal"
-    }
+  "_doc_EditionScale": "bonus multiplier per index edition: edition 1 = the M1 sets (full), edition 2 = the M2 expansion weapons (half), so a bigger roster does not inflate the capped pools"
+ },
+ "Future": {
+  "_doc": "Reserved bonus channels. Every future system feeds one of these capped pools; none may add a new multiplier.",
+  "Channels": [
+   "Mastery",
+   "TechTree",
+   "Guild",
+   "Runes",
+   "TreeBadges",
+   "Trait2",
+   "Forging",
+   "Awakening",
+   "Season",
+   "Expedition"
   ],
-  "Rebirth": {
-    "Units": 15,
-    "Growth": 1.15,
-    "LuckPer": 0.1,
-    "MinCost": 1000000,
-    "_doc": "cost = max(MinCost, Units x Growth^n x Unit(tier))"
-  },
-  "Movement": {
-    "BaseWalkSpeed": 16,
-    "RegularMaxWalkSpeed": 24,
-    "MobilityExtraMax": 4
-  },
-  "Renewal": {
-    "MaxReduction": 0.4,
-    "Rarities": [
-      "Common",
-      "Uncommon",
-      "Rare",
-      "Epic"
-    ],
-    "ServerBudgetPerSecond": 10,
-    "MinRespawn": 3
-  },
-  "SoulUpgrades": [
-    {
-      "Id": "SoulBlessing",
-      "Name": "Soul Blessing",
-      "Desc": "+3% Logs per level, forever (permanent pool)",
-      "Pool": "PermLogs",
-      "PerLevel": 0.03,
-      "MaxLevel": 20,
-      "BaseCost": 200,
-      "CostMult": 1.3
-    },
-    {
-      "Id": "SoulFortune",
-      "Name": "Soul Fortune",
-      "Desc": "+0.03 Luck per level, forever (permanent pool)",
-      "Pool": "PermLuck",
-      "PerLevel": 0.03,
-      "MaxLevel": 20,
-      "BaseCost": 250,
-      "CostMult": 1.3
-    }
+  "TechTreeBranches": [
+   "BladeMastery",
+   "ForestMastery",
+   "FortuneMastery",
+   "ExplorerMastery",
+   "ArtisanMastery",
+   "GuardianMastery"
   ],
-  "Altars": {
-    "TimberHaven": {
-      "Areas": [
-        "StarterGrove",
-        "PineForest"
-      ],
-      "Inherit": [],
-      "Guarantee": {
-        "Weapon": "CrimsonCrescent",
-        "Rolls": 2500,
-        "UntilPower": 250
-      }
-    },
-    "CrystalWilds": {
-      "Areas": [
-        "CrystalCanyon"
-      ],
-      "Inherit": [
-        "TimberHaven"
-      ],
-      "Guarantee": {
-        "Weapon": "Umbraxe",
-        "Rolls": 20000,
-        "UntilPower": 2000
-      }
-    },
-    "FrostboundReach": {
-      "Areas": [
-        "FrostPeaks"
-      ],
-      "Inherit": [
-        "CrystalWilds"
-      ],
-      "Guarantee": null
-    }
+  "TechTreeNodesPerBranch": 12,
+  "TechTreeMaxPoolShare": 0.25,
+  "MasteryLevels": 100,
+  "TargetWeapons": 120,
+  "TargetTraits": 12,
+  "TargetPets": 21,
+  "NewIslandScale": {
+   "Strength": 10,
+   "Logs": 12,
+   "Prices": 12
   },
-  "Gates": {
-    "CrystalWilds": {
-      "Power": 250,
-      "Requirements": [
-        {
-          "Id": "king",
-          "Kind": "BossKills",
-          "Boss": "BladeKing",
-          "Count": 1,
-          "Stage": "active",
-          "Text": "Defeat the Blade King"
-        },
-        {
-          "Id": "thTrees",
-          "Kind": "TreesInAreas",
-          "Areas": [
-            "StarterGrove",
-            "PineForest"
-          ],
-          "Count": 600,
-          "Stage": "active",
-          "Text": "Chop %d Timber Haven trees"
-        }
-      ]
-    },
-    "FrostboundReach": {
-      "Power": 2000,
-      "Requirements": [
-        {
-          "Id": "colossus",
-          "Kind": "BossKills",
-          "Boss": "CrystalColossus",
-          "Count": 1,
-          "Stage": "planned",
-          "Text": "Defeat the Crystal Colossus"
-        },
-        {
-          "Id": "cwTrees",
-          "Kind": "TreesInAreas",
-          "Areas": [
-            "CrystalCanyon"
-          ],
-          "Count": 6000,
-          "Stage": "active",
-          "Text": "Chop %d Crystal Wilds trees"
-        }
-      ]
-    }
-  },
-  "AreaIsland": {
-    "StarterGrove": "TimberHaven",
-    "PineForest": "TimberHaven",
-    "CrystalCanyon": "CrystalWilds",
-    "FrostPeaks": "FrostboundReach"
-  },
-  "Bosses": {
-    "BladeKing": {
-      "LogsUnits": 0.35,
-      "Souls": 25,
-      "SoulsTop": 40
-    },
-    "Treant": {
-      "LogsUnits": 1.6,
-      "Souls": 40,
-      "SoulsTop": 150,
-      "Crates": 1
-    },
-    "LogMultExponent": 0.5,
-    "_doc": "boss Logs = LogsUnits x Unit(tier) x LogMultBase^LogMultExponent (grows with permanent progress like chopping, dampened)"
-  },
-  "TreeLadder": {
-    "Common": 1,
-    "Uncommon": 2.2,
-    "Rare": 4.7,
-    "Epic": 10,
-    "Legendary": 28,
-    "Mythic": 111,
-    "Secret": 444
-  },
-  "TreeBaseLogs": {
-    "StarterGrove": 2,
-    "PineForest": 50,
-    "CrystalCanyon": 900,
-    "FrostPeaks": 9000
-  },
-  "Codes": {
-    "RELEASE": {
-      "Souls": 100,
-      "Crates": 1
-    },
-    "BLADES": {
-      "Boost": "LuckPotion",
-      "Seconds": 1800
-    },
-    "TIMBER": {
-      "Logs": 25000
-    }
-  },
-  "Index": {
-    "Editions": "see BladeConfig.IndexEditions",
-    "WeaponStandard": {
-      "Luck": 0.08,
-      "Logs": 0.08
-    },
-    "WeaponMastery": {
-      "Luck": 0.02,
-      "Logs": 0.02
-    },
-    "Tree": {
-      "Logs": 0.05
-    }
-  },
-  "Future": {
-    "_doc": "Reserved bonus channels. Every future system feeds one of these capped pools; none may add a new multiplier.",
-    "Channels": [
-      "Mastery",
-      "TechTree",
-      "Guild",
-      "Runes",
-      "TreeBadges",
-      "Trait2",
-      "Forging",
-      "Awakening",
-      "Season",
-      "Expedition"
-    ],
-    "TechTreeBranches": [
-      "BladeMastery",
-      "ForestMastery",
-      "FortuneMastery",
-      "ExplorerMastery",
-      "ArtisanMastery",
-      "GuardianMastery"
-    ],
-    "TechTreeNodesPerBranch": 12,
-    "TechTreeMaxPoolShare": 0.25,
-    "MasteryLevels": 100,
-    "TargetWeapons": 120,
-    "TargetTraits": 12,
-    "TargetPets": 21,
-    "NewIslandScale": {
-      "Strength": 10,
-      "Logs": 12,
-      "Prices": 12
-    },
-    "WeaponPowerIslandMult": [
-      1,
-      4,
-      16
-    ]
-  },
-  "AltarRule": "highest unlocked island by default; the player may pick any unlocked island's altar"
+  "WeaponPowerIslandMult": [
+   1,
+   4,
+   16
+  ]
+ },
+ "AltarRule": "highest unlocked island by default; the player may pick any unlocked island's altar",
+ "Essence": {
+  "_doc": "M2 Divine Attunement groundwork: every altar roll gives Altar Essence (daily cap stops limitless AFK farming). Each island's Attunement Divine can be claimed ONCE per player for Essence. Forge recipes (boss materials, M6) are deferred.",
+  "PerRoll": 1,
+  "DailyCap": 25000,
+  "AttuneCost": 100000,
+  "Attunement": {
+   "TimberHaven": "HearthforgeSovereign",
+   "CrystalWilds": "PrismheartRadiance",
+   "FrostboundReach": "EternalWinter"
+  }
+ },
+ "Announce": {
+  "_doc": "M2 rarity-based announcements (reveal tiers in RollController)",
+  "Server": [
+   "Mythic",
+   "Secret",
+   "Divine"
+  ],
+  "Global": [
+   "Secret",
+   "Divine"
+  ]
+ },
+ "WeaponFuture": {
+  "_doc": "Reserved per-weapon fields (data only, no systems yet): see BladeConfig weapon loop",
+  "FavoriteBlocks": [
+   "Sell",
+   "Salvage",
+   "Trade"
+  ],
+  "MaxFavoriteCopies": 999,
+  "PowerCeilingMult": 6.0
+ }
 }

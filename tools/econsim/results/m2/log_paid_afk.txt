@@ -1,0 +1,6 @@
+  0.5h earned 1.71e+08 inc/h 5.26e+08 pow 679 reb 0 lm 4.1 luck 5.9 tier 4 walk 24.0 tCW 0.07 tFR 1000000000.00 boss 0.00 souls 180 mix {Cryst:1.00}
+    2h earned 1.32e+09 inc/h 1.27e+09 pow 1183 reb 2 lm 8.2 luck 6.3 tier 4 walk 24.0 tCW 0.07 tFR 1000000000.00 boss 0.00 souls 180 mix {Cryst:1.00}
+    8h earned 1.75e+10 inc/h 3.56e+09 pow 2420 reb 6 lm 12.8 luck 7.2 tier 5 walk 24.0 tCW 0.07 tFR 3.38 boss 0.00 souls 260 mix {Cryst:1.00}
+   24h earned 9.34e+10 inc/h 5.39e+09 pow 3604 reb 12 lm 18.3 luck 7.8 tier 6 walk 24.0 tCW 0.07 tFR 3.38 boss 0.00 souls 380 mix {Cryst:1.00}
+   72h earned 4.27e+11 inc/h 7.66e+09 pow 6103 reb 21 lm 23.1 luck 8.5 tier 7 walk 24.0 tCW 0.07 tFR 3.38 boss 0.00 souls 167 mix {Cryst:1.00}
+  200h earned 1.5e+12 inc/h 8.8e+09 pow 8111 reb 32 lm 25.4 luck 8.9 tier 8 walk 24.0 tCW 0.07 tFR 3.38 boss 0.00 souls 746 mix {Cryst:0.92, Frost:0.08}

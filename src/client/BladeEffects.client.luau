@@ -37,7 +37,7 @@ end
 --------------------------------------------------------------------
 local SPARKLE_TEX = "rbxasset://textures/particles/sparkles_main.dds"
 
-local function addParticles(body, kind, color)
+local function addParticles(body, kind, color, allowLight)
 	if kind == "Fire" then
 		local f = Instance.new("Fire")
 		f.Size = 1.1
@@ -66,6 +66,7 @@ local function addParticles(body, kind, color)
 	elseif kind == "Holy" then
 		e.Rate = 18
 		e.Color = ColorSequence.new(Color3.fromRGB(255, 255, 220), Color3.fromRGB(255, 200, 60))
+		if not allowLight then e.Parent = body return end -- M2: one light per wielder at most
 		local l = Instance.new("PointLight")
 		l.Range = 8
 		l.Brightness = 1.5
@@ -79,7 +80,61 @@ end
 -- Each template's pivot is the blade's centre, LookVector = tip, UpVector = flat face.
 local BladeModels = ReplicatedStorage:WaitForChild("BladeModels")
 
-local function makeBlade(bladeType, scale, shiny)
+-- M2: rarity VFX tiers (Config weapon.VfxTier: 0 Common .. 7 Divine). Budgets per wielder:
+--   blade 1 gets everything, blades 2-3 get particles, the rest only the trail;
+--   other players get blade 1 effects only; Pref_Graphics "Low" = trails only.
+--   At most ONE PointLight per wielder (template lights are always removed).
+local AURA_TEX = "rbxasset://textures/particles/sparkles_main.dds"
+local pulsing = {} -- [emitter] = baseRate (Divine pulse, animated below)
+local function tierFx(core, b, tier, idx, isLocal, lowGfx)
+	if lowGfx then return end
+	local full = isLocal and idx <= 3 or (not isLocal and idx == 1)
+	if not full then return end
+	if tier >= 4 then -- Legendary+: soft glow aura in the accent colour
+		local e = Instance.new("ParticleEmitter")
+		e.Name = "TierAura"
+		e.Texture = AURA_TEX
+		e.Rate = tier >= 6 and 10 or 6
+		e.Lifetime = NumberRange.new(0.5, 0.9)
+		e.Speed = NumberRange.new(0.2, 0.6)
+		e.SpreadAngle = Vector2.new(180, 180)
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(0.4, 1.1 + 0.15 * (tier - 4)), NumberSequenceKeypoint.new(1, 0) })
+		e.Transparency = NumberSequence.new(0.35, 1)
+		e.LightEmission = 1
+		e.LightInfluence = 0
+		e.Color = Config.RarityById[b.Rarity].Rainbow and Config.RainbowSequence or ColorSequence.new(b.EdgeColor)
+		e.Parent = core
+		if tier >= 7 then pulsing[e] = e.Rate end
+	end
+	if tier >= 5 and idx == 1 then -- Mythic+: one light per wielder
+		local l = Instance.new("PointLight")
+		l.Name = "TierLight"
+		l.Range = tier >= 7 and 10 or 7
+		l.Brightness = tier >= 7 and 2 or 1.3
+		l.Color = b.EdgeColor
+		l.Shadows = false
+		l.Parent = core
+	end
+	if tier >= 6 and idx == 1 then -- Secret/Divine: halo motes rising off the blade
+		local e = Instance.new("ParticleEmitter")
+		e.Name = "TierHalo"
+		e.Texture = AURA_TEX
+		e.Rate = tier >= 7 and 14 or 8
+		e.Lifetime = NumberRange.new(0.8, 1.4)
+		e.Speed = NumberRange.new(1, 2.5)
+		e.Acceleration = Vector3.new(0, 3, 0)
+		e.SpreadAngle = Vector2.new(25, 25)
+		e.Size = NumberSequence.new(0.45, 0)
+		e.LightEmission = 1
+		e.Color = tier >= 7 and ColorSequence.new(Color3.fromRGB(255, 245, 200), b.EdgeColor) or Config.RainbowSequence
+		e.Parent = core
+	end
+end
+
+local function makeBlade(bladeType, scale, shiny, idx, isLocal)
+	idx = idx or 1
+	local lowGfx = player:GetAttribute("Pref_Graphics") == "Low"
+	local tier = bladeType.VfxTier or 0
 	local b = bladeType
 	local len = b.Length * scale
 	local template = BladeModels:FindFirstChild(b.Id) or BladeModels:FindFirstChild("Wooden")
@@ -87,6 +142,16 @@ local function makeBlade(bladeType, scale, shiny)
 	model.Name = "Blade"
 	model:PivotTo(CFrame.new())
 	model:ScaleTo(model:GetScale() * len / (template:GetAttribute("TemplateLength") or 4))
+	-- M2: built-in model effects multiply per blade - keep at most 2 emitters on blade 1, no lights
+	local kept = 0
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("Light") then
+			d:Destroy()
+		elseif d:IsA("ParticleEmitter") or d:IsA("Fire") or d:IsA("Sparkles") or d:IsA("Smoke") then
+			kept += 1
+			if idx > 1 or kept > 2 or lowGfx then d:Destroy() end
+		end
+	end
 
 	-- remember every part's offset from the pivot so we can move them all at once
 	local parts, offsets = {}, {}
@@ -113,14 +178,18 @@ local function makeBlade(bladeType, scale, shiny)
 	local trail = Instance.new("Trail")
 	trail.Attachment0 = a0
 	trail.Attachment1 = a1
-	trail.Lifetime = 0.16
+	-- M2: the trail grows with rarity (longer, brighter, more opaque)
+	trail.Lifetime = 0.14 + 0.025 * tier
 	trail.Color = b.Trail
-	trail.Transparency = NumberSequence.new(0.45, 1)
-	trail.LightEmission = 0.8
+	trail.Transparency = NumberSequence.new(math.max(0.45 - 0.04 * tier, 0.15), 1)
+	trail.LightEmission = tier >= 4 and 1 or 0.8
+	trail.WidthScale = NumberSequence.new(1, tier >= 6 and 0.35 or 0)
 	trail.Parent = core
 
-	if b.Particle then addParticles(core, b.Particle, b.EdgeColor) end
-	if shiny then
+	local particlesOk = not lowGfx and ((isLocal and idx <= 3) or (not isLocal and idx == 1))
+	if b.Particle and particlesOk then addParticles(core, b.Particle, b.EdgeColor, idx == 1 and tier < 5) end
+	tierFx(core, b, tier, idx, isLocal, lowGfx)
+	if shiny and not lowGfx then
 		-- crafted SHINY weapon: gold glitter + warm glow
 		local e = Instance.new("ParticleEmitter")
 		e.Texture = SPARKLE_TEX
@@ -132,11 +201,14 @@ local function makeBlade(bladeType, scale, shiny)
 		e.LightEmission = 1
 		e.Color = ColorSequence.new(Color3.fromRGB(255, 225, 90))
 		e.Parent = core
-		local l = Instance.new("PointLight")
-		l.Range = 7
-		l.Brightness = 1.2
-		l.Color = Color3.fromRGB(255, 215, 110)
-		l.Parent = core
+		if idx == 1 and tier < 5 then -- M2: Mythic+ already carries the wielder's one light
+			local l = Instance.new("PointLight")
+			l.Range = 7
+			l.Brightness = 1.2
+			l.Color = Color3.fromRGB(255, 215, 110)
+			l.Parent = core
+		end
+		if idx > 1 and not isLocal then e:Destroy() end
 	end
 	model.Parent = folder
 	return { Model = model, Parts = parts, Offsets = offsets, Len = len, Scale = scale }
@@ -145,7 +217,7 @@ end
 local visuals = {} -- [wielder] = { Key = string, List = {...} }
 
 local function setBlades(wielder, stats)
-	local key = stats.Blade.Id .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "")
+	local key = stats.Blade.Id .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "") .. "_" .. tostring(player:GetAttribute("Pref_Graphics"))
 	local v = visuals[wielder]
 	if v and v.Key ~= key then
 		for _, b in ipairs(v.List) do b.Model:Destroy() end
@@ -156,7 +228,7 @@ local function setBlades(wielder, stats)
 		visuals[wielder] = v
 	end
 	local n = stats and stats.Blades or 0
-	while #v.List < n do table.insert(v.List, makeBlade(stats.Blade, stats.Scale, stats.Shiny)) end
+	while #v.List < n do table.insert(v.List, makeBlade(stats.Blade, stats.Scale, stats.Shiny, #v.List + 1, wielder == player)) end
 	while #v.List > n do table.remove(v.List).Model:Destroy() end
 	return v.List
 end
@@ -201,6 +273,13 @@ end
 
 RunService.RenderStepped:Connect(function()
 	local now = workspace:GetServerTimeNow()
+	-- M2: Divine aura breathes (rate pulse); Reduced Motion keeps it steady
+	if next(pulsing) then
+		local k = player:GetAttribute("Pref_ReducedMotion") and 1 or (1 + 0.6 * math.sin(now * 3))
+		for e, base in pairs(pulsing) do
+			if e.Parent then e.Rate = base * k else pulsing[e] = nil end
+		end
+	end
 	local seen = {}
 	for _, p in ipairs(Players:GetPlayers()) do
 		if p:GetAttribute("Loaded") then

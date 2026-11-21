@@ -2,6 +2,15 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-20 — M2 Complete Weapon Collection (DEV PLACE ONLY, v45)
+- Checkpoint **v35** "M2 PRE-WEAPONS"; result **v45**. Branch `m2/complete-weapon-collection` (not merged). Backups in `ServerStorage.M2Backups`. Details: `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`.
+- 120 weapons: 43 originals unchanged plus 77 new (Timber Haven 15, Crystal Wilds 28, Frostbound Reach 34; Common through Divine). Altar pools 39/77/115. Power by the legacy formula.
+- 77 Creator Store models imported via quarantine with all scripts stripped; sources and creators in `docs/weapon_manifest.json`. LihFolk vault not accessed. 5 heavy legacy models optimized (Sunsteel 144→12 parts, etc.).
+- VFX tiers 0–7 with performance budgets; Legendary/Mythic/Secret/Divine reveals; server/global announcements.
+- Weapon Gallery (filters, 3D detail, odds, acquisition, Favorite/Equip/Auto Equip); Favorites protect from selling; edition-2 index at ×0.5 bonus.
+- Altar Essence (1/roll, 25k/day cap) and Divine Attunement (100k → one island Divine, once). Future-system interfaces (forge/runes/awakening/trade/vault/season/guild) as data only.
+- Tests: M2 46/46, M1 41/41, M0.1 64/64, M0 107/107; single-client playtest 0 errors. Not run: multiplayer, iPhone, live Attunement success.
+
 ## 2026-11-20 — M1 Unified Economy & Progression (DEV PLACE ONLY, v35)
 - Checkpoint **v29** "M1 PRE-ECONOMY"; result **v35**. Branch `m1/unified-economy-progression` (not merged). Backups in `ServerStorage.M1Backups`. Details: `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md`.
 - New `Economy` engine + generated `EconomyConfig` (single source `tools/econsim/economy_params.json`): soft-capped additive pools (perm Logs +600 %, pets +300 %, tapering rebirth), Luck ×5 permanent soft cap and ×50 hard cap, strongest temporary boost only, rarity luck exponents. Game-pass effects unchanged.

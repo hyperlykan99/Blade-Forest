@@ -1,0 +1,203 @@
+M2 roster (120 weapons), 12 seeds per scenario. Section labels still say "M1" (same report code).
+
+====================================================================================================
+1. Per-scenario medians (p10 / p50 / p90 where shown). Model estimates, one solo server.
+====================================================================================================
+
+[free_new]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 |  2.20M 100.43M 182.31M |    21.65M |        167 |    517 |   0 |     2.1 |   2.6 |    3 | 23.2 |   20% | CrystalCanyon:67%, PineForest:33%
+    2 | 144.19M 196.34M 331.45M |   351.45M |        187 |    837 |   0 |     2.4 |   3.1 |    4 | 24.0 |   26% | CrystalCanyon:100%
+    8 | 577.35M 766.44M   1.11B |     3.93B |        326 |   2134 |   3 |     4.5 |   3.4 |    5 | 24.0 |   33% | CrystalCanyon:100%
+   24 | 898.44M   1.19B   1.68B |    29.67B |        572 |   2478 |   8 |     7.0 |   3.7 |    5 | 24.0 |   38% | CrystalCanyon:100%
+   72 |  1.32B   2.04B   2.77B |   139.37B |      1.05K |   3946 |  15 |     9.2 |   4.1 |    6 | 24.0 |   37% | CrystalCanyon:92%, FrostPeaks:8%
+  200 |  1.81B   2.75B   3.81B |   559.07B |      2.28K |   6900 |  24 |    11.9 |   4.4 |    8 | 24.0 |   35% | CrystalCanyon:83%, FrostPeaks:17%
+
+[free_casual]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 |  2.18M 116.75M 151.96M |    18.76M |        122 |    388 |   0 |     1.9 |   2.5 |    3 | 23.4 |   19% | PineForest:42%, CrystalCanyon:58%
+    2 | 167.59M 227.80M 385.84M |   348.57M |        142 |    679 |   0 |     2.2 |   3.0 |    4 | 24.0 |   24% | CrystalCanyon:100%
+    8 | 660.42M   1.09B   1.50B |     4.56B |        352 |   2134 |   4 |     4.7 |   3.5 |    5 | 24.0 |   25% | CrystalCanyon:100%
+   24 |  1.15B   1.93B   2.22B |    37.99B |        476 |   2757 |   9 |     7.2 |   3.8 |    6 | 24.0 |   30% | CrystalCanyon:100%
+   72 |  1.82B   2.61B   3.33B |   187.18B |      1.17K |   3946 |  16 |     9.6 |   4.1 |    6 | 24.0 |   26% | CrystalCanyon:100%
+  200 |  2.39B   3.55B   4.31B |   715.21B |      1.73K |   6736 |  26 |    11.6 |   4.4 |    8 | 24.0 |   25% | CrystalCanyon:100%
+
+[free_active]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 |  3.14M  99.74M 196.62M |    37.35M |        140 |    287 |   0 |     2.1 |   2.7 |    3 | 23.4 |   33% | PineForest:25%, CrystalCanyon:75%
+    2 | 167.95M 282.98M 571.62M |   440.62M |        198 |    707 |   0 |     2.6 |   3.1 |    4 | 24.0 |   31% | CrystalCanyon:100%
+    8 |  1.24B   1.46B   2.31B |     7.17B |        424 |   2134 |   6 |     5.7 |   3.6 |    5 | 24.0 |   32% | CrystalCanyon:100%
+   24 |  1.82B   2.61B   3.03B |    61.49B |        702 |   2506 |  11 |     8.1 |   3.9 |    5 | 24.0 |   40% | CrystalCanyon:100%
+   72 |  2.74B   3.35B   5.16B |   264.29B |        732 |   4108 |  19 |    10.3 |   4.2 |    6 | 24.0 |   36% | CrystalCanyon:100%
+  200 |  3.60B   4.46B   6.46B |   969.21B |      5.94K |   6726 |  28 |    12.1 |   4.4 |    8 | 24.0 |   34% | CrystalCanyon:92%, FrostPeaks:8%
+
+[free_afk]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 |  2.28M  59.41M 295.26M |     4.62M |        180 |    277 |   0 |     1.7 |   2.3 |    3 | 21.6 |    0% | CrystalCanyon:75%, PineForest:25%
+    2 | 115.23M 253.43M 467.17M |   246.22M |        180 |    780 |   0 |     1.8 |   3.0 |    4 | 24.0 |    0% | CrystalCanyon:100%
+    8 | 557.59M   1.03B   1.50B |     4.38B |        260 |   2134 |   2 |     3.8 |   3.4 |    5 | 24.0 |    0% | CrystalCanyon:100%
+   24 | 893.25M   1.74B   2.64B |    26.44B |        380 |   2449 |   7 |     6.3 |   3.6 |    5 | 24.0 |    0% | CrystalCanyon:100%
+   72 |  1.57B   2.52B   3.55B |   132.88B |        167 |   4050 |  14 |     9.0 |   4.0 |    6 | 24.0 |    0% | CrystalCanyon:100%
+  200 |  2.16B   3.72B   4.81B |   540.34B |        746 |   4923 |  24 |    10.8 |   4.3 |    7 | 24.0 |    0% | CrystalCanyon:100%
+
+[paid_active]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 | 518.58M 769.01M   1.03B |   258.23M |        110 |    732 |   0 |     4.7 |   6.0 |    4 | 24.0 |   20% | CrystalCanyon:100%
+    2 |  1.01B   1.63B   2.88B |     2.01B |        262 |   1610 |   3 |     9.6 |   6.4 |    4 | 24.0 |   16% | CrystalCanyon:100%
+    8 |  3.51B   4.85B   6.45B |    30.99B |        524 |   2420 |  10 |    16.2 |   7.6 |    5 | 24.0 |   29% | CrystalCanyon:100%
+   24 |  6.14B   7.32B   8.95B |   163.12B |        861 |   3785 |  16 |    21.0 |   8.3 |    6 | 24.0 |   28% | CrystalCanyon:100%
+   72 |  8.02B   9.71B  11.51B |   674.12B |        995 |   6103 |  26 |    25.2 |   8.7 |    7 | 24.0 |   25% | CrystalCanyon:100%
+  200 |  9.36B  11.69B  14.17B |     2.36T |      6.45K |   8476 |  36 |    30.3 |   9.1 |    8 | 24.0 |   25% | CrystalCanyon:92%, FrostPeaks:8%
+
+[paid_afk]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 | 371.80M 525.63M 903.37M |   170.74M |        180 |    679 |   0 |     4.1 |   5.9 |    4 | 24.0 |    0% | CrystalCanyon:100%
+    2 | 671.15M   1.27B   2.33B |     1.32B |        180 |   1183 |   2 |     8.2 |   6.3 |    4 | 24.0 |    0% | CrystalCanyon:100%
+    8 |  1.85B   3.56B   5.06B |    17.46B |        260 |   2420 |   6 |    12.8 |   7.2 |    5 | 24.0 |    0% | CrystalCanyon:100%
+   24 |  4.32B   5.39B   7.47B |    93.40B |        380 |   3604 |  12 |    18.3 |   7.8 |    6 | 24.0 |    0% | CrystalCanyon:100%
+   72 |  5.35B   7.66B   9.42B |   427.33B |        167 |   6103 |  21 |    23.1 |   8.5 |    7 | 24.0 |    0% | CrystalCanyon:100%
+  200 |  6.08B   8.80B  10.96B |     1.50T |        746 |   8111 |  32 |    25.4 |   8.9 |    8 | 24.0 |    0% | CrystalCanyon:92%, FrostPeaks:8%
+
+[whale_active]
+    h |                 Logs/h |    earned | Souls held |  Power | reb | LogMult |  Luck | tier | walk | boss% | area mix
+  0.5 | 866.61M   1.86B   2.39B |   670.80M |        185 |   1400 |   0 |     9.6 |  50.0 |    4 | 24.0 |   15% | CrystalCanyon:100%
+    2 |  3.10B   4.77B   9.93B |     6.74B |        275 |   2073 |   5 |    22.0 |  50.0 |    5 | 24.0 |   15% | CrystalCanyon:100%
+    8 |  6.59B  11.72B  16.36B |    69.86B |        464 |   3216 |  12 |    34.9 |  50.0 |    6 | 24.0 |   24% | CrystalCanyon:100%
+   24 | 10.59B  13.86B  21.69B |   328.26B |        634 |   6736 |  20 |    41.9 |  50.0 |    8 | 24.0 |   25% | CrystalCanyon:100%
+   72 | 12.38B  17.39B  26.33B |     1.25T |        862 |   7063 |  30 |    51.0 |  50.0 |    8 | 24.0 |   24% | CrystalCanyon:92%, FrostPeaks:8%
+  200 | 11.81B  20.13B  28.62B |     4.19T |      6.42K |  10667 |  40 |    55.0 |  50.0 |    8 | 24.0 |   23% | FrostPeaks:25%, CrystalCanyon:75%
+
+====================================================================================================
+2. Island unlock and first rare weapon (median over the 200 h run; p10 / p50 / p90)
+====================================================================================================
+     free_new: Pine area 0 min | Crystal Wilds 8 min / 18 min / 42 min | Frostbound 6.2 h / 6.4 h / 6.7 h | first Legendary 34 min, Mythic 3.2 h, Secret 38.0 h, Divine not reached
+  free_casual: Pine area 0 min | Crystal Wilds 12 min / 23 min / 42 min | Frostbound 3.4 h / 6.4 h / 6.8 h | first Legendary 30 min, Mythic 3.0 h, Secret 23.3 h, Divine not reached
+  free_active: Pine area 0 min | Crystal Wilds 7 min / 13 min / 46 min | Frostbound 6.2 h / 6.3 h / 6.9 h | first Legendary 46 min, Mythic 5.9 h, Secret 40.0 h, Divine not reached
+     free_afk: Pine area 0 min | Crystal Wilds 6 min / 22 min / 32 min | Frostbound 3.2 h / 6.4 h / 6.6 h | first Legendary 32 min, Mythic 4.9 h, Secret 36.0 h, Divine not reached
+  paid_active: Pine area 0 min | Crystal Wilds 4 min / 6 min / 10 min | Frostbound 2.7 h / 3.4 h / 3.5 h | first Legendary 9 min, Mythic 1.0 h, Secret 19.1 h, Divine 107.2 h
+     paid_afk: Pine area 0 min | Crystal Wilds 4 min / 4 min / 7 min | Frostbound 1.9 h / 3.4 h / 3.4 h | first Legendary 9 min, Mythic 2.3 h, Secret 12.2 h, Divine 159.5 h
+ whale_active: Pine area 0 min | Crystal Wilds 4 min / 5 min / 7 min | Frostbound 21 min / 1.7 h / 3.4 h | first Legendary 3 min, Mythic 22 min, Secret 5.0 h, Divine 86.1 h
+
+====================================================================================================
+3. AFK vs active and free vs paid (cumulative Logs earned, median)
+====================================================================================================
+free AFK / free active   (target 0.60-0.75): 0.5h 0.12  2h 0.56  8h 0.61  24h 0.43  72h 0.50  200h 0.56
+paid AFK / paid active   : 0.5h 0.66  2h 0.66  8h 0.56  24h 0.57  72h 0.63  200h 0.63
+paid / free (active)     : 0.5h 6.91  2h 4.55  8h 4.32  24h 2.65  72h 2.55  200h 2.44
+whale / free (active)    : 0.5h 17.96  2h 15.29  8h 9.75  24h 5.34  72h 4.73  200h 4.32
+casual / active          : 0.5h 0.50  2h 0.79  8h 0.64  24h 0.62  72h 0.71  200h 0.74
+AFK / active power: 0.5h 0.97  2h 1.10  8h 1.00  24h 0.98  72h 0.99  200h 0.73
+AFK / active rebirths: 0.5h 0/0  2h 0/0  8h 2/6  24h 7/11  72h 14/19  200h 24/28
+
+====================================================================================================
+4. Upgrade configuration and affordability (cost of the LAST level in minutes of median free-active income)
+====================================================================================================
+   Upgrade | levels |   first | last level | total to max | 0.5h | 2h | 8h | 24h | 72h | 200h
+    Blades |      5 |     100 |     10.50M |       11.12M | 6.3m | 2.2m | 0.4m | 0.2m | 0.2m | 0.1m
+     Speed |     50 |      30 |      5.38M |       24.57M | 3.2m | 1.1m | 0.2m | 0.1m | 0.1m | 0.1m
+    Damage |    100 |      40 |     40.85M |      313.15M | 24.6m | 8.7m | 1.7m | 0.9m | 0.7m | 0.5m
+     Reach |     40 |      60 |      1.67M |        7.22M | 1.0m | 0.4m | 0.1m | 0.0m | 0.0m | 0.0m
+      Luck |    100 |   1.50K |      3.61B |       26.17B | 2171.2m | 765.3m | 148.6m | 82.8m | 64.7m | 48.6m
+ WalkSpeed |     25 |     400 |      1.81M |        6.11M | 1.1m | 0.4m | 0.1m | 0.0m | 0.0m | 0.0m
+   Renewal |     20 |   2.50K |      2.91M |        9.37M | 1.8m | 0.6m | 0.1m | 0.1m | 0.1m | 0.0m
+
+Median levels owned (free active):
+    0.5h Blades 4, Speed 17, Damage 10, Reach 40, Luck 53, WalkSpeed 23, Renewal 6 | Soul upgrades SoulBlessing 0, SoulFortune 0
+      2h Blades 5, Speed 17, Damage 10, Reach 40, Luck 67, WalkSpeed 25, Renewal 20 | Soul upgrades SoulBlessing 0, SoulFortune 0
+      8h Blades 5, Speed 17, Damage 18, Reach 40, Luck 85, WalkSpeed 25, Renewal 20 | Soul upgrades SoulBlessing 4, SoulFortune 3
+     24h Blades 5, Speed 17, Damage 18, Reach 40, Luck 91, WalkSpeed 25, Renewal 20 | Soul upgrades SoulBlessing 8, SoulFortune 7
+     72h Blades 5, Speed 17, Damage 24, Reach 40, Luck 96, WalkSpeed 25, Renewal 20 | Soul upgrades SoulBlessing 11, SoulFortune 11
+    200h Blades 5, Speed 17, Damage 20, Reach 40, Luck 100, WalkSpeed 25, Renewal 20 | Soul upgrades SoulBlessing 15, SoulFortune 14
+
+====================================================================================================
+5. Rebirth pacing (cost = max(MinCost, Units x Growth^n x Unit(tier)))
+====================================================================================================
+n             0        2        4        6        8       10       12       14
+tier 1    1.00M    1.00M    1.00M    1.00M    1.00M    1.00M    1.00M    1.00M
+tier 2    1.20M    1.59M    2.10M    2.78M    3.67M    4.85M    6.42M    8.49M
+tier 3  120.00M  158.70M  209.88M  277.57M  367.08M  485.47M  642.03M  849.08M
+tier 4  180.00M  238.05M  314.82M  416.35M  550.62M  728.20M  963.05M    1.27B
+tier 5    1.05B    1.39B    1.84B    2.43B    3.21B    4.25B    5.62B    7.43B
+tier 6    1.20B    1.59B    2.10B    2.78B    3.67B    4.85B    6.42B    8.49B
+tier 7    1.50B    1.98B    2.62B    3.47B    4.59B    6.07B    8.03B   10.61B
+tier 8    1.80B    2.38B    3.15B    4.16B    5.51B    7.28B    9.63B   12.74B
+Rebirth Logs bonus R(n): n=1 x1.24, n=2 x1.46, n=4 x1.85, n=8 x2.46, n=12 x2.90, n=16 x3.21, n=20 x3.43 (old: 1+0.25n)
+
+====================================================================================================
+6. Price tiers and unit prices (Unit = ~2 min of median free-active income at that tier)
+====================================================================================================
+tier 1 Sapling    Power>=0      island<=TimberHaven      Unit     750 | crate 750 egg 1.12K | King 262 Treant 1.20K
+tier 2 Pinewood   Power>=40     island<=TimberHaven      Unit  80.00K | crate 80.00K egg 120.00K | King 28.00K Treant 128.00K
+tier 3 Crystal I  Power>=250    island<=CrystalWilds     Unit   8.00M | crate 8.00M egg 12.00M | King 2.80M Treant 12.80M
+tier 4 Crystal II Power>=700    island<=CrystalWilds     Unit  12.00M | crate 12.00M egg 18.00M | King 4.20M Treant 19.20M
+tier 5 Frost I    Power>=2000   island<=FrostboundReach  Unit  70.00M | crate 70.00M egg 105.00M | King 24.50M Treant 112.00M
+tier 6 Frost II   Power>=3000   island<=FrostboundReach  Unit  80.00M | crate 80.00M egg 120.00M | King 28.00M Treant 128.00M
+tier 7 Frost III  Power>=4500   island<=FrostboundReach  Unit 100.00M | crate 100.00M egg 150.00M | King 35.00M Treant 160.00M
+tier 8 Frost IV   Power>=6500   island<=FrostboundReach  Unit 120.00M | crate 120.00M egg 180.00M | King 42.00M Treant 192.00M
+
+====================================================================================================
+7. Maximum build (all upgrades max, 5-star Shiny FrostboundReaper, Ancient Root, 3-4 Dragons, every index, 20 rebirths, max Soul upgrades)
+====================================================================================================
+free max: S_perm 3.20 -> x3.48; pets x3.59; rebirth x3.43; LogMult (no temp) x42.9, with x2 event x85.9; Luck x4.5 (cap 50), with Mega Luck x45.3; income 36.33B/h in FrostPeaks
+paid max: S_perm 3.20 -> x3.48; pets x3.79; rebirth x3.43; LogMult (no temp) x99.7, with x2 event x199.3; Luck x9.2 (cap 50), with Mega Luck x50.0; income 85.27B/h in FrostPeaks
+Old rules (audit §8): free max about x106-122, paid max x466 (x1,630 with 10 rebirths); luck x644 free max.
+
+====================================================================================================
+8. 20-player server: Crystal Wilds tree supply, crowding and Forest Renewal
+====================================================================================================
+620 trees; supply without renewal 47.8 trees/s; one mid-game player (Power 2,134, max walk) wants 23.0 trees/s
+   1 players, nobody has Renewal          : each gets 100.0% of solo income; rebuilds  23.0/s
+   1 players, everyone max Renewal (-40%) : each gets 100.0% of solo income; rebuilds  23.0/s
+   5 players, nobody has Renewal          : each gets  41.5% of solo income; rebuilds  47.8/s
+   5 players, everyone max Renewal (-40%) : each gets  43.4% of solo income; rebuilds  50.0/s
+  10 players, nobody has Renewal          : each gets  20.7% of solo income; rebuilds  47.8/s
+  10 players, everyone max Renewal (-40%) : each gets  21.2% of solo income; rebuilds  48.9/s
+  20 players, nobody has Renewal          : each gets  10.4% of solo income; rebuilds  47.8/s
+  20 players, everyone max Renewal (-40%) : each gets  10.5% of solo income; rebuilds  48.3/s
+Renewal server budget: at most 10 accelerated rebuilds per second per server (TreeKit CPU guard); Legendary+ trees never accelerated; minimum respawn 3 s.
+
+====================================================================================================
+9. Future island scaling check (Island 4 = Strength x10, Logs x12, prices x12 vs Frost; density sweep)
+====================================================================================================
+  density 1/150 stud^2, Frost (today)                      Power   2500: base Logs/s 53.61K vs Crystal Wilds 89.26K -> FAILS (Crystal Wilds pays more)
+  density 1/150 stud^2, Island 4 (x12 Logs, x10 Strength)  Power  25000: base Logs/s 643.26K vs Crystal Wilds 102.31K -> OK (island order = income order)
+  density 1/60 stud^2, Frost (today)                      Power   2500: base Logs/s 134.01K vs Crystal Wilds 89.26K -> OK (island order = income order)
+  density 1/60 stud^2, Island 4 (x12 Logs, x10 Strength)  Power  25000: base Logs/s 1.61M vs Crystal Wilds 102.31K -> OK (island order = income order)
+  density 1/31 stud^2, Frost (today)                      Power   2500: base Logs/s 259.38K vs Crystal Wilds 89.26K -> OK (island order = income order)
+  density 1/31 stud^2, Island 4 (x12 Logs, x10 Strength)  Power  25000: base Logs/s 3.11M vs Crystal Wilds 102.31K -> OK (island order = income order)
+
+====================================================================================================
+10. Old rules (audit baseline) vs M1, free active median
+====================================================================================================
+    h | old Logs/h |  M1 Logs/h | old earned |  M1 earned | old LogMult | M1 LogMult | old Luck | M1 Luck | old reb | M1 reb
+  0.5 |    121.86M |     99.74M |     31.60M |     37.35M |         2.5 |        2.1 |      4.3 |     2.7 |       0 |      0
+    2 |      2.61B |    282.98M |      1.92B |    440.62M |        18.8 |        2.6 |     11.8 |     3.1 |       1 |      0
+    8 |     13.17B |      1.46B |     55.79B |      7.17B |        57.3 |        5.7 |     31.3 |     3.6 |       9 |      6
+   24 |     20.12B |      2.61B |    335.16B |     61.49B |        82.7 |        8.1 |     40.6 |     3.9 |      11 |     11
+   72 |     25.77B |      3.35B |      1.47T |    264.29B |        95.5 |       10.3 |     43.6 |     4.2 |      12 |     19
+  200 |     35.37B |      4.46B |      5.44T |    969.21B |       121.8 |       12.1 |     49.3 |     4.4 |      13 |     28
+Old: Crystal 11 min, Frost Power 3.5 h. M1: Crystal Wilds 13 min, Frostbound 6.3 h.
+Time-to-afford (minutes of the player's own median income at the same horizon), old -> M1:
+    0.5h trait crate   0.30 ->   4.81 min; pet egg   0.44 ->   7.22 min
+      2h trait crate   0.01 ->   2.54 min; pet egg   0.02 ->   3.82 min
+      8h trait crate   0.00 ->   2.88 min; pet egg   0.00 ->   4.32 min
+     24h trait crate   0.00 ->   1.61 min; pet egg   0.00 ->   2.41 min
+     72h trait crate   0.00 ->   1.43 min; pet egg   0.00 ->   2.15 min
+    200h trait crate   0.01 ->   1.48 min; pet egg   0.02 ->   2.22 min
+
+====================================================================================================
+11. Dev test profile (p_394034825) under old and new formulas
+====================================================================================================
+LogMult old x3.47 -> M1 x3.37 (-2.6%); Luck old x2.64 -> M1 x2.58 (-2.3%)
+Price tier: Power 1,834 + Frostbound unlocked -> tier 4 (Unit 12.00M); old price base = Frost Peaks crate 8.0M
+Income at the profile's current build (all upgrades at 0 after its rebirths, Crystal Wilds): old x3.47 -> M1 60.61M/h
+  Trait crate       : old   8.00M =    7.7 min of old income | M1  12.00M =   11.9 min of M1 income
+  Pet egg           : old  12.00M =   11.6 min of old income | M1  18.00M =   17.8 min of M1 income
+  Next rebirth (3rd): old   9.00M =    8.7 min of old income | M1 238.05M =  235.7 min of M1 income
+  After re-buying chop upgrades (minutes of play) the same items cost far fewer minutes; see section 10 for typical builds.
+
+====================================================================================================
+12. Balance failures and bottlenecks found by the model
+====================================================================================================
+ - Frostbound Reach (legacy Frost density 1/150) pays less than dense Crystal Wilds at every horizon: players stay in Crystal Wilds even after unlocking Frostbound (audit M8). Must be fixed by the Frostbound build density/rewards (M4b): see section 9.
+ - Free players do not reach a Divine weapon by rolling within 200 h at median (Divine gamma 0.5). Deterministic Divine route (forge, M2/M6) is still required.

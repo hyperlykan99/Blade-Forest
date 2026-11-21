@@ -244,6 +244,25 @@ function E.AltarOdds(islandId, luck)
 	return list, byRarity
 end
 
+-- M2: the island (altar) a weapon belongs to, and its exact odds there for one roll
+function E.WeaponIsland(w)
+	return w and Config.AreaIsland and Config.AreaIsland[w.Area] or nil
+end
+function E.WeaponOdds(weaponId, luck)
+	local w = Config.WeaponById[weaponId]
+	local isl = E.WeaponIsland(w)
+	if not (w and isl and EC.Altars[isl]) or w.Exclusive or not w.OneIn then return nil, isl end
+	for _, o in ipairs((E.AltarOdds(isl, luck or 1))) do
+		if o.Weapon.Id == weaponId then return o.P, isl end
+	end
+	return nil, isl
+end
+
+-- M2: Altar Essence day key (UTC) for the daily cap
+function E.EssenceDay(t)
+	return math.floor((t or os.time()) / 86400)
+end
+
 --------------------------------------------------------------------
 -- Progression tier pricing (replaces BestArea pricing, audit M4)
 --------------------------------------------------------------------
@@ -346,13 +365,15 @@ function E.IndexBonus(editions)
 		if on then
 			local kind, area, part, ed = string.match(key, "^(%a+)/([%w_]+)/(%a+)/(%d+)$")
 			local def = kind == "Weapon" and Config.IndexEditions.Weapon[area] and Config.IndexEditions.Weapon[area][tonumber(ed)]
+			-- M2: later editions (the expansion weapons) pay a reduced share (EditionScale)
+			local es = (I.EditionScale and I.EditionScale[tonumber(ed) or 1]) or (I.EditionScale and I.EditionScale[#I.EditionScale]) or 1
 			if kind == "Weapon" and part == "Standard" then
-				logs += I.WeaponStandard.Logs luck += I.WeaponStandard.Luck
+				logs += I.WeaponStandard.Logs * es luck += I.WeaponStandard.Luck * es
 				if def and def.StandardBonusFull then -- an area with no separate Mastery set
-					logs += I.WeaponMastery.Logs luck += I.WeaponMastery.Luck
+					logs += I.WeaponMastery.Logs * es luck += I.WeaponMastery.Luck * es
 				end
 			elseif kind == "Weapon" and part == "Mastery" then
-				logs += I.WeaponMastery.Logs luck += I.WeaponMastery.Luck
+				logs += I.WeaponMastery.Logs * es luck += I.WeaponMastery.Luck * es
 			elseif kind == "Tree" then
 				logs += I.Tree.Logs
 			end

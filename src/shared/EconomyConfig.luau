@@ -208,6 +208,7 @@ return {
 		WeaponStandard = { Luck = 0.08, Logs = 0.08 },
 		WeaponMastery = { Luck = 0.02, Logs = 0.02 },
 		Tree = { Logs = 0.05 },
+		EditionScale = { 1, 0.5 },
 	},
 	Future = {
 		Channels = { "Mastery", "TechTree", "Guild", "Runes", "TreeBadges", "Trait2", "Forging", "Awakening", "Season", "Expedition" },
@@ -222,4 +223,19 @@ return {
 		WeaponPowerIslandMult = { 1, 4, 16 },
 	},
 	AltarRule = "highest unlocked island by default; the player may pick any unlocked island's altar",
+	Essence = {
+		PerRoll = 1,
+		DailyCap = 25000,
+		AttuneCost = 100000,
+		Attunement = { TimberHaven = "HearthforgeSovereign", CrystalWilds = "PrismheartRadiance", FrostboundReach = "EternalWinter" },
+	},
+	Announce = {
+		Server = { "Mythic", "Secret", "Divine" },
+		Global = { "Secret", "Divine" },
+	},
+	WeaponFuture = {
+		FavoriteBlocks = { "Sell", "Salvage", "Trade" },
+		MaxFavoriteCopies = 999,
+		PowerCeilingMult = 6,
+	},
 }

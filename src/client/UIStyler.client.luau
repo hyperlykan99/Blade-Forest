@@ -135,6 +135,7 @@ local TILES = {
 	SettingsButton    = { Side = "R", Order = 8, Icon = "⚙️", Label = "SETTINGS", Color = C.Grey },
 	PetsButton        = { Side = "L", Order = 7, Icon = "🐾", Label = "PETS", Color = Color3.fromRGB(240, 140, 90) },
 	MarketButton      = { Side = "L", Order = 8, Icon = "🏪", Label = "MARKET", Color = C.WoodLight },
+	GalleryButton     = { Side = "L", Order = 9, Icon = "🗡️", Label = "GALLERY", Color = Color3.fromRGB(120, 90, 210) }, -- M2
 	AchievementsButton = { Side = "R", Order = 6, Icon = "🎖️", Label = "TROPHY", Color = Color3.fromRGB(200, 150, 40) },
 }
 

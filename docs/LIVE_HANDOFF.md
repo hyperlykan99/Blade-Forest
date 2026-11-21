@@ -11,13 +11,13 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev:** **v35** "M1 UNIFIED ECONOMY & PROGRESSION (dev only, not published)" (Team Create save; dev Open Cloud `updateTime` 2026-11-21T00:06:47.217Z). M1 rollback checkpoint **v29** relabelled "M1 PRE-ECONOMY checkpoint (= M0.1 v29 state)"; v30–v34 not saved explicitly by Claude (probably auto-saves during playtests). Earlier: v23 M0.1 checkpoint, v18 M0 checkpoint. **Production:** documented v48; not accessed or touched |
-| Active AI editor | **Claude** (M2 Complete Weapon Collection, claimed 2026-11-20 16:40 PST, branch `m2/complete-weapon-collection`) |
-| Last handoff author / time | **Claude / 2026-11-20 16:15 PST** (M1 Unified Economy & Progression) |
-| Last confirmed gameplay edit | **Dev place only:** v35, M1: central Economy engine (soft-capped additive pools, Luck cap ×50, strongest temp boost only), progression-tier pricing, new tree Logs ladder, tier rebirth cost, Walk Speed (25 lv, 16→24) and Forest Renewal (20 lv, −40 %) upgrades, Soul Blessing/Fortune sinks, island altars with exact odds and guarantees, staged island gates, economy telemetry. Pass effects unchanged; no paid products activated. Production: none since the P0 baseline |
-| Current task | **M2 in progress** (owner-authorized: 120 weapons, models, VFX, gallery, altar integration; dev place only). Checkpoint: dev v35 relabelled "M2 PRE-WEAPONS checkpoint (= M1 v35 state)"; 47 script backups, `BladeModels_PreM2` (43 models) and dev profile snapshot in `ServerStorage.M2Backups` |
-| Next action | Owner: review M1 results and decide §10 #1 (AFK ratio 0.49–0.57 at 8–24 h), #2 (dev profile 3rd rebirth 9M → 238M), #3 (multiplayer tree supply). Earlier open M0/M0.1 decisions still stand (visit cap, Treant eligibility, CurrentIsland join-lag bug, extra dev Logs). Pending validation: multiplayer/bosses, gate unlock, Renewal respawns, cross-server, real teleport, receipts, iPhone. **Next milestone not authorized.** |
-| Code source of truth | **Roblox dev place** (v35). Branch `m1/unified-economy-progression` holds checksum-matched exports of all M1 changed and new scripts (results §1). `main` does not contain `src/` changes |
+| Most recent documented place version | **Dev:** **v45** "M2 COMPLETE WEAPON COLLECTION (dev only, not published)" (dev Open Cloud `updateTime` 2026-11-21T01:15:19.309Z). M2 rollback checkpoint **v35** relabelled "M2 PRE-WEAPONS checkpoint (= M1 v35 state)"; v36–v44 are playtest/auto-saves. Earlier: v29 M1 checkpoint, v23 M0.1, v18 M0. **Production:** documented v48; not accessed or touched |
+| Active AI editor | **None** (released by Claude 2026-11-20 after M2) |
+| Last handoff author / time | **Claude / 2026-11-20 ~17:40 PST** (M2 Complete Weapon Collection) |
+| Last confirmed gameplay edit | **Dev place only:** v45, M2: 120 weapons (77 new, Creator Store models, scripts stripped), VFX tiers 0–7, rarity reveals and announcements, Weapon Gallery, Favorites, Altar Essence + Divine Attunement, future-system interfaces, edition-2 index. Original 43 weapons unchanged. Production: none since the P0 baseline |
+| Current task | **None claimed.** M2 complete on dev (results: `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`) |
+| Next action | Owner: review M2 results §11 (#1 rarer OneIn for new weapons?, #2 model swaps, #3 iPhone triangle/perf check). Earlier M0/M0.1/M1 decisions still open. **Next milestone not authorized.** |
+| Code source of truth | **Roblox dev place** (v45). Branch `m2/complete-weapon-collection` holds checksum-matched exports of all M2 changed and new scripts. `main` does not contain `src/` changes |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
 | Blockers | Owner review of M0, M0.1 and M1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
@@ -55,6 +55,15 @@
 - **Test hooks (Studio only):** `ServerStorage.DevTravel:Invoke(player, islandId, {unlock=,cooldown=,same=})`, `ServerStorage.DevGrant:Invoke(player, "Get"|"Save"|"AddWeapon", ...)`. Note: a command-bar `require(DataService)` returns a separate copy with no players; use DevGrant `Get`.
 - **Production:** 73142469975141 untouched; `updateTime` `2026-11-18T15:12:30.520Z` (last checked 22:05 PST).
 - **Not authorized:** P1b, gameplay/economy/monetization changes, production edits, asset imports, deleting import folders.
+
+## Claude → next AI handoff (2026-11-20 ~17:40 PST, M2)
+
+- **Studio state:** dev place 103379930563763 / 10777797608, **Edit mode, saved v45**, no play session, profile lock released. One Studio client used.
+- **Branch:** `m2/complete-weapon-collection` (commit SHA in the results doc §12).
+- **What changed:** see `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`. Roster lives in `tools/m2/roster.py`; run `python3 tools/m2/gen_m2.py` to regenerate the BladeConfig M2 blocks and `docs/weapon_manifest.json`. Never hand-edit between `-- M2:BEGIN/END` markers.
+- **Test hooks (Studio only):** `require(game.ServerStorage.M2Tests).RunAll()` (run suites separately if it times out); M1/M01/M0 tests unchanged.
+- **Rollback:** dev v35, or `ServerStorage.M2Backups` (`<Name>_PreM2`, `BladeModels_PreM2`, dev profile snapshot).
+- **Production:** not accessed.
 
 ## Claude → next AI handoff (2026-11-20 16:15 PST, M1)
 

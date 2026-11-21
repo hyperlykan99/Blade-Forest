@@ -401,21 +401,32 @@ def rebirth_cost(n, p=None):
 
 
 def update_index(p):
-    # weapon index editions: Standard (<= Mythic) and Mastery (Secret/Divine); sticky
+    # weapon index editions: Standard (<= Mythic) and Mastery (Secret/Divine); sticky.
+    # M2: edition 1 = the M1 sets, edition 2 = the expansion weapons (bonus x EditionScale[2])
     for a in AREA_ORDER:
-        ids = INDEX_WEAPONS[a]
+        update_edition(p, a, [i for i in INDEX_WEAPONS[a] if int(C["weapons"][i].get("Edition", 1)) == 1], "")
+        update_edition(p, a, [i for i in INDEX_WEAPONS[a] if int(C["weapons"][i].get("Edition", 1)) == 2], "#2")
+    I = P["Index"]
+    es2 = I.get("EditionScale", [1, 0.5])[1]
+    def w(k): return es2 if k.endswith("#2") else 1.0
+    full = sum(w(k) for k in p["idx_std"] if k.startswith("FrostPeaks") and not k.endswith("#2"))
+    sl = sum(w(k) for k in p["idx_std"]); ml = sum(w(k) for k in p["idx_mas"])
+    p["idx_luck"] = sl * I["WeaponStandard"]["Luck"] + (ml + full) * I["WeaponMastery"]["Luck"]
+    p["idx_logs"] = sl * I["WeaponStandard"]["Logs"] + (ml + full) * I["WeaponMastery"]["Logs"] + p["tidx"] * I["Tree"]["Logs"]
+
+
+def update_edition(p, a, ids, tag):
+    if not ids:
+        return
+    if True:
         std = [i for i in ids if C["weapons"][i]["Rarity"] not in ("Secret", "Divine")]
         mas = [i for i in ids if C["weapons"][i]["Rarity"] in ("Secret", "Divine")]
         if not std:  # Frost Peaks: its Divines are the standard set, worth Standard + Mastery
             std, mas = mas, []
         def owned(i): return i == "Wooden" or (i in WIDX and p["copies"][WIDX[i]] > 0)
-        if std and a not in p["idx_std"] and all(owned(i) for i in std): p["idx_std"].add(a)
-        if mas and a not in p["idx_mas"] and all(owned(i) for i in mas): p["idx_mas"].add(a)
-    I = P["Index"]
-    full = sum(1 for a in p["idx_std"] if a == "FrostPeaks")  # Standard worth Standard + Mastery
-    p["idx_luck"] = (len(p["idx_std"]) * I["WeaponStandard"]["Luck"] + (len(p["idx_mas"]) + full) * I["WeaponMastery"]["Luck"])
-    p["idx_logs"] = (len(p["idx_std"]) * I["WeaponStandard"]["Logs"] + (len(p["idx_mas"]) + full) * I["WeaponMastery"]["Logs"]
-                     + p["tidx"] * I["Tree"]["Logs"])
+        k = a + tag
+        if std and k not in p["idx_std"] and all(owned(i) for i in std): p["idx_std"].add(k)
+        if mas and k not in p["idx_mas"] and all(owned(i) for i in mas): p["idx_mas"].add(k)
 
 
 RARE_TIERS = ("Legendary", "Mythic", "Secret", "Divine")

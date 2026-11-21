@@ -103,6 +103,10 @@ local DEFAULT = {
 	AltarRolls = {}, -- [islandId] = rolls at that altar since its progression guarantee was last used
 	AltarGuarantee = {}, -- [islandId] = true once the island's progression guarantee was granted
 	EconomyVersion = 0, -- 1 once the M1 economy notice was shown
+	-- M2 (additive)
+	Favorites = {}, -- [weaponId] = true: copies are never sold (auto-sell / max-star overflow); future salvage/trade blocked
+	Essence = { Total = 0, Day = 0, Today = 0 }, -- Altar Essence (1 per altar roll, daily cap) for Divine Attunement
+	Attuned = {}, -- [islandId] = true once that island's Attunement Divine was claimed (one per island, forever)
 	_Meta = { Applied = { ["4"] = true } },
 }
 
@@ -575,7 +579,8 @@ function DataService.AddWeapon(player, id, autoSellBelow)
 	local entry = d.Weapons[id]
 	local w = Config.WeaponById[id]
 	local sellBelow = autoSellBelow and Config.RarityById[autoSellBelow]
-	if entry and sellBelow and Config.RarityById[w.Rarity].Order < sellBelow.Order then
+	local fav = d.Favorites and d.Favorites[id] == true -- M2: favorites are never sold
+	if entry and sellBelow and not fav and Config.RarityById[w.Rarity].Order < sellBelow.Order then
 		entry.Pulled += 1
 		result.Sold = DataService.AddCoins(player, sellValue(id), nil, true)
 		result.AutoSold = true
@@ -596,6 +601,7 @@ function DataService.AddWeapon(player, id, autoSellBelow)
 		end
 		-- max star: keep up to ShinyCopies spares for Shiny crafting, sell the rest
 		local keep = entry.Shiny and 0 or Config.ShinyCopies
+		if fav then keep = Config.WeaponFuture.MaxFavoriteCopies end -- M2: keep favorite copies (bounded)
 		if entry.Star >= Config.MaxStar and entry.Copies > keep then
 			result.Sold = DataService.AddCoins(player, sellValue(id) * (entry.Copies - keep), nil, true)
 			entry.Copies = keep
@@ -678,6 +684,51 @@ function DataService.AddBossKill(player, bossId)
 	if not d then return end
 	d.BossKills = d.BossKills or {}
 	d.BossKills[bossId] = (d.BossKills[bossId] or 0) + 1
+end
+
+--------------------------------------------------------------------
+-- M2: favorites, Altar Essence and Divine Attunement (server-authoritative)
+--------------------------------------------------------------------
+function DataService.SetFavorite(player, id, on)
+	local d = profiles[player]
+	if not d or type(id) ~= "string" or not Config.WeaponById[id] or not d.Weapons[id] then return false, "Not owned" end
+	d.Favorites = d.Favorites or {}
+	d.Favorites[id] = (on == true) or nil
+	DataService.Sync(player)
+	return true, d.Favorites[id] == true
+end
+
+-- +n essence, capped per UTC day; returns the amount actually added
+function DataService.AddEssence(player, n)
+	local d = profiles[player]
+	if not d then return 0 end
+	local E, A = d.Essence, Config.Attunement
+	if type(E) ~= "table" then E = { Total = 0, Day = 0, Today = 0 } d.Essence = E end
+	local day = Economy.EssenceDay()
+	if E.Day ~= day then E.Day = day E.Today = 0 end
+	local add = math.clamp(math.floor(n or 0), 0, math.max(A.DailyCap - E.Today, 0))
+	E.Today += add
+	E.Total += add
+	return add
+end
+
+-- claim the island's Attunement Divine once (needs the island unlocked + AttuneCost essence)
+function DataService.Attune(player, islandId)
+	local d = profiles[player]
+	if not d then return false, "Loading..." end
+	local A = Config.Attunement
+	local wid = type(islandId) == "string" and A.Attunement[islandId]
+	if not wid then return false, "Unknown altar" end
+	if not d.UnlockedIslands[islandId] and islandId ~= Config.HomeIsland then return false, "Unlock the island first" end
+	d.Attuned = d.Attuned or {}
+	if d.Attuned[islandId] then return false, "Already attuned" end
+	if (d.Essence and d.Essence.Total or 0) < A.AttuneCost then
+		return false, string.format("Need %s Altar Essence", Config.FormatNumber(A.AttuneCost))
+	end
+	d.Essence.Total -= A.AttuneCost
+	d.Attuned[islandId] = true
+	local result = DataService.AddWeapon(player, wid, nil)
+	return true, result
 end
 
 --------------------------------------------------------------------

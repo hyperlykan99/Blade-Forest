@@ -257,6 +257,86 @@ local W = {
 	{ Id = "SoulboundBlade",  Name = "Soulbound Blade",   Type = "Sword",  Rarity = "Epic",      Area = "PineForest",   Scale = 1.0, Accent = Color3.fromRGB(190, 160, 255), Particle = "Sparkle", Exclusive = true, SoulCost = 250, FixedPower = 120 },
 	{ Id = "SoulHarvester",   Name = "Soul Harvester",    Type = "Scythe", Rarity = "Legendary", Area = "PineForest",   Scale = 1.0, Accent = Color3.fromRGB(80, 255, 220), Particle = "Void", Exclusive = true, SoulCost = 900, FixedPower = 300 },
 	{ Id = "ForsakenAxe",     Name = "Forsaken Axe",      Type = "Axe",    Rarity = "Mythic",    Area = "CrystalCanyon", Scale = 0.85, Accent = Color3.fromRGB(150, 70, 255), Particle = "Void", Exclusive = true, SoulCost = 4000, FixedPower = 1000 },
+-- M2:BEGIN weapons
+	-- M2 expansion (77): tools/m2/roster.py is the source; legacy entries above keep their order
+	{ Id = "WoodcuttersHatchet", Name = "Woodcutter's Hatchet", Type = "Axe", Rarity = "Common", Area = "StarterGrove", Scale = 1.0, Accent = Color3.fromRGB(190, 150, 100), Edition = 2 },
+	{ Id = "RiverRaiderBlade", Name = "River Raider Blade", Type = "Sword", Rarity = "Common", Area = "StarterGrove", Scale = 1.0, Accent = Color3.fromRGB(170, 140, 110), Edition = 2 },
+	{ Id = "RiverlordSaber", Name = "Riverlord's Saber", Type = "Sword", Rarity = "Uncommon", Area = "StarterGrove", Scale = 1.0, Accent = Color3.fromRGB(230, 200, 120), Edition = 2 },
+	{ Id = "CaptainsGoldguard", Name = "Captain's Goldguard", Type = "Sword", Rarity = "Uncommon", Area = "StarterGrove", Scale = 1.0, Accent = Color3.fromRGB(255, 210, 90), Edition = 2 },
+	{ Id = "AshbarkKnightblade", Name = "Ashbark Knightblade", Type = "Sword", Rarity = "Rare", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(220, 140, 90), Edition = 2 },
+	{ Id = "GroundskeeperScythe", Name = "Groundskeeper's Scythe", Type = "Scythe", Rarity = "Rare", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(160, 190, 140), Edition = 2 },
+	{ Id = "FurnacecoreLongsword", Name = "Furnacecore Longsword", Type = "Sword", Rarity = "Epic", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 150, 60), Particle = "Fire", Edition = 2 },
+	{ Id = "FlametongueSaber", Name = "Flametongue Saber", Type = "Sword", Rarity = "Epic", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 110, 40), Particle = "Fire", Edition = 2 },
+	{ Id = "GildedWarden", Name = "Gilded Warden", Type = "Sword", Rarity = "Epic", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 220, 110), Particle = "Sparkle", Edition = 2 },
+	{ Id = "WildfireGreatsword", Name = "Wildfire Greatsword", Type = "Sword", Rarity = "Legendary", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 120, 30), Particle = "Fire", Edition = 2 },
+	{ Id = "KindledRingblade", Name = "Kindled Ringblade", Type = "Sword", Rarity = "Legendary", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 160, 70), Particle = "Fire", Edition = 2 },
+	{ Id = "TridentBlaze", Name = "Trident Blaze", Type = "Sword", Rarity = "Mythic", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 90, 30), Particle = "Fire", Edition = 2 },
+	{ Id = "Wyrmfang", Name = "Wyrmfang", Type = "Sword", Rarity = "Mythic", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 70, 40), Particle = "Fire", Edition = 2 },
+	{ Id = "EmberkingsCrown", Name = "Emberking's Crown", Type = "Sword", Rarity = "Secret", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 140, 40), Particle = "Fire", Edition = 2 },
+	{ Id = "HearthforgeSovereign", Name = "Hearthforge Sovereign", Type = "Sword", Rarity = "Divine", Area = "PineForest", Scale = 1.0, Accent = Color3.fromRGB(255, 180, 70), Particle = "Fire", Edition = 2 },
+	{ Id = "ButchersCleaver", Name = "Prospector's Cleaver", Type = "Sword", Rarity = "Common", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(200, 190, 180), Edition = 2 },
+	{ Id = "RopegripCutlass", Name = "Ropegrip Cutlass", Type = "Sword", Rarity = "Common", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(190, 170, 140), Edition = 2 },
+	{ Id = "DeckhandCutlass", Name = "Canyon Deckhand", Type = "Sword", Rarity = "Common", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(200, 200, 210), Edition = 2 },
+	{ Id = "HooktipCutlass", Name = "Hooktip Cutlass", Type = "Sword", Rarity = "Common", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(210, 200, 190), Edition = 2 },
+	{ Id = "ProspectorsBlade", Name = "Quarry Iron Blade", Type = "Sword", Rarity = "Common", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(200, 200, 205), Edition = 2 },
+	{ Id = "SilvershoreSaber", Name = "Silvershore Saber", Type = "Sword", Rarity = "Uncommon", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(220, 225, 235), Edition = 2 },
+	{ Id = "ShellguardCutlass", Name = "Shellguard Cutlass", Type = "Sword", Rarity = "Uncommon", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(240, 200, 120), Edition = 2 },
+	{ Id = "ForkguardCutlass", Name = "Forkguard Cutlass", Type = "Sword", Rarity = "Uncommon", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(220, 210, 200), Edition = 2 },
+	{ Id = "CanyonSickle", Name = "Canyon Sickle", Type = "Scythe", Rarity = "Uncommon", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(180, 60, 60), Edition = 2 },
+	{ Id = "SappersAxe", Name = "Sapper's Axe", Type = "Axe", Rarity = "Uncommon", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(190, 190, 200), Edition = 2 },
+	{ Id = "Flintedge", Name = "Flintedge", Type = "Sword", Rarity = "Rare", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(160, 150, 150), Edition = 2 },
+	{ Id = "MagmaveinBlade", Name = "Magmavein Blade", Type = "Sword", Rarity = "Rare", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 110, 40), Edition = 2 },
+	{ Id = "CharcoalBrand", Name = "Charcoal Brand", Type = "Sword", Rarity = "Rare", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(120, 100, 90), Edition = 2 },
+	{ Id = "JadeleafEdge", Name = "Jadeleaf Edge", Type = "Sword", Rarity = "Rare", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(90, 230, 120), Edition = 2 },
+	{ Id = "AmethystSickle", Name = "Amethyst Sickle", Type = "Scythe", Rarity = "Rare", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(170, 100, 255), Edition = 2 },
+	{ Id = "CraterGreatsword", Name = "Crater Greatsword", Type = "Sword", Rarity = "Epic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 120, 50), Particle = "Fire", Edition = 2 },
+	{ Id = "Geyserfang", Name = "Geyserfang", Type = "Sword", Rarity = "Epic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 140, 60), Particle = "Fire", Edition = 2 },
+	{ Id = "MeteorShard", Name = "Meteor Shard", Type = "Sword", Rarity = "Epic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 90, 60), Particle = "Fire", Edition = 2 },
+	{ Id = "AzureTidecurve", Name = "Azure Tidecurve", Type = "Sword", Rarity = "Epic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(80, 170, 255), Particle = "Sparkle", Edition = 2 },
+	{ Id = "GeodeCleaveaxe", Name = "Fuchsia Geode Cleaveaxe", Type = "Axe", Rarity = "Epic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 80, 220), Particle = "Sparkle", Edition = 2 },
+	{ Id = "ObsidianGlassblade", Name = "Obsidian Glassblade", Type = "Sword", Rarity = "Legendary", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 100, 60), Particle = "Fire", Edition = 2 },
+	{ Id = "RosequartzFang", Name = "Rosequartz Fang", Type = "Sword", Rarity = "Legendary", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(255, 150, 200), Particle = "Sparkle", Edition = 2 },
+	{ Id = "OpalineEdge", Name = "Opaline Edge", Type = "Sword", Rarity = "Legendary", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(170, 140, 255), Particle = "Sparkle", Edition = 2 },
+	{ Id = "GarnetCrystalAxe", Name = "Garnet Crystal Axe", Type = "Axe", Rarity = "Legendary", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(220, 40, 60), Particle = "Sparkle", Edition = 2 },
+	{ Id = "ObsidianEclipse", Name = "Obsidian Eclipse", Type = "Sword", Rarity = "Mythic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(130, 60, 220), Particle = "Void", Edition = 2 },
+	{ Id = "GeodeHarvester", Name = "Geode Harvester", Type = "Scythe", Rarity = "Mythic", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(230, 40, 50), Particle = "Void", Edition = 2 },
+	{ Id = "SkyshardAegisblade", Name = "Skyshard Aegisblade", Type = "Sword", Rarity = "Secret", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(110, 200, 255), Particle = "Holy", Edition = 2 },
+	{ Id = "PrismheartRadiance", Name = "Prismheart Radiance", Type = "Sword", Rarity = "Divine", Area = "CrystalCanyon", Scale = 1.0, Accent = Color3.fromRGB(200, 120, 255), Particle = "Holy", Edition = 2 },
+	{ Id = "IcesawBoarder", Name = "Icesaw Boarder", Type = "Sword", Rarity = "Common", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(200, 225, 240), Edition = 2 },
+	{ Id = "ShorthiltSaber", Name = "Shorthilt Saber", Type = "Sword", Rarity = "Common", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(210, 220, 230), Edition = 2 },
+	{ Id = "GhostshipCutlass", Name = "Ghostship Cutlass", Type = "Sword", Rarity = "Common", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(150, 200, 200), Edition = 2 },
+	{ Id = "GlacierWoodsplitter", Name = "Glacier Woodsplitter", Type = "Axe", Rarity = "Common", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(180, 210, 235), Edition = 2 },
+	{ Id = "FrostwindKatana", Name = "Frostwind Katana", Type = "Sword", Rarity = "Common", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(200, 215, 230), Edition = 2 },
+	{ Id = "HarpoonCutlass", Name = "Harpoon Cutlass", Type = "Sword", Rarity = "Uncommon", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(200, 220, 240), Edition = 2 },
+	{ Id = "FrostportOfficer", Name = "Frostport Officer's Sword", Type = "Sword", Rarity = "Uncommon", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(230, 235, 250), Edition = 2 },
+	{ Id = "LonghiltBoarder", Name = "Longhilt Boarder", Type = "Sword", Rarity = "Uncommon", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(210, 220, 235), Edition = 2 },
+	{ Id = "TundraStoneAxe", Name = "Tundra Stone Axe", Type = "Axe", Rarity = "Uncommon", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(170, 175, 185), Edition = 2 },
+	{ Id = "BlackiceKatana", Name = "Blackice Katana", Type = "Sword", Rarity = "Uncommon", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(60, 70, 90), Edition = 2 },
+	{ Id = "NorthmanBeardaxe", Name = "Northman Beardaxe", Type = "Axe", Rarity = "Rare", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(170, 190, 210), Edition = 2 },
+	{ Id = "FjordSword", Name = "Fjord Sword", Type = "Sword", Rarity = "Rare", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(150, 180, 220), Edition = 2 },
+	{ Id = "JaggedFloe", Name = "Jagged Floe", Type = "Sword", Rarity = "Rare", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(160, 220, 255), Edition = 2 },
+	{ Id = "FrostwardenBattleaxe", Name = "Frostwarden Battleaxe", Type = "Axe", Rarity = "Rare", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(150, 200, 240), Edition = 2 },
+	{ Id = "SnowcapLabrys", Name = "Snowcap Labrys", Type = "Axe", Rarity = "Rare", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(220, 235, 255), Edition = 2 },
+	{ Id = "NorthmanGreatsword", Name = "Northman Greatsword", Type = "Sword", Rarity = "Epic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(140, 180, 230), Particle = "Frost", Edition = 2 },
+	{ Id = "RunedFrostaxe", Name = "Runed Frostaxe", Type = "Axe", Rarity = "Epic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(120, 200, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "SnowlightBlade", Name = "Snowlight Blade", Type = "Sword", Rarity = "Epic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(240, 250, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "IcicleSpire", Name = "Icicle Spire", Type = "Sword", Rarity = "Epic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(150, 230, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "RimewireScythe", Name = "Rimewire Scythe", Type = "Scythe", Rarity = "Epic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(180, 210, 240), Particle = "Frost", Edition = 2 },
+	{ Id = "GlacialSplitter", Name = "Glacial Splitter", Type = "Axe", Rarity = "Legendary", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(90, 170, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "CryoMechblade", Name = "Cryo Mechblade", Type = "Sword", Rarity = "Legendary", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(80, 160, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "FrostspireGreatsword", Name = "Frostspire Greatsword", Type = "Sword", Rarity = "Legendary", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(200, 220, 240), Particle = "Frost", Edition = 2 },
+	{ Id = "IceshardCleaver", Name = "Iceshard Cleaver", Type = "Sword", Rarity = "Legendary", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(140, 220, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "HoarfrostAxe", Name = "Hoarfrost Axe", Type = "Axe", Rarity = "Legendary", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(200, 215, 235), Particle = "Frost", Edition = 2 },
+	{ Id = "FrostskullRavager", Name = "Frostskull Ravager", Type = "Axe", Rarity = "Mythic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(130, 200, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "GlacierBoneReaper", Name = "Glacier Bone Reaper", Type = "Scythe", Rarity = "Mythic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(220, 240, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "FrostguardDefender", Name = "Frostguard Defender", Type = "Sword", Rarity = "Mythic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(90, 220, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "Iceveil", Name = "Iceveil", Type = "Sword", Rarity = "Mythic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(90, 160, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "Shiverfang", Name = "Shiverfang", Type = "Sword", Rarity = "Mythic", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(110, 170, 255), Particle = "Frost", Edition = 2 },
+	{ Id = "AuroraCleaver", Name = "Aurora Cleaver", Type = "Axe", Rarity = "Secret", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(100, 220, 255), Particle = "Holy", Edition = 2 },
+	{ Id = "RimefrostRequiem", Name = "Rimefrost Requiem", Type = "Sword", Rarity = "Secret", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(170, 230, 255), Particle = "Holy", Edition = 2 },
+	{ Id = "PolarNightReaper", Name = "Polar Night Reaper", Type = "Scythe", Rarity = "Secret", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(90, 60, 200), Particle = "Void", Edition = 2 },
+	{ Id = "EternalWinter", Name = "Eternal Winter", Type = "Sword", Rarity = "Divine", Area = "FrostPeaks", Scale = 1.0, Accent = Color3.fromRGB(190, 235, 255), Particle = "Frost", Edition = 2 },
+-- M2:END weapons
 }
 
 --------------------------------------------------------------------
@@ -273,6 +353,24 @@ Config.OneIn = {
 	SoulfireScythe = 250000, MagmaHook = 350000, Void = 500000, Umbraxe = 700000, ShadowKatana = 1000000,
 	Starbreaker = 1500000, StarfallReaper = 2500000, Galaxy = 4000000, PrismSaber = 6500000, Celestial = 10000000,
 	GlacialEdge = 15000000, Dragonflame = 25000000, SeraphsLight = 50000000, FrostboundReaper = 100000000,
+-- M2:BEGIN onein
+	WoodcuttersHatchet = 5, RiverRaiderBlade = 8, RiverlordSaber = 60, CaptainsGoldguard = 80, AshbarkKnightblade = 400,
+	GroundskeeperScythe = 600, FurnacecoreLongsword = 3000, FlametongueSaber = 4000, GildedWarden = 6000, WildfireGreatsword = 30000,
+	KindledRingblade = 45000, TridentBlaze = 300000, Wyrmfang = 450000, EmberkingsCrown = 2000000, HearthforgeSovereign = 12000000,
+	ButchersCleaver = 4, RopegripCutlass = 5, DeckhandCutlass = 7, HooktipCutlass = 8, ProspectorsBlade = 9,
+	SilvershoreSaber = 45, ShellguardCutlass = 55, ForkguardCutlass = 65, CanyonSickle = 75, SappersAxe = 90,
+	Flintedge = 300, MagmaveinBlade = 450, CharcoalBrand = 550, JadeleafEdge = 800, AmethystSickle = 900,
+	CraterGreatsword = 2800, Geyserfang = 4500, MeteorShard = 5500, AzureTidecurve = 8000, GeodeCleaveaxe = 9000,
+	ObsidianGlassblade = 28000, RosequartzFang = 40000, OpalineEdge = 60000, GarnetCrystalAxe = 80000, ObsidianEclipse = 400000,
+	GeodeHarvester = 600000, SkyshardAegisblade = 3000000, PrismheartRadiance = 20000000, IcesawBoarder = 5, ShorthiltSaber = 6,
+	GhostshipCutlass = 7, GlacierWoodsplitter = 8, FrostwindKatana = 9, HarpoonCutlass = 40, FrostportOfficer = 85,
+	LonghiltBoarder = 95, TundraStoneAxe = 110, BlackiceKatana = 120, NorthmanBeardaxe = 350, FjordSword = 650,
+	JaggedFloe = 750, FrostwardenBattleaxe = 1100, SnowcapLabrys = 1200, NorthmanGreatsword = 3200, RunedFrostaxe = 6500,
+	SnowlightBlade = 7500, IcicleSpire = 12000, RimewireScythe = 15000, GlacialSplitter = 55000, CryoMechblade = 90000,
+	FrostspireGreatsword = 120000, IceshardCleaver = 150000, HoarfrostAxe = 180000, FrostskullRavager = 650000, GlacierBoneReaper = 750000,
+	FrostguardDefender = 850000, Iceveil = 900000, Shiverfang = 950000, AuroraCleaver = 5000000, RimefrostRequiem = 8000000,
+	PolarNightReaper = 9000000, EternalWinter = 40000000,
+-- M2:END onein
 }
 Config.RollInterval = 1.0       -- seconds per free roll
 Config.FastRollInterval = 0.6   -- with the Fast Roll pass
@@ -412,6 +510,13 @@ Config.IndexEditions = {
 	-- tree index edition 1 = every tree type of the area as of M1
 	Tree = { StarterGrove = { [1] = true }, PineForest = { [1] = true }, CrystalCanyon = { [1] = true }, FrostPeaks = { [1] = true } },
 }
+-- M2:BEGIN editions
+-- M2: index edition 2 = the expansion weapons of each area (bonus x EditionScale[2]); edition 1 records stay
+Config.IndexEditions.Weapon.StarterGrove[2] = { Standard = { "WoodcuttersHatchet", "RiverRaiderBlade", "RiverlordSaber", "CaptainsGoldguard" } }
+Config.IndexEditions.Weapon.PineForest[2] = { Standard = { "AshbarkKnightblade", "GroundskeeperScythe", "FurnacecoreLongsword", "FlametongueSaber", "GildedWarden", "WildfireGreatsword", "KindledRingblade", "TridentBlaze", "Wyrmfang" }, Mastery = { "EmberkingsCrown", "HearthforgeSovereign" } }
+Config.IndexEditions.Weapon.CrystalCanyon[2] = { Standard = { "ButchersCleaver", "RopegripCutlass", "DeckhandCutlass", "HooktipCutlass", "ProspectorsBlade", "SilvershoreSaber", "ShellguardCutlass", "ForkguardCutlass", "CanyonSickle", "SappersAxe", "Flintedge", "MagmaveinBlade", "CharcoalBrand", "JadeleafEdge", "AmethystSickle", "CraterGreatsword", "Geyserfang", "MeteorShard", "AzureTidecurve", "GeodeCleaveaxe", "ObsidianGlassblade", "RosequartzFang", "OpalineEdge", "GarnetCrystalAxe", "ObsidianEclipse", "GeodeHarvester" }, Mastery = { "SkyshardAegisblade", "PrismheartRadiance" } }
+Config.IndexEditions.Weapon.FrostPeaks[2] = { Standard = { "IcesawBoarder", "ShorthiltSaber", "GhostshipCutlass", "GlacierWoodsplitter", "FrostwindKatana", "HarpoonCutlass", "FrostportOfficer", "LonghiltBoarder", "TundraStoneAxe", "BlackiceKatana", "NorthmanBeardaxe", "FjordSword", "JaggedFloe", "FrostwardenBattleaxe", "SnowcapLabrys", "NorthmanGreatsword", "RunedFrostaxe", "SnowlightBlade", "IcicleSpire", "RimewireScythe", "GlacialSplitter", "CryoMechblade", "FrostspireGreatsword", "IceshardCleaver", "HoarfrostAxe", "FrostskullRavager", "GlacierBoneReaper", "FrostguardDefender", "Iceveil", "Shiverfang" }, Mastery = { "AuroraCleaver", "RimefrostRequiem", "PolarNightReaper", "EternalWinter" } }
+-- M2:END editions
 -- Completing an area's TREE index: +5% Logs forever (stacks per area)
 Config.TreeIndexBonus = { Logs = 0.05 }
 
@@ -951,5 +1056,51 @@ function Config.GetIslandRequiredPower(isl)
 end
 -- legacy areas on the Timber Haven map that belong to a later island's gate
 Config.AreaIsland = EC.AreaIsland
+
+--------------------------------------------------------------------
+-- M2: catalog fields for all 120 weapons (derived, never saved)
+--   Island / Altar   which island altar rolls it (nil = not rollable)
+--   Edition          1 = launch + M1 sets, 2 = M2 expansion (index editions)
+--   Source           Altar / Starter / StarterPack / SoulShop (+ Attunement for the 3 Divines)
+--   VfxTier          0 Common .. 7 Divine (BladeEffects + reveals read this)
+--   Future           reserved interfaces only - forging, runes, awakening, trading, vaults,
+--                    seasonal variants, guild rewards, new islands. No system uses them yet;
+--                    per-item state will live in the saved WeaponItems table (M6).
+--------------------------------------------------------------------
+Config.Attunement = EC.Essence -- PerRoll, DailyCap, AttuneCost, Attunement[island] = weaponId
+Config.AttunementWeapon = {}
+for isl, id in pairs(EC.Essence.Attunement) do Config.AttunementWeapon[id] = isl end
+Config.WeaponFuture = EC.WeaponFuture -- FavoriteBlocks, MaxFavoriteCopies, PowerCeilingMult
+for _, w in ipairs(W) do
+	w.Edition = w.Edition or 1
+	w.Island = EC.AreaIsland[w.Area]
+	w.Altar = (w.OneIn and not w.Exclusive and w.Id ~= Config.StarterWeapon) and w.Island or nil
+	w.Source = w.SoulCost and "SoulShop" or (w.Exclusive and "StarterPack") or (w.Id == Config.StarterWeapon and "Starter") or "Altar"
+	if Config.AttunementWeapon[w.Id] then w.Source = "Altar + Divine Attunement" end
+	w.VfxTier = Config.RarityById[w.Rarity].Order - 1
+	w.Future = {
+		Forgeable = not w.Exclusive, -- may become a forge input/output (M6)
+		RuneSlots = 0,               -- awakening I-III add one slot each (M6)
+		MaxAwakening = Config.RarityById[w.Rarity].Order >= Config.RarityById.Epic.Order and 3 or 0,
+		Tradeable = not w.Exclusive and w.Id ~= Config.StarterWeapon, -- trading rules decided later
+		Vaultable = true,
+		SeasonVariantOf = nil,       -- seasonal skins point at their base weapon id
+		GuildReward = false,
+	}
+end
+
+-- how a weapon is obtained (Gallery text)
+function Config.AcquireText(w)
+	if not w then return "" end
+	if w.SoulCost then return "Soul Shop: " .. Config.FormatNumber(w.SoulCost) .. " Souls" end
+	if w.Id == Config.StarterWeapon then return "Starter weapon" end
+	if w.Exclusive then return "Starter Pack exclusive" end
+	local isl = Config.IslandById[w.Island]
+	local t = "Roll at the " .. (isl and isl.Name or w.Island) .. " altar (or any later island's)"
+	if Config.AttunementWeapon[w.Id] then
+		t = t .. "  •  or Divine Attunement: " .. Config.FormatNumber(EC.Essence.AttuneCost) .. " Altar Essence"
+	end
+	return t
+end
 
 return Config

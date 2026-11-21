@@ -20,12 +20,12 @@ local G = {
 	luck_max_mega = 50,
 	eff_divine_50 = 1414213.562373095,
 	eff_myth_10 = 177827.94100389228,
-	pool_TimberHaven = 24,
-	pool_CrystalWilds = 34,
-	pool_FrostboundReach = 38,
-	p_th_luck1_rarest = 4e-07,
-	th_rarest_id = "StarfallReaper",
-	p_cw_luck10_sum = 0.9136997956828562,
+	pool_TimberHaven = 39, -- M2: +15
+	pool_CrystalWilds = 77, -- M2: +28 (+15 inherited)
+	pool_FrostboundReach = 115, -- M2: every rollable weapon
+	p_th_luck1_rarest = 8.333333333333334e-08, -- M2: Hearthforge Sovereign (1 in 12M)
+	th_rarest_id = "HearthforgeSovereign",
+	p_cw_luck10_sum = 0.9937674786267635,
 	rebirth_2_12M = 238050000,
 	cost_walk_24 = 1807091,
 	cost_luck_0 = 1500,
@@ -108,7 +108,7 @@ function T.E2()
 	for _, w in ipairs(E.AltarPool("FrostboundReach")) do all[w.Id] = true end
 	local missing = 0
 	for _, w in ipairs(Config.RollPool) do if not all[w.Id] then missing += 1 end end
-	s.check("E2.3 every rollable weapon is still obtainable (Frostbound altar = all 38)", missing == 0, missing)
+	s.check("E2.3 every rollable weapon is still obtainable (Frostbound altar = all rollable)", missing == 0, missing)
 	local odds, byR = E.AltarOdds("TimberHaven", 1)
 	local sum = 0
 	for _, o in ipairs(odds) do sum += o.P end

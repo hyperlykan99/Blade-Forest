@@ -15,11 +15,17 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done. Owner in brackets.
 - [ ] Server-side purchase gate before any product goes live. [Claude, after approval]
 - [ ] iPhone and two-device validation. [Owner]
 
+## M2 Complete Weapon Collection (dev v45, branch `m2/complete-weapon-collection`)
+- [x] 77 new weapons with Creator Store models, VFX tiers, reveals, gallery, favorites, Essence/Attunement, future interfaces. [Claude]
+- [ ] Owner review of `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`; decide §11 #1 rarer OneIn, #2 model swaps. [Owner]
+- [ ] iPhone performance/triangle check; multiplayer VFX budget check; live Attunement success and Divine reveal. [Owner/Claude]
+- [ ] Forge recipes and crafting. [M6]
+
 ## M1 Unified Economy & Progression (dev v35, branch `m1/unified-economy-progression`)
 - [x] M1.1–M1.9: Economy engine, tier balance, Walk Speed, Forest Renewal, island altars, staged gates, AFK telemetry, future channels, simulator. [Claude]
 - [ ] Owner review of `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md`; decide §10 #1 AFK ratio at 8–24 h, #2 dev-profile rebirth reprice, #3 multiplayer tree supply. [Owner]
 - [ ] Live validation: two-player bosses (reward payout), a real gate unlock, Renewal-accelerated respawns, altar guarantee, 20-player congestion telemetry. [Owner/Claude]
-- [ ] Activate the Crystal Colossus gate requirement when the boss exists; add M2 weapons to altar pools. [Later milestones]
+- [ ] Activate the Crystal Colossus gate requirement when the boss exists; M2 weapons added to altar pools (done in M2). [Later milestones]
 
 ## M0.1 Foundations Corrections (dev v29, branch `m0.1/foundations-corrections`)
 - [x] H2 serialized writes + write-sequence fence; H3 migration lock leak; H1 movement sanity; M1 AFK handoff; H6 playtime gifts in profile; M5 boss scaling/minimum contribution. [Claude]

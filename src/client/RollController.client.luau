@@ -284,8 +284,91 @@ overlay.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- M2: reveal tiers (Legendary gold burst 1.5 s, Mythic beam 2.5 s, Secret rainbow 3 s,
+-- Divine cinematic 4 s). Reduced Motion = static tint only; Skip Reveals is handled by bigEnough.
+local REVEAL_HOLD = { Legendary = 1.5, Mythic = 2.5, Secret = 3, Divine = 4 }
+local function revealFx(rarity)
+	local hold = REVEAL_HOLD[rarity.Id]
+	if not hold then return 0.4 end
+	local reduced = player:GetAttribute("Pref_ReducedMotion")
+	local fx = Instance.new("Frame")
+	fx.Name = "RevealFx"
+	fx.Size = UDim2.fromScale(1, 1)
+	fx.BackgroundTransparency = 1
+	fx.ZIndex = 40
+	fx.Parent = overlay
+	local col = rarity.Rainbow and Color3.new(1, 1, 1) or rarity.Color
+	local function ring(delay, colr)
+		local r = Instance.new("Frame")
+		r.AnchorPoint = Vector2.new(0.5, 0.5)
+		r.Position = UDim2.fromScale(0.5, 0.45)
+		r.Size = UDim2.fromOffset(60, 60)
+		r.BackgroundTransparency = 1
+		r.ZIndex = 41
+		r.Parent = fx
+		new("UICorner", { CornerRadius = UDim.new(1, 0) }, r)
+		local st = new("UIStroke", { Color = colr, Thickness = 6, Transparency = 0.1 }, r)
+		if rarity.Rainbow then new("UIGradient", { Color = Config.RainbowSequence, Rotation = 45 }, st) end
+		task.delay(delay, function()
+			TweenService:Create(r, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(900, 900) }):Play()
+			TweenService:Create(st, TweenInfo.new(1.1), { Transparency = 1, Thickness = 1 }):Play()
+		end)
+	end
+	if reduced then
+		fx.BackgroundColor3 = col
+		fx.BackgroundTransparency = 0.85
+	else
+		ring(0, col) -- Legendary+: gold (rarity colour) burst
+		if rarity.Order >= Config.RarityById.Mythic.Order then -- beam of light behind the weapon
+			local beam = Instance.new("Frame")
+			beam.AnchorPoint = Vector2.new(0.5, 0.5)
+			beam.Position = UDim2.fromScale(0.5, 0.45)
+			beam.Size = UDim2.new(0, 10, 1.2, 0)
+			beam.BackgroundColor3 = col
+			beam.BorderSizePixel = 0
+			beam.ZIndex = 39
+			beam.Parent = fx
+			new("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.2), NumberSequenceKeypoint.new(1, 1) }),
+				Color = rarity.Rainbow and Config.RainbowSequence or ColorSequence.new(col) }, beam)
+			TweenService:Create(beam, TweenInfo.new(0.5, Enum.EasingStyle.Back), { Size = UDim2.new(0, 140, 1.2, 0) }):Play()
+			task.delay(hold - 0.6, function() TweenService:Create(beam, TweenInfo.new(0.5), { Size = UDim2.new(0, 0, 1.2, 0) }):Play() end)
+		end
+		if rarity.Order >= Config.RarityById.Secret.Order then ring(0.35, col) ring(0.7, col) end
+		if rarity.Id == "Divine" then -- cinematic: letterbox bars + title card
+			for i, y in ipairs({ 0, 1 }) do
+				local bar = Instance.new("Frame")
+				bar.AnchorPoint = Vector2.new(0, y)
+				bar.Position = UDim2.fromScale(0, y)
+				bar.Size = UDim2.new(1, 0, 0, 0)
+				bar.BackgroundColor3 = Color3.new(0, 0, 0)
+				bar.BorderSizePixel = 0
+				bar.ZIndex = 45
+				bar.Parent = fx
+				TweenService:Create(bar, TweenInfo.new(0.4), { Size = UDim2.new(1, 0, 0.12, 0) }):Play()
+			end
+			local title = Instance.new("TextLabel")
+			title.AnchorPoint = Vector2.new(0.5, 0)
+			title.Position = UDim2.fromScale(0.5, 0.02)
+			title.Size = UDim2.fromScale(0.8, 0.08)
+			title.BackgroundTransparency = 1
+			title.Text = "✦  D I V I N E  ✦"
+			title.TextScaled = true
+			title.FontFace = T.Font.Title
+			title.TextColor3 = Color3.fromRGB(255, 236, 160)
+			title.TextTransparency = 1
+			title.ZIndex = 46
+			title.Parent = fx
+			TweenService:Create(title, TweenInfo.new(0.8), { TextTransparency = 0 }):Play()
+		end
+	end
+	task.delay(hold + 0.6, function() fx:Destroy() end)
+	return hold
+end
+
 function playRoll(result)
 	animating, revealDone, skipRequested = true, false, false
+	local old = overlay:FindFirstChild("RevealFx")
+	if old then old:Destroy() end
 	rainbowOn = false
 	rarityGradient.Enabled = false
 	overlay.Visible = true
@@ -378,7 +461,10 @@ function playRoll(result)
 	if player:GetAttribute("EquippedBlade") == result.Id then
 		hintLabel.Text = "Equipped!  •  click to continue"
 	end
-	task.wait(0.4)
+	if result.Essence and result.Essence > 0 and finalRarity.Order >= Config.RarityById.Legendary.Order then
+		infoLabel.Text = infoLabel.Text .. "   •   +" .. result.Essence .. " Essence"
+	end
+	task.wait(revealFx(finalRarity))
 	revealDone = true
 end
 --------------------------------------------------------------------
