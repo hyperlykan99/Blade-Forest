@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **Codex M7 social systems.** Private development cloud save confirmed. Studio is in Edit mode and the editor is released. See the [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md).
 > **2026-11-20 PST · Codex M6 endgame.** The private dev place is saved as **v60**. The editor is released in Edit mode. See the [M6 results](m6/M6_ENDGAME_RESULTS.md).
 > **2026-11-20 PST · Codex M5 gameplay loop.** The private dev M5 cloud save is confirmed by timestamp. The editor is released in Edit mode. See the [M5 results and rollback](m5/M5_GAMEPLAY_LOOP_RESULTS.md).
 > **2026-11-20 PST · Codex M4 construction.** Private dev saved as **v52** with the verified v2 world active. The editor is released. See the [M4 results and rollback notes](m4/M4_COMPLETE_WORLD_RESULTS.md).
@@ -15,16 +16,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Private dev M6 v60**, Team Create save confirmed. Cloud update `2026-11-21T04:41:09.178Z`. |
-| Active AI editor | Codex, owner-authorized M7 construction |
-| Last handoff author / time | **Codex / 2026-11-20 PST** (M6 Deep Progression and Endgame) |
-| Last confirmed gameplay edit | Forge, Salvage, three Awakening stages, 20 runes, three raid encounters, Heart of Winter, Trial commissions and Expedition rune grants in the private v2 world. |
-| Current task | M7 social systems construction in private Studio |
-| Next action | Read the M6 results. Await owner direction before beginning M7. |
-| Code source of truth | Private dev M6 v60 and branch `m6/forging-runes-raids-endgame`, implementation `47fcd18b689cf7590d923e8dff8d37dcbb62b27a`. |
+| Most recent documented place version | M7 cloud update `2026-11-21T23:19:38.431Z`. Team Create confirmed no unsaved changes. Numeric M7 version unverified. |
+| Active AI editor | None. Studio is in Edit mode. |
+| Last handoff author / time | Codex, M7 Social Systems. Cloud update `2026-11-21T23:19:38.431Z`. |
+| Last confirmed gameplay edit | Parties and three group encounter entry paths, 30-member guilds, profiles, titles, auras and six vault slots. Real trading and paid gifting are disabled. |
+| Current task | None claimed. M7 source, private save and essential checks are recorded. |
+| Next action | Read the M7 results and await owner direction before beginning M8. |
+| Code source of truth | Private dev M7 and `m7/social-guilds-trading-vaults`, implementation `34ef2e9a101b3a3c8ed40f24c04c5f48666f4c11`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Full encounter clears, cross-server weekly reward persistence, and mobile and multiplayer balance remain unverified. |
+| Blockers | Numeric M7 save version, cross-server trading and guild tests, purchase validation, full party encounters and mobile QA remain unverified. |
 
 ## Who is responsible
 
@@ -84,14 +85,20 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Started (date/time/timezone) | 2026-11-20 PST |
-| Task / owner approval | Owner-authorized M6 endgame construction and private cloud save |
-| Studio place ID and saved version checked | Place `103379930563763`, universe `10777797608`, M4 v2 ready, Edit mode, Team Create v60, cloud update `2026-11-21T04:41:09.178Z` |
-| Git branch / starting commit | `m6/forging-runes-raids-endgame`, M5 implementation baseline `baa5ba0cc109f88456889259308be6936e9226aa` |
+| Started | M7 started from M6 v60 |
+| Task / owner approval | Owner-authorized M7 social systems and private save |
+| Studio place ID and saved version checked | `103379930563763` / `10777797608`, v2 world, Edit mode, cloud update `2026-11-21T23:19:38.431Z`. Numeric M7 version unverified. |
+| Git branch / baseline | `m7/social-guilds-trading-vaults`, M6 `47fcd18b689cf7590d923e8dff8d37dcbb62b27a` |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | Studio confirmed the private save as v60 |
-| Tests and results | [M6 results](m6/M6_ENDGAME_RESULTS.md) records the Studio smoke, detached profile fixture and 200h economy model |
-| Risks / blockers | Checkpoint cloud update `2026-11-21T04:32:07.577Z`. `ServerStorage.M6Rollback` holds 14 source copies. Encounter timing, multiplayer mobile behavior and live weekly rewards remain unverified. |
+| Work in progress / unsaved changes | Team Create confirmed no unsaved changes |
+| Tests and results | [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md) records the compile, Studio smoke and detached recovery suite |
+| Risks / blockers | Keep trading and paid gifting disabled. The rollback checkpoint is recorded at `2026-11-21T04:49:59.443Z` and includes 13 inert original sources. |
+
+## Codex → next editor (M7)
+
+- Studio's private place has the M7 sources linked by `Workspace.M7DevBuild` at `34ef2e9a101b3a3c8ed40f24c04c5f48666f4c11`.
+- The recovery protocol depends on the existing M0 session fence and the M7 transaction journal. Keep both flags off and preserve the additive player and guild records.
+- [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md) includes remaining validation and rollback instructions.
 
 ## Codex → next editor (2026-11-20 PST, M6)
 
