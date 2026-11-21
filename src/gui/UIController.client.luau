@@ -410,8 +410,8 @@ refresh = function()
 	refreshWeapons()
 end
 
-local function openPage(name)
-	if panel.Visible and panel.Title.Text == name then
+local function openPage(name,force)
+	if not force and panel.Visible and panel.Title.Text == name then
 		panel.Visible = false
 		return
 	end
@@ -434,6 +434,9 @@ end
 local upgradesButton = menuButton("UpgradesButton")
 local bladesButton = menuButton("BladesButton")
 upgradesButton.Activated:Connect(function() openPage("Upgrades") end)
+game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt)
+	if prompt:GetAttribute("OpenPanel")=="Upgrades" then openPage("Upgrades",true) end
+end)
 bladesButton.Text = "⚔ WEAPONS"
 bladesButton.Activated:Connect(function() openPage("Weapons") end)
 panel.Close.MouseButton1Click:Connect(function() panel.Visible = false end)
@@ -465,7 +468,7 @@ local frenzyFlash = 0
 RunService.Heartbeat:Connect(function(dt)
 	-- boss: the bar / timer only shows while you are in (or right next to) the arena
 	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	local inArena = me and ((me.Position - Config.ArenaCenter) * Vector3.new(1, 0, 1)).Magnitude <= Config.ArenaRadius + 22
+	local inArena = me and ((me.Position - Config.GetArenaCenter()) * Vector3.new(1, 0, 1)).Magnitude <= Config.ArenaRadius + 22
 	bossFrame.Visible = inArena and true or false
 	local bossModel = CollectionService:GetTagged("Boss")[1]
 	local hum = bossModel and bossModel:FindFirstChildOfClass("Humanoid")

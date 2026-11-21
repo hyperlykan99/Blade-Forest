@@ -102,6 +102,8 @@ local DEFAULT = {
 	IndexEditions = {}, -- ["Weapon/<area>/Standard|Mastery/<ed>"] / ["Tree/<area>/All/<ed>"] = true, never removed
 	SoulUpgrades = {}, -- [soulUpgradeId] = level (permanent, Souls)
 	BossKills = {}, -- [bossId] = kills (gate requirements)
+	BossFirstClears = {},
+	BossSigils = {},
 	AltarRolls = {}, -- [islandId] = rolls at that altar since its progression guarantee was last used
 	AltarGuarantee = {}, -- [islandId] = true once the island's progression guarantee was granted
 	EconomyVersion = 0, -- 1 once the M1 economy notice was shown
@@ -716,6 +718,23 @@ function DataService.AddMasteryXP(player, xp)
 	end
 end
 
+local M4Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
+function DataService.GrantM4FirstClear(player,bossId)
+	local d=profiles[player]
+	if not d or player:GetAttribute("Handoff") or d.BossFirstClears[bossId] then return false end
+	local spec=M4Layout.Bosses[bossId]
+	if not spec and bossId~="BladeKing" then return false end
+	if bossId=="BladeKing" and not M4Layout.Enabled() then return false end
+	local weapon=spec and spec.Weapon or Config.Economy.Altars.TimberHaven.Guarantee.Weapon
+	local sigil=spec and spec.Sigil or "Bark"
+	assert(Config.WeaponById[weapon],weapon)
+	d.BossFirstClears[bossId]=true
+	d.BossSigils[sigil]=(d.BossSigils[sigil] or 0)+1
+	if not d.Weapons[weapon] then DataService.AddWeapon(player,weapon,nil) end
+	DataService.Sync(player)
+	return true,weapon
+end
+
 function DataService.AddBossKill(player, bossId)
 	local d = profiles[player]
 	if not d then return end
@@ -723,6 +742,8 @@ function DataService.AddBossKill(player, bossId)
 	d.BossKills[bossId] = (d.BossKills[bossId] or 0) + 1
 	if bossId == "Treant" or bossId == "BladeKing" then
 		DataService.AddMasteryXP(player, bossId == "Treant" and 650 or 240)
+	elseif M4Layout.Bosses[bossId] then
+		DataService.AddMasteryXP(player,M4Layout.Bosses[bossId].XP)
 	end
 end
 

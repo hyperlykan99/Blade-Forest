@@ -311,7 +311,10 @@ achBadge()
 --------------------------------------------------------------------
 ProximityPromptService.PromptTriggered:Connect(function(prompt)
 	local which = prompt:GetAttribute("OpenPanel")
-	if which == "Pets" then pPanel.Visible = true refreshPets()
+	if which == "Pets" then
+		eggIndex=table.find(Character.Islands,player:GetAttribute("CurrentIsland")) or 1
+		pPanel.Visible=true
+		refreshPets()
 	elseif which == "Sawmill" then mPanel.Visible = true refreshMarket() end
 end)
 

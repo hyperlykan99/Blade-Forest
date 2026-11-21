@@ -11,6 +11,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local RunService = game:GetService("RunService")
 
+local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
+local Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local guard = require(script.Parent:WaitForChild("MovementGuard")).shared -- M0.1: sanctioned teleports
@@ -24,6 +26,8 @@ TravelRemote.Parent = Remotes
 local STREAM_TIMEOUT = 8
 local lastTravel = {} -- [player] = os.clock()
 local busy = {} -- [player] = true while a travel is running
+
+local spawned = {} -- authoritative initialized character, never inferred from its position
 
 local function home() return Config.IslandById[Config.HomeIsland] end
 
@@ -52,9 +56,10 @@ local RESERVE_SECONDS = 2
 local reserved = {} -- [islandId] = { [slot] = { player = Player, untilT = os.clock() deadline } }
 
 local function slotPosition(isl, slot)
-	if slot == 0 then return isl.Arrival end
+	local arrival = isl.ArrivalOverride or Config.GetArrival(isl)
+	if slot == 0 then return arrival end
 	local a = (slot - 1) * math.pi / 4
-	return isl.Arrival + Vector3.new(math.cos(a) * 6, 0, math.sin(a) * 6)
+	return arrival + Vector3.new(math.cos(a) * 6, 0, math.sin(a) * 6)
 end
 
 local function releasePlayer(player)
@@ -67,14 +72,15 @@ end
 
 local function reserve(isl, slot, player)
 	releasePlayer(player) -- a player holds at most one reservation
-	reserved[isl.Id] = reserved[isl.Id] or {}
-	reserved[isl.Id][slot] = { player = player, untilT = os.clock() + RESERVE_SECONDS }
+	local key = isl.ReserveKey or isl.Id
+	reserved[key] = reserved[key] or {}
+	reserved[key][slot] = { player = player, untilT = os.clock() + RESERVE_SECONDS }
 end
 
 -- never yields
 local function freeSpot(isl, forPlayer)
 	local now = os.clock()
-	local slots = reserved[isl.Id]
+	local slots = reserved[isl.ReserveKey or isl.Id]
 	for slot = 0, 8 do
 		local p = slotPosition(isl, slot)
 		local r = slots and slots[slot]
@@ -87,7 +93,7 @@ local function freeSpot(isl, forPlayer)
 		end
 		if not taken then return CFrame.new(p), slot end
 	end
-	return CFrame.new(isl.Arrival), 0
+	return nil
 end
 
 local function setIsland(player, isl)
@@ -104,7 +110,7 @@ local function place(player, isl)
 	if not root or not hum or hum.Health <= 0 then return false, "No character" end
 	-- arrival models are Persistent (always on every client); still preload the area
 	-- around the island's fixed arrival anchor (this yields)
-	local streamed, streamErr = pcall(function() player:RequestStreamAroundAsync(isl.Arrival, STREAM_TIMEOUT) end)
+	local streamed, streamErr = pcall(function() player:RequestStreamAroundAsync(isl.ArrivalOverride or Config.GetArrival(isl), STREAM_TIMEOUT) end)
 	if not streamed then
 		warn("[Travel] stream request failed for", player.Name, isl.Id, streamErr)
 		return false, "Couldn't load " .. isl.Name .. " - try again"
@@ -112,6 +118,7 @@ local function place(player, isl)
 	if player.Character ~= char or not root.Parent or hum.Health <= 0 then return false, "Character changed during travel" end
 	-- M-1: choose the landing slot and move in one step; nothing from here to PivotTo yields
 	local cf, slot = freeSpot(isl, player)
+	if not cf then return false, "Arrival is busy. Try again." end
 	guard:Allow(player, 3, nil, cf.Position, root.Position) -- M0.1 (H1): server-sanctioned teleport to cf
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
@@ -125,7 +132,8 @@ local function travel(player, islandId, bypass)
 	if type(islandId) ~= "string" then return false, "Bad destination" end
 	local isl = Config.IslandById[islandId]
 	if not isl then return false, "Unknown island" end
-	if not player:GetAttribute("Loaded") then return false, "Loading..." end
+	if not player:GetAttribute("Loaded") or not player.Character or spawned[player]~=player.Character then return false, "Loading destination..." end
+	if player:GetAttribute("Handoff") then return false,"Profile is moving servers" end
 	if busy[player] then return false, "Already travelling" end
 	local now = os.clock()
 	local wait = Config.TravelCooldown - (now - (lastTravel[player] or -math.huge))
@@ -143,9 +151,10 @@ local function travel(player, islandId, bypass)
 		if not ok then return false, why end
 	end
 	lastTravel[player] = now
-	busy[player] = true
+	local character=player.Character
+	busy[player] = character
 	local ok, why = place(player, isl)
-	busy[player] = nil
+	if busy[player]==character then busy[player] = nil end
 	if not ok then return false, why end
 	setIsland(player, isl)
 	NotifyRemote:FireClient(player, "🧭 Arrived at " .. isl.Name, "kill")
@@ -159,59 +168,83 @@ TravelRemote.OnServerInvoke = function(player, islandId)
 end
 
 ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
+	local waypoint = prompt:GetAttribute("M4Waypoint")
+	if waypoint then
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local anchor = prompt.Parent
+		local annex = workspace:FindFirstChild("M4ActiveWorld")
+		if not runtime.Crystal or not annex or not prompt:IsDescendantOf(annex) or not root or not anchor or not anchor:IsA("BasePart")
+			or (root.Position-anchor.Position).Magnitude>14 or spawned[player]~=player.Character
+			or player:GetAttribute("CurrentIsland")~="CrystalWilds" or player:GetAttribute("Handoff") or busy[player]
+			or (player:GetAttribute("CombatUntil") or 0)>workspace:GetServerTimeNow() then return end
+		local arena = waypoint=="ColossusArena"
+		if not arena and waypoint~="CrystalPlaza" then return end
+		local island = table.clone(Config.IslandById.CrystalWilds)
+		island.ArrivalOverride = arena and Layout.Crystal.Arrival or Layout.Crystal.Return
+		island.ReserveKey = waypoint
+		local character=player.Character
+		busy[player]=character
+		local ok, why=place(player,island)
+		if busy[player]==character then busy[player]=nil end
+		if not ok then NotifyRemote:FireClient(player,tostring(why),"death") end
+		return
+	end
 	local to = prompt:GetAttribute("TravelTo")
 	if type(to) ~= "string" then return end
 	local ok, res = travel(player, to)
 	if not ok then NotifyRemote:FireClient(player, tostring(res), "death") end
 end)
 
--- respawn and rejoin: put the character back on its current island
-local function onCharacter(player, char)
-	local id = player:GetAttribute("CurrentIsland")
-	if not id or id == Config.HomeIsland then return end
-	local isl = Config.IslandById[id]
-	if not char:WaitForChild("HumanoidRootPart", 10) then return end
-	task.wait() -- let the default spawn finish first
-	if not isl or not isUnlocked(player, isl) then setIsland(player, home()) return end
-	busy[player] = true
-	place(player, isl)
-	busy[player] = nil
+local launching = {}
+local function initializeCharacter(player, char)
+	if not player:GetAttribute("Loaded") or player.Character~=char or spawned[player]==char or launching[player]==char then return end
+	launching[player]=char
+	player:SetAttribute("IslandArrivalPending",true)
+	local root=char:WaitForChild("HumanoidRootPart",10)
+	if not root or player.Character~=char or launching[player]~=char then
+		if launching[player]==char then
+			launching[player]=nil
+			player:SetAttribute("IslandArrivalPending",nil)
+		end
+		return
+	end
+	local d=DataService.Get(player)
+	if not d then launching[player]=nil player:SetAttribute("IslandArrivalPending",nil) return end
+	local island=Config.IslandById[player:GetAttribute("CurrentIsland") or d.LastIsland or ""] or home()
+	if not isUnlocked(player,island) then island=home() end
+	busy[player]=char
+	local ok=place(player,island)
+	if launching[player]~=char then return end
+	busy[player],launching[player]=nil,nil
+	if player.Character~=char then return end
+	if ok then
+		spawned[player]=char
+		setIsland(player,island)
+	end
+	player:SetAttribute("IslandArrivalPending",nil)
+	if not ok and player.Parent then
+		task.delay(1,function() initializeCharacter(player,char) end)
+	end
 end
 
 local function onPlayer(player)
-	player.CharacterAdded:Connect(function(char) onCharacter(player, char) end)
-	player.CharacterRemoving:Connect(function() releasePlayer(player) end)
-	task.spawn(function()
-		while player.Parent and not player:GetAttribute("Loaded") do task.wait(0.2) end
-		if not player.Parent then return end
-		local d = DataService.Get(player)
-		local isl = d and Config.IslandById[d.LastIsland or ""]
-		if not isl or not isUnlocked(player, isl) then isl = home() end
-		player:SetAttribute("CurrentIsland", isl.Id)
-		if d then d.LastIsland = isl.Id end
-		if player.Character and isl.Id ~= Config.HomeIsland then onCharacter(player, player.Character) end
+	local function update()
+		local char=player.Character
+		if char then task.spawn(initializeCharacter,player,char) end
+	end
+	player.CharacterAdded:Connect(update)
+	player:GetAttributeChangedSignal("Loaded"):Connect(update)
+	player.CharacterRemoving:Connect(function()
+		releasePlayer(player)
+		launching[player],spawned[player],busy[player]=nil,nil,nil
 	end)
+	update()
 end
 Players.PlayerAdded:Connect(onPlayer)
 for _, p in ipairs(Players:GetPlayers()) do onPlayer(p) end
 Players.PlayerRemoving:Connect(function(p)
-	lastTravel[p], busy[p] = nil, nil
+	lastTravel[p],busy[p],launching[p],spawned[p]=nil,nil,nil,nil
 	releasePlayer(p)
-end)
-
--- CurrentIsland / LastIsland follow the character's real position (e.g. after an
--- AreaService push-back), checked once a second; skipped while a travel is running
-task.spawn(function()
-	while true do
-		task.wait(1)
-		for _, player in ipairs(Players:GetPlayers()) do
-			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-			if root and not busy[player] and player:GetAttribute("CurrentIsland") then
-				local isl = Config.GetIslandAt(root.Position)
-				if isl and player:GetAttribute("CurrentIsland") ~= isl.Id then setIsland(player, isl) end
-			end
-		end
-	end
 end)
 
 -- Studio-only test hook (never reachable by clients):

@@ -312,8 +312,8 @@ task.spawn(function()
 	if ok and d then setData(d) end
 end)
 
-openBtn.Activated:Connect(function()
-	panel.Visible = not panel.Visible
+local function setOpen(visible)
+	panel.Visible = visible
 	if panel.Visible then
 		T.Pop(panel)
 		refreshGrid()
@@ -322,6 +322,10 @@ openBtn.Activated:Connect(function()
 		end
 		refreshDetail()
 	end
+end
+openBtn.Activated:Connect(function() setOpen(not panel.Visible) end)
+game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt)
+	if prompt:GetAttribute("OpenPanel")=="Gallery" then setOpen(true) end
 end)
 closeBtn.Activated:Connect(function() panel.Visible = false end)
 player:GetAttributeChangedSignal("EquippedBlade"):Connect(function() if panel.Visible then refreshDetail() end end)

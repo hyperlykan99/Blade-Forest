@@ -6,6 +6,7 @@
 --   Extras:InvokeServer("ClaimAchievement", id)
 --   Extras:InvokeServer("SawmillInfo")            -> { Rate, Cap, Today, LogsPerSoul }
 
+local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -190,7 +191,8 @@ Players.PlayerRemoving:Connect(function(p) last[p] = nil end)
 --------------------------------------------------------------------
 -- World boss: the Ancient Treant
 --------------------------------------------------------------------
-local WB = Config.WorldBoss
+local WB = table.clone(Config.WorldBoss)
+if runtime.Active then WB.Position = require(ReplicatedStorage.M4Layout).Timber.Treant end
 local down = ServerStorage:FindFirstChild("WorldBossDown") or Instance.new("BindableEvent")
 down.Name = "WorldBossDown"
 down.Parent = ServerStorage

@@ -1,12 +1,14 @@
 -- WorldServer: spawns slimes, bandit NPCs (with their own spinning blades)
 -- and the Blade King boss. Damage/rewards are handled by CombatServer.
 
+local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local BossRules = require(game:GetService("ServerScriptService"):WaitForChild("BossRules")) -- M0.1 (M5)
+local Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
 local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes").Notify
 local Enemies = workspace:WaitForChild("Enemies")
 
@@ -25,9 +27,9 @@ local function defaultAnims()
 	return t
 end
 -- Rogue Lumberjack camps (built in Map.Camps, each has a Center attribute)
-local campCenters = {}
+local campCenters = runtime.Active and table.clone(Layout.Timber.Camps) or {}
 local campsFolder = workspace:WaitForChild("Map"):FindFirstChild("Camps")
-if campsFolder then
+if campsFolder and not runtime.Active then
 	for _, c in ipairs(campsFolder:GetChildren()) do
 		local v = c:GetAttribute("Center")
 		if v then table.insert(campCenters, v) end
@@ -70,7 +72,7 @@ local function ringPoint(r0, r1, avoidEast)
 		local r = rng:NextNumber(r0, r1)
 		local p = Vector3.new(math.cos(a) * r, 0, math.sin(a) * r)
 		local okEast = not (avoidEast and p.X > 190 and math.abs(p.Z) < 125)
-		if okEast and (p - Config.ArenaCenter).Magnitude > 65 then
+		if okEast and (p - Config.GetArenaCenter()).Magnitude > 65 then
 			return p
 		end
 	end
@@ -89,10 +91,14 @@ local SLIME_TYPES = {
 local terrainOnly = RaycastParams.new() -- P1b.2: ground lookup for the Crystal Wilds zone
 terrainOnly.FilterType = Enum.RaycastFilterType.Include
 terrainOnly.FilterDescendantsInstances = { workspace.Terrain }
+local function homePoint(legacy, v2)
+	if not runtime.Active then return legacy() end
+	return v2+Vector3.new(rng:NextNumber(-18,18),0,rng:NextNumber(-14,14))
+end
 local SLIME_ZONES = {
-	{ Type = "Slime", Max = 12, Point = function() return ringPoint(142, 200, true) end },
-	{ Type = "BigSlime", Max = 8, Point = function() return ringPoint(150, 270, true) end },
-	{ Type = "GoldenSlime", Max = 4, Point = function() return Vector3.new(rng:NextNumber(215, 305), 0, rng:NextNumber(-100, 100)) end },
+	{ Type = "Slime", Max = 12, Point = function() return homePoint(function() return ringPoint(142,200,true) end,Vector3.new(246,0,-2880)) end },
+	{ Type = "BigSlime", Max = 8, Point = function() return homePoint(function() return ringPoint(150,270,true) end,Vector3.new(-156,0,-2770)) end },
+	{ Type = "GoldenSlime", Max = 4, Point = function() return homePoint(function() return Vector3.new(rng:NextNumber(215,305),0,rng:NextNumber(-100,100)) end,Vector3.new(-318,0,-2850)) end },
 	-- P1b.2: additional Golden Slime zone on Crystal Wilds. Same tag, so it SHARES the Max = 4 cap above
 	-- (total Golden Slimes unchanged); spawns on the terrain surface.
 	{ Type = "GoldenSlime", Max = 4, Point = function()
@@ -330,7 +336,7 @@ local function spawnBoss()
 		local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
 		table.insert(entries, { pos = root and root.Position })
 	end
-	local nearby = BossRules.InRange(entries, Config.ArenaCenter, BossRules.KING_RANGE)
+	local nearby = BossRules.InRange(entries, Config.GetArenaCenter(), BossRules.KING_RANGE)
 	local hp = math.clamp(8000 + 3000 * nearby, 8000, 60000)
 	hum.MaxHealth = hp
 	hum.Health = hp
@@ -348,7 +354,7 @@ local function spawnBoss()
 	model:SetAttribute("NPC_BladeScale", 2)
 
 	model:ScaleTo(2)
-	model:PivotTo(CFrame.new(Config.ArenaCenter + Vector3.new(0, 12, 0)))
+	model:PivotTo(CFrame.new(Config.GetArenaCenter() + Vector3.new(0, 12, 0)))
 	model.Parent = Enemies
 	model.HumanoidRootPart:SetNetworkOwner(nil)
 	CollectionService:AddTag(model, "BladeNPC")
@@ -359,13 +365,13 @@ local function spawnBoss()
 	local root = model.HumanoidRootPart
 	local nextFrenzy = os.clock() + 10
 	runNPC(model, anims, {
-		Home = Config.ArenaCenter,
+		Home = Config.GetArenaCenter(),
 		AggroRange = Config.ArenaRadius + 30,
 		Leash = Config.ArenaRadius + 6,
 		WanderRadius = 12,
 		OnTick = function(target)
 			-- keep blades at normal player waist height (boss is huge)
-			model:SetAttribute("NPC_BladeHeight", (Config.ArenaCenter.Y + 3) - root.Position.Y)
+			model:SetAttribute("NPC_BladeHeight", (Config.GetArenaCenter().Y + 3) - root.Position.Y)
 			if target and os.clock() > nextFrenzy then
 				nextFrenzy = os.clock() + 14
 				model:SetAttribute("SpeedBoost", 2.6)

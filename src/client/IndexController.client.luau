@@ -374,8 +374,8 @@ claimAll.Activated:Connect(function()
 end)
 
 local openedOnce = false
-openBtn.Activated:Connect(function()
-	panel.Visible = not panel.Visible
+local function setOpen(visible)
+	panel.Visible = visible
 	if panel.Visible then
 		if not openedOnce and myData and myData.BestArea and Config.AreaById[myData.BestArea] then
 			currentArea = myData.BestArea -- open on your best area
@@ -384,6 +384,20 @@ openBtn.Activated:Connect(function()
 		refresh()
 		redrawSoon()
 	end
+end
+openBtn.Activated:Connect(function() setOpen(not panel.Visible) end)
+game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt)
+	if prompt:GetAttribute("OpenPanel")~="Altar" then return end
+	local id=player:GetAttribute("CurrentIsland")
+	if id then
+		local called,ok=pcall(RollRemote.InvokeServer,RollRemote,"SetAltar",id)
+		if called and ok and myData then
+			myData.Settings=myData.Settings or {}
+			myData.Settings.Altar=id
+		end
+	end
+	mode="Weapon"
+	setOpen(true)
 end)
 closeBtn.Activated:Connect(function() panel.Visible = false end)
 

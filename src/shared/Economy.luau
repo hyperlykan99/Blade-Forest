@@ -17,6 +17,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local EC = require(ReplicatedStorage:WaitForChild("EconomyConfig"))
 
+local Layout = require(ReplicatedStorage:WaitForChild("M4Layout"))
+
 local E = {}
 E.Config = EC
 local P = EC.Pools
@@ -322,8 +324,9 @@ function E.GateStatus(islandId, gctx)
 			for _, a in ipairs(r.Areas) do have += num(gctx.TreesByArea and gctx.TreesByArea[a]) end
 		end
 		local met = have >= r.Count
-		table.insert(list, { Id = r.Id, Text = string.format(r.Text, r.Count), Have = have, Need = r.Count, Met = met, Stage = r.Stage })
-		if r.Stage == "active" and not met then ok = false end
+		local stage = r.Id == "colossus" and workspace:GetAttribute("M4ColossusReady") == true and "active" or r.Stage
+		table.insert(list, { Id = r.Id, Text = string.format(r.Text, r.Count), Have = have, Need = r.Count, Met = met, Stage = stage })
+		if stage == "active" and not met then ok = false end
 	end
 	return ok, list
 end
@@ -344,7 +347,7 @@ end
 -- Logs = LogsUnits x Unit(tier) x LogMultBase ^ LogMultExponent: grows with the player's
 -- permanent progress like chopping does (dampened), so active play stays worth ~1/3 more
 function E.BossReward(bossId, unit, share, isTop, logMultBase)
-	local b = EC.Bosses[bossId]
+	local b = EC.Bosses[bossId] or Layout.Bosses[bossId]
 	share = math.clamp(num(share), 0, 1)
 	local scale = math.max(num(logMultBase), 1) ^ (EC.Bosses.LogMultExponent or 0)
 	return {

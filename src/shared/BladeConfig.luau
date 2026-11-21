@@ -5,6 +5,7 @@ local Config = {}
 -- M1: every economy number comes from EconomyConfig (generated from tools/econsim/economy_params.json)
 local EC = require(script.Parent:WaitForChild("EconomyConfig"))
 Config.Economy = EC
+local M4 = require(script.Parent:WaitForChild("M4Layout"))
 
 --------------------------------------------------------------------
 -- World
@@ -13,6 +14,16 @@ Config.SafeZoneCenter = Vector3.new(0, 0, 0)
 Config.SafeZoneRadius = 32 -- no PvP / NPC damage inside the spawn plaza
 Config.ArenaCenter = Vector3.new(0, 0, -270)
 Config.ArenaRadius = 48
+function Config.GetArenaCenter()
+	return M4.Enabled() and M4.Timber.Districts[7][2] or Config.ArenaCenter
+end
+function Config.GetArrival(isl)
+	if M4.Enabled() then
+		if isl.Id=="TimberHaven" then return M4.Timber.Arrival end
+		if isl.Id=="FrostboundReach" then return M4.Frost.Arrival end
+	end
+	return isl.Arrival
+end
 Config.BossRespawnTime = 240
 Config.BossRewardPool = 5000
 Config.PlayerKillReward = 40
@@ -71,6 +82,9 @@ Config.StarterRadius = 130
 function Config.GetAreaAt(pos)
 	-- P1a islands: a test island reports its legacy area (keeps gates, prices and indexes unchanged)
 	local isl = Config.GetIslandAt and Config.GetIslandAt(pos)
+	if isl and isl.Id=="TimberHaven" and M4.Enabled() and M4.Contains(M4.Timber,pos,8) then
+		return M4.TimberArea(pos)
+	end
 	if isl and isl.LegacyArea then
 		return isl.LegacyArea
 	end
@@ -1088,9 +1102,14 @@ Config.TravelCooldown = 3
 
 -- island whose horizontal bounds contain pos, or nil (open water / void)
 function Config.GetIslandAt(pos)
+	if M4.Enabled() and M4.Contains(M4.Timber,pos,8) then return Config.IslandById.TimberHaven end
+	if workspace:GetAttribute("M4ColossusReady")==true and M4.Contains(M4.Crystal,pos,4) then
+		return Config.IslandById.CrystalWilds
+	end
 	for _, isl in ipairs(Config.Islands) do
 		local a, b = isl.BoundsMin, isl.BoundsMax
-		if pos.X >= a.X and pos.X <= b.X and pos.Z >= a.Z and pos.Z <= b.Z then return isl end
+		if pos.X >= a.X and pos.X <= b.X and pos.Z >= a.Z and pos.Z <= b.Z
+			and (isl.Id~="TimberHaven" or not M4.Enabled()) then return isl end
 	end
 	return nil
 end

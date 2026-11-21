@@ -1,6 +1,7 @@
 -- CombatServer: player data, shop, and ALL blade damage (PvP, NPCs, props).
 -- Blades are drawn on clients; the server decides every hit from the same math.
 
+require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -91,7 +92,10 @@ end
 --------------------------------------------------------------------
 -- Breakable respawning (props come back after a while, growing in)
 --------------------------------------------------------------------
-local TreeKit = require(game:GetService("ServerStorage"):WaitForChild("TreeKit"))
+local storage=game:GetService("ServerStorage")
+local TreeKit = require(storage:WaitForChild("TreeKit"))
+local M4Trees=require(storage:WaitForChild("M4Construction"))
+local M4Architecture=require(storage:WaitForChild("M4Architecture"))
 local templates = {}
 for _, m in ipairs(Breakables:GetChildren()) do
 	if not m:GetAttribute("IsTree") then templates[m] = m:Clone() end
@@ -141,8 +145,9 @@ local function respawnLater(model, killer)
 		-- trees regrow on the same spot with a freshly rolled rarity
 		local spot = model:GetPivot()
 		local area = model:GetAttribute("Area") or Config.GetAreaAt(spot.Position)
+		local built = model:GetAttribute("M4Tree")
 		task.delay(respawnDelay(model, killer), function()
-			local new = TreeKit.BuildRandom(area, spot)
+			local new = built and M4Trees.Regrow(area,spot,Config,M4Architecture,TreeKit) or TreeKit.BuildRandom(area, spot)
 			local rar = new:GetAttribute("Rarity")
 			local mut = new:GetAttribute("Mutation")
 			if mut == "Shadow" or mut == "Rainbow" then
@@ -339,6 +344,7 @@ local function killNPC(model, killer, pos)
 					local amt = DataService.AddCoins(p, rw.Logs, pos, true) or rw.Logs
 					DataService.AddSouls(p, rw.Souls, pos)
 					DataService.AddBossKill(p, "BladeKing")
+					DataService.GrantM4FirstClear(p,"BladeKing")
 					Telemetry.Logs(p, amt, "boss")
 					Telemetry.Souls(p, rw.Souls)
 					Progress.Add(p, "Boss", 1)
@@ -395,7 +401,9 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 	-- attribute-health target (props + slimes)
 	local hp = target:GetAttribute("Health")
 	if not hp or hp <= 0 then return end
-	local worldBoss = target:GetAttribute("WorldBoss")
+	local islandBoss=target:GetAttribute("M4Boss")
+	local worldBoss = target:GetAttribute("WorldBoss") or islandBoss
+	if islandBoss and (not attackerPlayer or attackerPlayer:GetAttribute("Handoff")) then return end
 	if attackerPlayer and not target:GetAttribute("IsTree") and not worldBoss then
 		target:SetAttribute("Aggro_" .. attackerPlayer.UserId, workspace:GetServerTimeNow()) -- slimes fight back
 	end
@@ -417,8 +425,10 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 
 	if worldBoss then
 		-- ExtrasService hands out the shared rewards
-		local ev = game:GetService("ServerStorage"):FindFirstChild("WorldBossDown")
-		if ev then ev:Fire(target) end
+		local ev = storage:FindFirstChild(islandBoss and "M4BossDown" or "WorldBossDown")
+		if islandBoss then
+			if ev then ev:Invoke(target) end
+		elseif ev then ev:Fire(target) end
 		shatter(target, hitPos)
 		target:Destroy()
 		return

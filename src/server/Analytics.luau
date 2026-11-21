@@ -160,7 +160,7 @@ local function checkMilestones(player, d)
 	if (d.Stats.PetsHatched or 0) > 0 then onboard(player, d, 5, "FirstEggHatched") end
 	if d.Trait then onboard(player, d, 6, "FirstTraitObtained") end
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	if root and workspace:GetAttribute("BossAlive") and ((root.Position - Config.ArenaCenter) * Vector3.new(1, 0, 1)).Magnitude <= Config.ArenaRadius + 22 then
+	if root and workspace:GetAttribute("BossAlive") and ((root.Position - Config.GetArenaCenter()) * Vector3.new(1, 0, 1)).Magnitude <= Config.ArenaRadius + 22 then
 		onboard(player, d, 7, "FirstBossEncounter")
 	end
 	if countKeys(d.UnlockedIslands) > 1 then onboard(player, d, 8, "FirstIslandUnlocked") end
