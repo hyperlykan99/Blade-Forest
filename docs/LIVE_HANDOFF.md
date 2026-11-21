@@ -59,6 +59,7 @@
 ## Claude → next AI handoff (2026-11-20 16:15 PST, M1)
 
 - **Studio state:** dev place 103379930563763 / 10777797608, **Edit mode, saved v35**, no play session, profile lock released. Studio instance used: one client only.
+- **Commit:** `be23a7c2117ec2d59e31bed13ee091466f7c5370`.
 - **What changed:** see `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md` §1 (26 files, all checksum-matched between Studio and branch `m1/unified-economy-progression`).
 - **Economy parameters:** edit `tools/econsim/economy_params.json`, run `python3 tools/econsim/gen_luau.py` to regenerate `src/shared/EconomyConfig.luau`, re-run `tools/econsim/run_all.sh` and `golden.py`, then update `M1Tests` golden values. Never hand-edit EconomyConfig.
 - **Test hooks (Studio only):** `require(game.ServerStorage.M1Tests).RunAll()`; `ServerStorage.DevEconomy:Invoke("Report")` (telemetry). Earlier hooks unchanged.

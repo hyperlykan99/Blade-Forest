@@ -7,6 +7,7 @@ _Claude, 2026-11-20 (PST). Branch `m1/unified-economy-progression` (based on `m0
 | Place | **Dev only:** `103379930563763` / universe `10777797608`. Every Studio write was preceded by `assert(game.PlaceId == 103379930563763) assert(game.GameId == 10777797608)`. Production `73142469975141` / `10777481912` was **not accessed or modified**. |
 | Rollback checkpoint | Dev **v29**, relabelled "M1 PRE-ECONOMY checkpoint (= M0.1 v29 state)" (updateTime unchanged 2026-11-20T12:42:47.246Z). `ServerStorage.M1Backups`: 48 `<Name>_PreM1` ModuleScript copies (attributes OriginalPath / OriginalClass / Checksum, all verified) + `DevProfileSnapshot_p_394034825` (profile JSON 3914:1028722392). |
 | Result | Dev **v35** "M1 UNIFIED ECONOMY & PROGRESSION (dev only, not published)…" (Team Create save, Open Cloud `updateTime` 2026-11-21T00:06:47.217Z). v30–v34 were not saved explicitly by Claude (probably Team Create auto-saves during playtests). |
+| Commit | `be23a7c2117ec2d59e31bed13ee091466f7c5370` (code + docs) on `m1/unified-economy-progression`. |
 | Paid products | None activated. No receipts, passes or prices changed. |
 | Tests | **M1 41/41**, M0.1 64/64, M0 regression 107/107, real-DataStore lock suite 11/11 (single process), plus a single-client live smoke test (§11). |
 
