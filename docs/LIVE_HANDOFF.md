@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **2026-11-20 PST · Codex M3 verification.** The connected private dev place matches M2 across all 54 exported Luau sources. M3 implementation was unavailable for export. See the [M3 verification](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
 > Last documented snapshot: **2026-11-20 16:15 PST** (Claude, end of M1 Unified Economy & Progression). Written on branch `m1/unified-economy-progression` (based on `m0.1/foundations-corrections`; not merged to `main`). **Re-verify Studio before editing.**
 > Last documented snapshot: **2026-11-20 04:50 PST** (Claude, end of M0.1 Foundations Corrections). Written on branch `m0.1/foundations-corrections` (based on `m0/foundations`; not merged to `main`). **Re-verify Studio before editing.**
 
@@ -12,12 +13,12 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Dev:** **v45** "M2 COMPLETE WEAPON COLLECTION (dev only, not published)" (dev Open Cloud `updateTime` 2026-11-21T01:15:19.309Z). M2 rollback checkpoint **v35** relabelled "M2 PRE-WEAPONS checkpoint (= M1 v35 state)"; v36–v44 are playtest/auto-saves. Earlier: v29 M1 checkpoint, v23 M0.1, v18 M0. **Production:** documented v48; not accessed or touched |
-| Active AI editor | **None** (released by Claude 2026-11-20 after M2) |
-| Last handoff author / time | **Claude / 2026-11-20 ~17:40 PST** (M2 Complete Weapon Collection) |
+| Active AI editor | **None** (Codex verification complete, editor released) |
+| Last handoff author / time | **Codex / 2026-11-20 PST** (M3 verification) |
 | Last confirmed gameplay edit | **Dev place only:** v45, M2: 120 weapons (77 new, Creator Store models, scripts stripped), VFX tiers 0–7, rarity reveals and announcements, Weapon Gallery, Favorites, Altar Essence + Divine Attunement, future-system interfaces, edition-2 index. Original 43 weapons unchanged. Production: none since the P0 baseline |
-| Current task | **None claimed.** M2 complete on dev (results: `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`) |
-| Next action | Owner: review M2 results §11 (#1 rarer OneIn for new weapons?, #2 model swaps, #3 iPhone triangle/perf check). Earlier M0/M0.1/M1 decisions still open. **Next milestone not authorized.** |
-| Code source of truth | **Roblox dev place** (v45). Branch `m2/complete-weapon-collection` holds checksum-matched exports of all M2 changed and new scripts. `main` does not contain `src/` changes |
+| Current task | **None claimed.** M3 remains incomplete in the verified place and repository. |
+| Next action | Locate the reported M3 source or place and reconcile it against the verified M2 baseline before M4. |
+| Code source of truth | **Roblox dev place.** All 54 exported Luau sources match completed M2 at `ce670488172ae0a39bfff259c47bf6b74578e1d5`. Version history is restricted. Open Cloud still reports the timestamp recorded for v45, while the Edit DataModel reports 30. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
 | Blockers | Owner review of M0, M0.1 and M1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
@@ -81,15 +82,15 @@
 | --- | --- |
 | AI | None (released) |
 | Started (date/time/timezone) | — |
-| Task / owner approval | — (last: P1b.2r camera visibility, Option C on top of Option A, owner-approved, completed 2026-11-19) |
-| Studio place ID and saved version checked | Last check: dev 103379930563763 / 10777797608, Edit mode, v18 saved (Studio-reported) |
-| Git branch / starting commit | — |
+| Task / owner approval | M3 verification and GitHub handoff complete. |
+| Studio place ID and saved version checked | Dev `103379930563763` / `10777797608`, Edit mode. Last recorded save v45 (M2). Save check reported no unsaved changes. |
+| Git branch / starting commit | `m3/character-progression` from completed M2 at `ce670488172ae0a39bfff259c47bf6b74578e1d5`. |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | None from Claude |
-| Tests and results | See `docs/p1b2r_camera/CAMERA_FIX_RESULTS.md` on `p1b2r/camera-visibility-fix` |
-| Risks / blockers | See dashboard |
+| Work in progress / unsaved changes | None reported by Studio. |
+| Tests and results | [M3 verification](m3/M3_CHARACTER_PROGRESSION_RESULTS.md). All 54 exported sources match M2. Six traits, seven pets and one egg station were observed. |
+| Risks / blockers | Reported M3 implementation still needs to be located. Roblox version-history verification returned HTTP 403. |
 
-## Latest completed handoff
+## Historical camera visibility handoff
 
 | Item | Entry |
 | --- | --- |
