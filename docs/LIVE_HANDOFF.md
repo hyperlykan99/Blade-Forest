@@ -13,10 +13,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Dev M3 saved state** · Open Cloud `updateTime` `2026-11-21T02:11:29.158Z`. Team Create reported no unsaved changes. The numeric M3 version is unverified. Last numbered milestone in the handoff: **v45 (M2)**. |
-| Active AI editor | **None** (M3 construction and smoke check complete; editor released in Edit mode) |
+| Active AI editor | **Codex** (owner-authorized M4 world construction) |
 | Last handoff author / time | **Codex / 2026-11-20 PST** (M3 Character Progression) |
 | Last confirmed gameplay edit | **Dev only:** M3 Tech Tree, mastery, traits and pets. M2’s 120 weapon definitions and 120 BladeModels were observed in the M3 smoke session. |
-| Current task | **None claimed.** M3 implementation and handoff complete. |
+| Current task | M4 world construction on private dev only. |
 | Next action | Review the M3 results and resolve the numeric saved version through Studio Version History. M4 requires a new owner instruction. |
 | Code source of truth | **Roblox private dev place and `m3/character-progression`.** The 18 M3 source digests matched implementation commit `fddc1b3ba2cd60abacbadaafff618ae2b6b6a0b0`. The two new pet rosters and all evolution model recipes are source-controlled. |
 | Documentation source of truth | GitHub `docs/` |
@@ -80,7 +80,7 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | None (released) |
+| AI | Codex |
 | Started (date/time/timezone) | — |
 | Task / owner approval | Owner-authorized M3 construction and private save complete. |
 | Studio place ID and saved version checked | `103379930563763` / `10777797608`, Edit mode. No unsaved changes. Cloud timestamp `2026-11-21T02:11:29.158Z`; numeric version unverified. |
