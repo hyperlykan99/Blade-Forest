@@ -20,16 +20,18 @@
         "Souls": 7969,
         "Essence": 112500,
         "ExpeditionFrostCore": 196,
-        "TrialSeal": 50,
         "SigilBark": 17,
         "Frost": 5427,
+        "TrialSeal": 33,
         "SigilCrystal": 17,
-        "SigilFrost": 16
+        "SigilFrost": 16,
+        "TrialToken": 596
       },
       "spent_inventory": {
         "Bark": 115,
         "Essence": 49250,
         "Souls": 4380,
+        "TrialToken": 594,
         "Crystal": 215,
         "SigilBark": 14,
         "SigilCrystal": 14,
@@ -43,11 +45,12 @@
         "Souls": 3589,
         "Essence": 63250,
         "ExpeditionFrostCore": 172,
-        "TrialSeal": 50,
         "SigilBark": 3,
         "Frost": 5182,
+        "TrialSeal": 33,
         "SigilCrystal": 3,
-        "SigilFrost": 2
+        "SigilFrost": 2,
+        "TrialToken": 2
       },
       "first_affordable_play_hours": {
         "Forge 1": 4,
@@ -88,13 +91,15 @@
       "earned_inventory": {
         "Frost": 2000,
         "Souls": 3600,
-        "Essence": 108000
+        "Essence": 108000,
+        "TrialToken": 0
       },
       "spent_inventory": {},
       "ending_inventory": {
         "Frost": 2000,
         "Souls": 3600,
-        "Essence": 108000
+        "Essence": 108000,
+        "TrialToken": 0
       },
       "first_affordable_play_hours": {},
       "encounter_clears": {},
@@ -116,15 +121,17 @@
         "Souls": 8569,
         "Essence": 151200,
         "ExpeditionFrostCore": 300,
-        "TrialSeal": 50,
         "SigilBark": 17,
+        "TrialSeal": 33,
         "SigilCrystal": 17,
-        "SigilFrost": 16
+        "SigilFrost": 16,
+        "TrialToken": 596
       },
       "spent_inventory": {
         "Bark": 275,
         "Essence": 149250,
         "Souls": 6980,
+        "TrialToken": 594,
         "Crystal": 295,
         "SigilBark": 14,
         "SigilCrystal": 14,
@@ -140,10 +147,11 @@
         "Souls": 1589,
         "Essence": 1950,
         "ExpeditionFrostCore": 276,
-        "TrialSeal": 47,
         "SigilBark": 3,
+        "TrialSeal": 30,
         "SigilCrystal": 3,
-        "SigilFrost": 2
+        "SigilFrost": 2,
+        "TrialToken": 2
       },
       "first_affordable_play_hours": {
         "Forge 1": 4,
@@ -185,13 +193,15 @@
       "earned_inventory": {
         "Frost": 2000,
         "Souls": 4200,
-        "Essence": 144000
+        "Essence": 144000,
+        "TrialToken": 0
       },
       "spent_inventory": {},
       "ending_inventory": {
         "Frost": 2000,
         "Souls": 4200,
-        "Essence": 144000
+        "Essence": 144000,
+        "TrialToken": 0
       },
       "first_affordable_play_hours": {},
       "encounter_clears": {},
@@ -212,16 +222,18 @@
         "Souls": 10029,
         "Essence": 112500,
         "ExpeditionFrostCore": 196,
-        "TrialSeal": 50,
         "SigilBark": 33,
         "SigilCrystal": 34,
         "Frost": 5494,
-        "SigilFrost": 33
+        "TrialSeal": 33,
+        "SigilFrost": 33,
+        "TrialToken": 596
       },
       "spent_inventory": {
         "Bark": 115,
         "Essence": 49250,
         "Souls": 4380,
+        "TrialToken": 594,
         "Crystal": 215,
         "Frost": 245,
         "ExpeditionFrostCore": 24,
@@ -235,11 +247,12 @@
         "Souls": 5649,
         "Essence": 63250,
         "ExpeditionFrostCore": 172,
-        "TrialSeal": 50,
         "SigilBark": 19,
         "SigilCrystal": 20,
         "Frost": 5249,
-        "SigilFrost": 19
+        "TrialSeal": 33,
+        "SigilFrost": 19,
+        "TrialToken": 2
       },
       "first_affordable_play_hours": {
         "Forge 1": 4,

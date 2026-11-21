@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **2026-11-20 PST · Codex M6 endgame.** The private dev place is saved as **v60**. The editor is released in Edit mode. See the [M6 results](m6/M6_ENDGAME_RESULTS.md).
 > **2026-11-20 PST · Codex M5 gameplay loop.** The private dev M5 cloud save is confirmed by timestamp. The editor is released in Edit mode. See the [M5 results and rollback](m5/M5_GAMEPLAY_LOOP_RESULTS.md).
 > **2026-11-20 PST · Codex M4 construction.** Private dev saved as **v52** with the verified v2 world active. The editor is released. See the [M4 results and rollback notes](m4/M4_COMPLETE_WORLD_RESULTS.md).
 > **2026-11-20 PST · Codex M3 implementation.** The private dev place has the 72-node Tech Tree, 100 Mastery levels, 12 traits, 21 pets and Golden/Rainbow evolution. The editor is released. See the [M3 results](m3/M3_CHARACTER_PROGRESSION_RESULTS.md).
@@ -14,16 +15,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Private dev M5 saved state**, cloud update `2026-11-21T03:15:54.138Z`. Team Create reported no unsaved changes. Numeric M5 save version unverified. Last confirmed numbered baseline **v52**. |
-| Active AI editor | Codex (owner-authorized M6 construction) |
-| Last handoff author / time | **Codex / 2026-11-20 PST** (M5 Gameplay Loop) |
-| Last confirmed gameplay edit | Private dev v2 with 30 story steps, UTC Contracts, isolated Trials, playable Frostbound Expeditions and three regional events. |
-| Current task | **None claimed.** M5 construction and essential checks are complete. |
-| Next action | Review the M5 results. Begin M6 only on a new owner instruction. |
-| Code source of truth | Private dev M5 and branch `m5/contracts-trials-expeditions-events`, Studio source at `baa5ba0cc109f88456889259308be6936e9226aa`. |
+| Most recent documented place version | **Private dev M6 v60**, Team Create save confirmed. Cloud update `2026-11-21T04:41:09.178Z`. |
+| Active AI editor | None. Studio in Edit mode. |
+| Last handoff author / time | **Codex / 2026-11-20 PST** (M6 Deep Progression and Endgame) |
+| Last confirmed gameplay edit | Forge, Salvage, three Awakening stages, 20 runes, three raid encounters, Heart of Winter, Trial commissions and Expedition rune grants in the private v2 world. |
+| Current task | **None claimed.** M6 implementation saved and essential checks recorded. |
+| Next action | Read the M6 results. Await owner direction before beginning M7. |
+| Code source of truth | Private dev M6 v60 and branch `m6/forging-runes-raids-endgame`, implementation `47fcd18b689cf7590d923e8dff8d37dcbb62b27a`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Numeric M5 save version, sustained mobile/multiplayer play, live reward persistence and cross-server leaderboard writes remain unverified. Trial weapon IDs are unallocated. |
+| Blockers | Full encounter clears, cross-server weekly reward persistence, and mobile and multiplayer balance remain unverified. |
 
 ## Who is responsible
 
@@ -82,15 +83,22 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | Codex |
-| Started (date/time/timezone) | — |
-| Task / owner approval | Owner-authorized M5 gameplay loop and private save complete. |
-| Studio place ID and saved version checked | Private dev `103379930563763` / `10777797608`, Edit mode, v2. Cloud timestamp `2026-11-21T03:15:54.138Z`. Numeric save version unverified. |
-| Git branch / starting commit | `m5/contracts-trials-expeditions-events`, from M4 `2f50bfbf340b8cd104a083f6c7db308da526158a` and its v52 handoff. |
+| AI | None, editor released |
+| Started (date/time/timezone) | 2026-11-20 PST |
+| Task / owner approval | Owner-authorized M6 endgame construction and private cloud save |
+| Studio place ID and saved version checked | Place `103379930563763`, universe `10777797608`, M4 v2 ready, Edit mode, Team Create v60, cloud update `2026-11-21T04:41:09.178Z` |
+| Git branch / starting commit | `m6/forging-runes-raids-endgame`, M5 implementation baseline `baa5ba0cc109f88456889259308be6936e9226aa` |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | None reported by Studio. |
-| Tests and results | [M5 results](m5/M5_GAMEPLAY_LOOP_RESULTS.md) records the source checks, profile fixtures, short client smoke and economy projection. |
-| Risks / blockers | See M5 results. `ServerStorage.M5Rollback` holds 10 checked pre-M5 source copies. |
+| Work in progress / unsaved changes | Studio confirmed the private save as v60 |
+| Tests and results | [M6 results](m6/M6_ENDGAME_RESULTS.md) records the Studio smoke, detached profile fixture and 200h economy model |
+| Risks / blockers | Checkpoint cloud update `2026-11-21T04:32:07.577Z`. `ServerStorage.M6Rollback` holds 14 source copies. Encounter timing, multiplayer mobile behavior and live weekly rewards remain unverified. |
+
+## Codex → next editor (2026-11-20 PST, M6)
+
+- Start with the [M6 endgame results](m6/M6_ENDGAME_RESULTS.md). The private development place remains on the v2 world layout.
+- Keep `M6` and `WeaponItems` intact in any source rollback. The existing weapon stack retains Stars, Shiny, copies, favorites and original acquisition history.
+- All 120 weapon IDs remain in use. The Trial commissions use Ashbark Knightblade, Canyon Sickle and Iceveil. Three raid first-clear and one Heart weekly route reuse existing catalog IDs.
+- M6 finished at private v60. Production, publishing and commerce were outside the construction work.
 
 ## Codex → next editor (2026-11-20 PST, M5)
 

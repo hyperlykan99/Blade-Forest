@@ -46,7 +46,8 @@ def simulate(name, m5, co_op=False):
     completed = set()
     logs_grant = logs_displaced = 0
     stage = 0
-    next_loan = 22 if paid else 28  # assumed time to obtain a qualifying 5-star weapon
+    five_star_hours = 22 if paid else 28  # assumed time to obtain a qualifying 5-star weapon
+    seal_cost = int(re.search(r'Seal=\{Name="Trial Seal",Cost=(\d+)', (ROOT / "src/shared/M5Design.luau").read_text())[1])
     for day in range(hours // per_day):
         start = day * per_day
         end = start + per_day
@@ -65,7 +66,10 @@ def simulate(name, m5, co_op=False):
             sources[ISLANDS[islands[-1]]] += salvages * 2
             sources["Essence"] += salvages * 9
             sources["ExpeditionFrostCore"] += (6 if paid else 4) if 2 in islands else 0
-            sources["TrialSeal"] += 1
+            tokens_available = math.floor(m5["m5_tokens"] * end / hours)
+            if tokens_available - spent["TrialToken"] >= seal_cost:
+                spent["TrialToken"] += seal_cost
+                sources["TrialSeal"] += 1
             if 2 in islands and day % 3 == 0:
                 runes["Refined expedition"] += 1
             raid_window = 2 if co_op else 1
@@ -91,7 +95,7 @@ def simulate(name, m5, co_op=False):
             timeline.setdefault(label, end)
             return True
 
-        if active and stage < len(AWAKEN) and end >= next_loan and buy(f"Awakening {stage + 1}", AWAKEN[stage]):
+        if active and stage < len(AWAKEN) and end >= five_star_hours and buy(f"Awakening {stage + 1}", AWAKEN[stage]):
             stage += 1
         if active:
             for index, (cost, mastery_hour, island) in enumerate(zip(
@@ -110,7 +114,9 @@ def simulate(name, m5, co_op=False):
                 earned.update(Souls=souls, Frost=mats)
                 clears["Heart weekly" if weekly else "Heart repeat"] += 1
                 runes["Ancient Heart" if weekly else "Radiant Heart"] += 1
-    # Wall-clock affordability uses bounded sources. Aura exposure is a separate sensitivity.
+    earned["TrialToken"] = m5["m5_tokens"]
+    stock["TrialToken"] = earned["TrialToken"] - spent["TrialToken"]
+    # Play-hour affordability uses bounded sources. Aura exposure is a separate sensitivity.
     baseline = m5["total_logs_overlay"]
     bonus = (baseline * .07 * .35) if stage else 0
     return {"play_hours": hours, "hours_per_day": per_day, "baseline_m5_logs": round(baseline),
