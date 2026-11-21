@@ -4,7 +4,8 @@ local M=require(ReplicatedStorage:WaitForChild("M5Design"))
 local T=require(ReplicatedStorage:WaitForChild("UITheme"))
 local C=require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local player=Players.LocalPlayer
-local remote=ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Adventures")
+local remote=ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Adventures",30)
+if not remote then return end
 local rgb=Color3.fromRGB
 local ink,plank,rim=rgb(29,28,36),rgb(47,48,55),rgb(102,108,119)
 local gold,teal,cream=rgb(239,199,113),rgb(96,185,174),rgb(250,235,204)
