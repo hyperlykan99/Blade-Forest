@@ -8,7 +8,7 @@
 -- Pathway classification used here:
 --   TraitCrate_Logs / PetEgg_Logs : PAID only when Logs can be bought with Robux
 --                                   (any log-pack developer product has a real ProductId)
---   TraitCrate_Souls              : FREE (Souls are never sold for Robux)
+--   TraitCrate_Souls              : indirectly paid if Logs packs are enabled (Sawmill)
 --   Free crate, origin Earned     : FREE (quests, achievements, gifts, codes, Treant)
 --   Free crate, origin Paid       : PAID (Robux crate products, Starter Pack, VIP daily)
 --   Free crate, origin Legacy     : UNKNOWN origin (owned before v4) -> treated as PAID
@@ -82,7 +82,7 @@ local MSG_UNKNOWN = "Couldn't check item eligibility right now. Please try again
 -- Returns ok, message
 function Policy.CheckCurrencySpend(player, pathway)
 	local paid = false
-	if pathway == "TraitCrate_Logs" or pathway == "PetEgg_Logs" then
+	if pathway == "TraitCrate_Logs" or pathway == "PetEgg_Logs" or pathway == "TraitCrate_Souls" then
 		paid = Policy.LogsArePaidCurrency()
 	end
 	if not paid then return true end

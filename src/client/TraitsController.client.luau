@@ -120,8 +120,6 @@ card.BackgroundColor3 = Color3.fromRGB(40, 30, 58)
 card.Parent = panel
 corner(card, 12)
 local cardStroke = stroke(card, PURPLE, 2)
-label(card, { Position = UDim2.fromOffset(14, 6), Size = UDim2.new(0.5, 0, 0, 18), TextXAlignment = Enum.TextXAlignment.Left,
-	Text = "YOUR TRAIT", TextColor3 = Color3.fromRGB(180, 165, 205) })
 local curName = label(card, { Position = UDim2.fromOffset(14, 24), Size = UDim2.new(1, -200, 0, 32), TextXAlignment = Enum.TextXAlignment.Left })
 local curMult = label(card, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -112, 0, 22), Size = UDim2.fromOffset(110, 30),
 	TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(255, 220, 120) })
@@ -142,7 +140,11 @@ label(header, { Position = UDim2.fromScale(0, 0), Size = UDim2.fromScale(0.42, 1
 label(header, { Position = UDim2.fromScale(0.42, 0), Size = UDim2.fromScale(0.18, 1), Text = "BONUS", TextColor3 = Color3.fromRGB(180, 165, 205) })
 label(header, { Position = UDim2.fromScale(0.6, 0), Size = UDim2.fromScale(0.2, 1), Text = "CRATE", TextColor3 = Color3.fromRGB(255, 220, 120) })
 label(header, { Position = UDim2.fromScale(0.8, 0), Size = UDim2.fromScale(0.2, 1), Text = "SOUL", TextColor3 = SOUL })
-local rowsHolder = Instance.new("Frame")
+local rowsHolder = Instance.new("ScrollingFrame")
+rowsHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+rowsHolder.CanvasSize = UDim2.new()
+rowsHolder.ScrollBarThickness = 5
+rowsHolder.BorderSizePixel = 0
 rowsHolder.Position = UDim2.fromOffset(0, 26)
 rowsHolder.Size = UDim2.new(1, 0, 1, -26)
 rowsHolder.BackgroundTransparency = 1
@@ -152,7 +154,7 @@ rl.Padding = UDim.new(0, 4)
 rl.SortOrder = Enum.SortOrder.LayoutOrder
 rl.Parent = rowsHolder
 
-local lucky = player:GetAttribute("Pass_LuckyCrates") == true
+local lucky = false
 local logOdds, soulOdds = Config.GetTraitOdds("Logs", lucky), Config.GetTraitOdds("Souls", lucky)
 local oddsLabels = {}
 local function pct(c)
@@ -163,28 +165,30 @@ local traitRows = {}
 for i, t in ipairs(Config.Traits) do
 	local row = Instance.new("Frame")
 	row.LayoutOrder = i
-	row.Size = UDim2.new(1, 0, 1 / #Config.Traits, -4)
+	row.Size = UDim2.new(1, -6, 0, 31)
 	row.BackgroundColor3 = Color3.fromRGB(38, 30, 54)
 	row.Parent = rowsHolder
 	corner(row, 8)
 	local rs = stroke(row, t.Color, 0)
 	local n = label(row, { Position = UDim2.new(0, 10, 0.15, 0), Size = UDim2.new(0.42, -10, 0.7, 0), TextXAlignment = Enum.TextXAlignment.Left })
 	traitText(n, t)
-	label(row, { Position = UDim2.fromScale(0.42, 0.15), Size = UDim2.fromScale(0.18, 0.7), Text = "x" .. tostring(t.Mult), TextColor3 = Color3.fromRGB(255, 220, 120) })
+	label(row, { Position = UDim2.fromScale(0.42, 0.15), Size = UDim2.fromScale(0.18, 0.7), Text = t.Desc, TextColor3 = Color3.fromRGB(255, 220, 120) })
 	local lo = label(row, { Position = UDim2.fromScale(0.6, 0.15), Size = UDim2.fromScale(0.2, 0.7), Text = pct(logOdds[i].Chance) })
 	local so = label(row, { Position = UDim2.fromScale(0.8, 0.15), Size = UDim2.fromScale(0.2, 0.7), Text = pct(soulOdds[i].Chance), TextColor3 = SOUL })
 	oddsLabels[i] = { lo, so }
 	traitRows[t.Id] = rs
 end
 
-player:GetAttributeChangedSignal("Pass_LuckyCrates"):Connect(function()
-	local l = player:GetAttribute("Pass_LuckyCrates") == true
+local function refreshOdds()
+	local called, ok, eligible = pcall(TraitAction.InvokeServer, TraitAction, "Odds")
+	local l = called and ok and eligible == true
 	local a, b = Config.GetTraitOdds("Logs", l), Config.GetTraitOdds("Souls", l)
 	for i, pair in pairs(oddsLabels) do
 		pair[1].Text = pct(a[i].Chance)
 		pair[2].Text = pct(b[i].Chance)
 	end
-end)
+end
+player:GetAttributeChangedSignal("Pass_LuckyCrates"):Connect(refreshOdds)
 
 -- roll buttons
 local logBtn = button(panel, { AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16), Size = UDim2.new(0.5, -24, 0, 58),
@@ -205,12 +209,20 @@ local function flash(text, color)
 	task.delay(2.5, function() if msgToken == my then msgLabel.Text = "" end end)
 end
 
+local slot = 1
+local slotBtn = button(card, { Position = UDim2.fromOffset(12, 5), Size = UDim2.fromOffset(155, 23),
+	BackgroundColor3 = Color3.fromRGB(80, 57, 113), Text = "Primary slot" })
 local function refresh()
-	local t = myData and myData.Trait and Config.TraitById[myData.Trait]
+	local secondaryOpen = myData and myData.UnlockedIslands and myData.UnlockedIslands.FrostboundReach == true
+	if not secondaryOpen then slot = 1 end
+	slotBtn.Text = secondaryOpen and (slot == 1 and "Primary ↔ Secondary" or "Secondary ↔ Primary") or "Primary • Slot 2: Frostbound"
+	local id = myData and myData[slot == 2 and "Trait2" or "Trait"]
+	local t = id and Config.TraitById[id]
 	traitText(curName, t)
-	curMult.Text = t and ("x" .. tostring(t.Mult) .. " Logs") or "x1 Logs"
+	curMult.Text = t and t.Desc or ""
+	curMult.TextWrapped = true
 	cardStroke.Color = t and t.Color or PURPLE
-	local locked = myData and myData.TraitLocked
+	local locked = myData and myData[slot == 2 and "Trait2Locked" or "TraitLocked"]
 	lockBtn.Text = locked and "🔒 Locked" or "Lock"
 	lockBtn.BackgroundColor3 = locked and Color3.fromRGB(200, 150, 40) or Color3.fromRGB(80, 75, 95)
 	for id, rs in pairs(traitRows) do rs.Thickness = (t and t.Id == id) and 3 or 0 end
@@ -226,6 +238,12 @@ local function refresh()
 	soulBtn.Text = "Soul Crate  ✨" .. Config.SoulCrateCost
 end
 
+slotBtn.Activated:Connect(function()
+	if myData and myData.UnlockedIslands and myData.UnlockedIslands.FrostboundReach then
+		slot = 3 - slot
+		refresh()
+	end
+end)
 DataSync.OnClientEvent:Connect(function(data) myData = data refresh() end)
 task.spawn(function()
 	local ok, d = pcall(function() return GetData:InvokeServer() end)
@@ -261,7 +279,7 @@ local rolling = false
 
 local function showTrait(t)
 	traitText(revealName, t)
-	revealMult.Text = "x" .. tostring(t.Mult) .. " Logs forever"
+	revealMult.Text = t.Rarity .. "  •  " .. t.Desc
 end
 
 local function spin(finalId)
@@ -289,15 +307,8 @@ local function finish()
 	refresh()
 end
 
-local function doRoll(crate)
-	if rolling then return end
-	rolling = true
-	local ok, res = TraitAction:InvokeServer("Roll", crate)
-	if not ok then
-		rolling = false
-		flash(res or "?")
-		return
-	end
+local function showResult(res, crate)
+	if res.Slot then slot = res.Slot end
 	overlay.Visible = true
 	panel.Visible = false
 	revealTop.Text = crate == "Souls" and "SOUL CRATE" or (crate == "Free" and "FREE TRAIT CRATE" or "TRAIT CRATE")
@@ -306,27 +317,46 @@ local function doRoll(crate)
 		revealTop.Text = "NEW TRAIT!"
 		okBtn.Visible = true
 	elseif res.Same then
-		revealTop.Text = "Same as your current trait"
+		revealTop.Text = res.OtherSlot and "Already equipped in your other slot" or "Same as your current trait"
 		okBtn.Text = "OK"
 		okBtn.Visible = true
 	elseif res.Pending then
 		local cur = Config.TraitById[res.Current]
-		revealTop.Text = string.format("You have %s (x%s)", cur.Name, tostring(cur.Mult))
+		revealTop.Text = string.format("Keep %s or take %s?", cur.Name, t.Name)
 		keepNew.Text = "Take " .. t.Name
 		keepOld.Text = "Keep " .. cur.Name
-		keepNew.BackgroundColor3 = t.Mult > cur.Mult and Color3.fromRGB(70, 175, 80) or Color3.fromRGB(90, 85, 110)
-		keepOld.BackgroundColor3 = t.Mult > cur.Mult and Color3.fromRGB(90, 85, 110) or Color3.fromRGB(70, 175, 80)
+		keepNew.BackgroundColor3 = Color3.fromRGB(70, 175, 80)
+		keepOld.BackgroundColor3 = Color3.fromRGB(90, 85, 110)
 		keepNew.Visible, keepOld.Visible = true, true
 	end
 end
 
+local function doRoll(crate)
+	if rolling then return end
+	rolling = true
+	local called, ok, res = pcall(TraitAction.InvokeServer, TraitAction, "Roll", crate, slot)
+	if not called or not ok then
+		rolling = false
+		flash(called and res or "Could not reach the server")
+		return
+	end
+	showResult(res, crate)
+end
+
+local function choose(keep)
+	local called, ok, msg = pcall(TraitAction.InvokeServer, TraitAction, "Choose", keep, slot)
+	if called and ok then
+		finish()
+	else
+		revealTop.Text = called and tostring(msg) or "Could not reach the server. Try again."
+	end
+end
+
 keepNew.Activated:Connect(function()
-	TraitAction:InvokeServer("Choose", true)
-	finish()
+	choose(true)
 end)
 keepOld.Activated:Connect(function()
-	TraitAction:InvokeServer("Choose", false)
-	finish()
+	choose(false)
 end)
 okBtn.Activated:Connect(function()
 	okBtn.Text = "Nice!"
@@ -338,8 +368,9 @@ logBtn.Activated:Connect(function()
 end)
 soulBtn.Activated:Connect(function() doRoll("Souls") end)
 lockBtn.Activated:Connect(function()
-	local ok, res = TraitAction:InvokeServer("Lock", not (myData and myData.TraitLocked))
-	if ok and myData then myData.TraitLocked = res.Locked refresh() end
+	local key = slot == 2 and "Trait2Locked" or "TraitLocked"
+	local ok, res = TraitAction:InvokeServer("Lock", not (myData and myData[key]), slot)
+	if ok and myData then myData[key] = res.Locked refresh() end
 end)
 
 --------------------------------------------------------------------
@@ -349,6 +380,15 @@ local function open(on)
 	panel.Visible = on
 	if on then
 		refresh()
+		task.spawn(function()
+			refreshOdds()
+			if not panel.Visible or rolling then return end
+			local called, ok, offer = pcall(TraitAction.InvokeServer, TraitAction, "Pending", nil, slot)
+			if called and ok and offer and panel.Visible and not rolling then
+				rolling = true
+				showResult(offer, "Pending")
+			end
+		end)
 		popScale.Scale = 0.9
 		TweenService:Create(popScale, TweenInfo.new(0.18, Enum.EasingStyle.Back), { Scale = 1 }):Play()
 	end

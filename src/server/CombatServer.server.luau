@@ -129,7 +129,7 @@ local function respawnDelay(model, killer)
 	local base = model:GetAttribute("Respawn") or 10
 	if not killer then return base end
 	local level = Config.GetLevel(killer, "Renewal")
-	local renewed, accelerated = Economy.RenewedRespawn(base, model:GetAttribute("Rarity"), level)
+	local renewed, accelerated = Economy.RenewedRespawn(base, model:GetAttribute("Rarity"), level, killer:GetAttribute("RenewalBonus"))
 	if not accelerated then return base end
 	local ok = takeRenewToken()
 	Telemetry.Renewal(ok)
@@ -578,6 +578,9 @@ local function processWielder(wielder, char, root, now, filterChars)
 					if hitPos then
 						cd[i] = now
 						local dmg = victimPlayer and stats.PvPDamage or stats.Damage
+						if isPlayer and target:GetAttribute("IsTree") then
+							dmg *= wielder:GetAttribute("TreeDamageMult") or 1
+						end
 						local weak = false
 						local strength = target:GetAttribute("Strength")
 						if strength and isPlayer and stats.Power < strength then

@@ -46,6 +46,8 @@ local writers = {}   -- [player] = ProfileWriter (M0.1: one serialized writer pe
 local lost = {}      -- [player] = true once another session took the profile
 local Analytics      -- optional, set via DataService.SetAnalytics
 
+local Progression = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
+
 local DEFAULT = {
 	Version = 4,
 	Logs = 0,
@@ -107,6 +109,12 @@ local DEFAULT = {
 	Favorites = {}, -- [weaponId] = true: copies are never sold (auto-sell / max-star overflow); future salvage/trade blocked
 	Essence = { Total = 0, Day = 0, Today = 0 }, -- Altar Essence (1 per altar roll, daily cap) for Divine Attunement
 	Attuned = {}, -- [islandId] = true once that island's Attunement Divine was claimed (one per island, forever)
+	Mastery = { Level = 1, XP = 0 },
+	TechTree = { TP = 0, Spent = 0, Nodes = {}, Revision = 0 },
+	Trait2Locked = false,
+	TraitOffer = {},
+	PetGolden = {},
+	PetRainbow = {},
 	_Meta = { Applied = { ["4"] = true } },
 }
 
@@ -257,13 +265,24 @@ function DataService.EconomyContext(player, d)
 		local pd = Config.PetById[id]
 		if pd then table.insert(pets, pd) end
 	end
+	local secondary = d.UnlockedIslands.FrostboundReach == true and Config.TraitById[d.Trait2]
+	if secondary and d.Trait2 == d.Trait then secondary = nil end
+	local primary = Config.TraitById[d.Trait]
+	local function traitBonus(trait, key)
+		return trait and trait.Bonuses and trait.Bonuses[key] or 0
+	end
+	local extra = Progression.Bonuses(d)
+	for _, channel in ipairs({ "Luck", "Damage", "Mobility", "PetLogs", "Renewal" }) do
+		extra[channel] += traitBonus(primary, channel) + traitBonus(secondary, channel)
+	end
+	local traitLogs = 1 + (primary and primary.Mult - 1 or 0) + (secondary and secondary.Mult - 1 or 0)
 	return {
 		Levels = d.Levels, SoulUpgrades = d.SoulUpgrades, Rebirths = d.Rebirths or 0,
-		TraitMult = player and player:GetAttribute("TraitMult") or 1, Pets = pets, Passes = passes,
+		TraitMult = traitLogs, Pets = pets, Passes = passes,
 		InGroup = player and player:GetAttribute("InGroup") == true, Boosts = d.Boosts, Now = os.time(),
 		EventLogs = workspace:GetAttribute("EventLogs") or 1, EventLuck = workspace:GetAttribute("EventLuck") or 1,
 		PvP = player and player:GetAttribute("PvP") == true,
-		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = {},
+		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = { Character = extra },
 	}
 end
 
@@ -294,7 +313,11 @@ function DataService.RecalcMultipliers(player)
 	player:SetAttribute("UnlockedIslands", table.concat(isl, ","))
 	player:SetAttribute("PriceTier", tier.Tier)
 	player:SetAttribute("PriceUnit", tier.Unit)
-	DataService.ApplyMovement(player)
+	player:SetAttribute("TreeDamageMult", Economy.DamageExtraMult(ctx))
+	player:SetAttribute("RenewalBonus", ctx.Extra.Character.Renewal)
+	player:SetAttribute("MasteryLevel", d.Mastery.Level)
+	player:SetAttribute("MasteryXP", d.Mastery.XP)
+	DataService.ApplyMovement(player, ctx.Extra.Character.Mobility)
 end
 
 -- recompute every loaded player (luck events, server-wide changes)
@@ -308,10 +331,10 @@ workspace:GetAttributeChangedSignal("EventLuck"):Connect(DataService.RecalcAll)
 
 -- M1.3: server-authoritative walk speed (Walk Speed upgrade + future capped mobility).
 -- Set on the server Humanoid, so MovementGuard and replication both use it.
-function DataService.ApplyMovement(player)
+function DataService.ApplyMovement(player, mobility)
 	local d = profiles[player]
 	if not d then return end
-	local speed = Economy.WalkSpeed(d.Levels, 0)
+	local speed = Economy.WalkSpeed(d.Levels, mobility or DataService.EconomyContext(player, d).Extra.Character.Mobility)
 	player:SetAttribute("WalkSpeedStat", speed)
 	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if hum and hum.WalkSpeed ~= speed then hum.WalkSpeed = speed end
@@ -679,11 +702,28 @@ function DataService.TryUnlockIsland(player, islandId)
 	return true
 end
 
+function DataService.AddMasteryXP(player, xp)
+	local data = profiles[player]
+	if not data or data.Mastery.Level >= Progression.MaxLevel or player:GetAttribute("Handoff") then return end
+	local before, reward = Progression.AddXP(data.Mastery, xp)
+	player:SetAttribute("MasteryXP", data.Mastery.XP)
+	if data.Mastery.Level ~= before then
+		data.TechTree.TP += reward
+		DataService.RecalcMultipliers(player)
+		DataService.Sync(player)
+		local bonus = reward > 0 and string.format("  •  +%d Tech Points", reward) or ""
+		NotifyRemote:FireClient(player, string.format("Mastery level %d%s", data.Mastery.Level, bonus), "rare_Legendary")
+	end
+end
+
 function DataService.AddBossKill(player, bossId)
 	local d = profiles[player]
 	if not d then return end
 	d.BossKills = d.BossKills or {}
 	d.BossKills[bossId] = (d.BossKills[bossId] or 0) + 1
+	if bossId == "Treant" or bossId == "BladeKing" then
+		DataService.AddMasteryXP(player, bossId == "Treant" and 650 or 240)
+	end
 end
 
 --------------------------------------------------------------------
@@ -771,7 +811,12 @@ local function prepare(data)
 		data.Logs = (data.Logs or 0) + data.Coins
 		data.Coins = nil
 	end
+	-- Derived M3 structures never reinterpret existing trait or pet ownership.
+	for _, key in ipairs({ "Mastery", "TechTree", "PetGolden", "PetRainbow", "TraitOffer" }) do
+		if type(data[key]) ~= "table" then data[key] = nil end
+	end
 	reconcile(data, DEFAULT)
+	if type(data.TechTree.Nodes) ~= "table" then data.TechTree.Nodes = {} end
 	-- P1a islands: grandfather legacy progress (BestArea) into island unlocks. Only ever adds.
 	do
 		local best = Config.AreaById[data.BestArea] or Config.AreaById.StarterGrove

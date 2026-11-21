@@ -7,6 +7,8 @@ local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NotifyRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Notify")
 
+local Mastery = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
+
 local P = {}
 
 local function dayKey() return math.floor(os.time() / 86400) end
@@ -89,6 +91,9 @@ function P.TreeChopped(player, typeId, mutId)
 	end
 	local first = not d.Trees[typeId]
 	d.Trees[typeId] = (d.Trees[typeId] or 0) + 1
+	local rarity = Config.RarityById[tt.Rarity]
+	local xp = Mastery.TreeXP(rarity and rarity.Order, Config.AreaIsland[tt.Area] or d.LastIsland, mutId and Config.MutationById[mutId])
+	DataService.AddMasteryXP(player, xp + (first and 30 or 0))
 	if first then
 		NotifyRemote:FireClient(player, string.format("🌳 New tree discovered: %s! Claim your reward in INDEX", tt.Name), "rare_" .. tt.Rarity)
 		DataService.RecalcMultipliers(player) -- tree index completion bonus

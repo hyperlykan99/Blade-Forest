@@ -24,6 +24,7 @@ local Extras = Remotes:FindFirstChild("Extras") or Instance.new("RemoteFunction"
 Extras.Name = "Extras"
 Extras.Parent = Remotes
 
+local Character = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 local rng = Random.new()
 local function today() return math.floor(os.time() / 86400) end
 local function hourKey() return math.floor(os.time() / 3600) end
@@ -49,21 +50,26 @@ end
 -- Remote
 --------------------------------------------------------------------
 local last = {}
-Extras.OnServerInvoke = function(player, action, a)
+Extras.OnServerInvoke = function(player, action, a, b)
 	local d = DataService.Get(player)
-	if not d then return false, "Loading..." end
+	if not d or player:GetAttribute("Handoff") then return false, "Loading..." end
 	if os.clock() - (last[player] or 0) < 0.2 then return false, "Slow down" end
 	last[player] = os.clock()
 
 	if action == "Hatch" then
-		local n = (a == 3) and 3 or 1
+		if a ~= 1 and a ~= 3 then return false, "Choose one or three eggs" end
+		local n = a
+		local island = b == nil and Config.HomeIsland or b
+		if type(island) ~= "string" or not Config.PetEggs[island] then return false, "Unknown egg" end
+		if not d.UnlockedIslands[island] then return false, "Unlock this island first" end
 		local allowed, msg = Policy.CheckCurrencySpend(player, "PetEgg_Logs")
 		if not allowed then return false, msg end
+		if DataService.Get(player) ~= d or not player.Parent or player:GetAttribute("Handoff") then return false, "Profile unavailable" end
 		local cost = Config.GetEggCost(player) * n -- M1: progression tier
 		if not DataService.SpendCoins(player, cost) then return false, "Need " .. Config.FormatNumber(cost) .. " Logs" end
 		local results = {}
 		for _ = 1, n do
-			local p = Config.RollPet(rng)
+			local p = Config.RollPet(rng, island)
 			d.Pets[p.Id] = (d.Pets[p.Id] or 0) + 1
 			d.Stats.PetsHatched = (d.Stats.PetsHatched or 0) + 1
 			table.insert(results, p.Id)
@@ -79,11 +85,14 @@ Extras.OnServerInvoke = function(player, action, a)
 		return true, results
 
 	elseif action == "EquipPet" then
-		local p = Config.PetById[a]
-		if not p or not d.Pets[a] then return false, "Not owned" end
+		local p = type(a) == "string" and Config.PetById[a]
+		if not p then return false, "Unknown pet" end
+		local inventory, id = Config.PetInventory(d, p)
+		local owned = inventory[id] or 0
+		if owned <= 0 then return false, "Not owned" end
 		local using = 0
 		for _, id in ipairs(d.EquippedPets) do if id == a then using += 1 end end
-		if using >= d.Pets[a] then return false, "All equipped" end
+		if using >= owned then return false, "All equipped" end
 		if #d.EquippedPets >= maxPets(player) then return false, "Slots full" end
 		table.insert(d.EquippedPets, a)
 		DataService.RecalcMultipliers(player)
@@ -100,18 +109,31 @@ Extras.OnServerInvoke = function(player, action, a)
 
 	elseif action == "EquipBestPets" then
 		local list = {}
-		for id, count in pairs(d.Pets) do
-			if Config.PetById[id] then for _ = 1, count do table.insert(list, id) end end
+		local slots = maxPets(player)
+		for key, pet in pairs(Config.PetById) do
+			local inventory, id = Config.PetInventory(d, pet)
+			local count = math.clamp(inventory[id] or 0, 0, slots)
+			for _ = 1, count do table.insert(list, key) end
 		end
 		table.sort(list, function(x, y)
 			local px, py = Config.PetById[x], Config.PetById[y]
-			return px.Logs + px.Luck * 2 > py.Logs + py.Luck * 2
+			local sx, sy = px.Logs + px.Luck * 2, py.Logs + py.Luck * 2
+			if sx == sy then return x < y end
+			return sx > sy
 		end)
-		d.EquippedPets = {}
-		for i = 1, math.min(#list, maxPets(player)) do table.insert(d.EquippedPets, list[i]) end
+		d.EquippedPets = table.move(list, 1, math.min(#list, slots), 1, {})
 		DataService.RecalcMultipliers(player)
 		DataService.Sync(player)
 		return true
+
+	elseif action == "EvolvePet" then
+		local ok, result = Character.Evolve(d, Config, a, function(cost)
+			return DataService.SpendSouls(player, cost)
+		end)
+		if not ok then return false, result end
+		DataService.Sync(player)
+		NotifyRemote:FireClient(player, "Evolution complete • " .. result.Name, "rare_Legendary")
+		return true, result.Id
 
 	elseif action == "SawmillInfo" then
 		if d.Sawmill.Day ~= today() then d.Sawmill.Day = today() d.Sawmill.Souls = 0 end

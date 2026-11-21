@@ -14,6 +14,7 @@ local Extras = Remotes:WaitForChild("Extras")
 local DataSync = Remotes:WaitForChild("DataSync")
 local GetData = Remotes:WaitForChild("GetData")
 local PetModels = ReplicatedStorage:WaitForChild("PetModels")
+local Character = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 
 local player = Players.LocalPlayer
 local myData
@@ -84,12 +85,16 @@ end
 --------------------------------------------------------------------
 local petsBtn = tile("PetsButton")
 local pPanel, pBody, pClose = T.Panel(gui, "PetsPanel", "PETS", Color3.fromRGB(240, 140, 90), 560, 0.86)
-local hatchInfo = T.Label(pBody, { Position = UDim2.fromOffset(12, 24), Size = UDim2.new(1, -24, 0, 22), Text = "" })
-local hatch1 = T.Button(pBody, { Position = UDim2.new(0, 10, 0, 50), Size = UDim2.new(0.32, -8, 0, 44), Text = "HATCH x1" }, C.Leaf)
-local hatch3 = T.Button(pBody, { Position = UDim2.new(0.32, 6, 0, 50), Size = UDim2.new(0.32, -8, 0, 44), Text = "HATCH x3" }, C.LeafDark)
-local equipBest = T.Button(pBody, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 50), Size = UDim2.new(0.34, -8, 0, 44), Text = "EQUIP BEST" }, C.Blue)
-local bonusLine = T.Label(pBody, { Position = UDim2.fromOffset(12, 100), Size = UDim2.new(1, -24, 0, 20), Text = "", TextColor3 = C.Gold })
-local petGrid = scroller(pBody, UDim2.fromOffset(6, 126), UDim2.new(1, -12, 1, -132), UDim2.fromOffset(150, 170))
+local eggPicker = T.Button(pBody, { Position = UDim2.fromOffset(10, 8), Size = UDim2.new(0.60, -12, 0, 33), Text = "" }, C.GoldDark)
+local stagePicker = T.Button(pBody, { Position = UDim2.new(0.60, 6, 0, 8), Size = UDim2.new(0.40, -16, 0, 33), Text = "" }, C.Purple)
+local eggIndex, stageIndex = 1, 1
+local stages = { "Normal", "Golden", "Rainbow" }
+local hatchInfo = T.Label(pBody, { Position = UDim2.fromOffset(12, 44), Size = UDim2.new(1, -24, 0, 18), Text = "" })
+local hatch1 = T.Button(pBody, { Position = UDim2.new(0, 10, 0, 66), Size = UDim2.new(0.32, -8, 0, 35), Text = "HATCH x1" }, C.Leaf)
+local hatch3 = T.Button(pBody, { Position = UDim2.new(0.32, 6, 0, 66), Size = UDim2.new(0.32, -8, 0, 35), Text = "HATCH x3" }, C.LeafDark)
+local equipBest = T.Button(pBody, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 66), Size = UDim2.new(0.34, -8, 0, 35), Text = "EQUIP BEST" }, C.Blue)
+local bonusLine = T.Label(pBody, { Position = UDim2.fromOffset(12, 108), Size = UDim2.new(1, -24, 0, 20), Text = "", TextColor3 = C.Gold })
+local petGrid = scroller(pBody, UDim2.fromOffset(6, 133), UDim2.new(1, -12, 1, -139), UDim2.fromOffset(145, 204))
 
 local function petViewport(parent, id)
 	local vp = Instance.new("ViewportFrame")
@@ -115,46 +120,111 @@ local function petViewport(parent, id)
 	return vp
 end
 
+local drawnKey
 local function refreshPets()
 	if not myData or not pPanel.Visible then return end
-	local cost = Config.GetEggCost(player) -- M1: progression tier (server sets PriceUnit)
-	hatchInfo.Text = string.format("🥚 Pet Egg: %s Logs each  •  you have %s", Config.FormatNumber(cost), Config.FormatNumber(myData.Logs or 0))
+	local island = Character.Islands[eggIndex]
+	local stage = stages[stageIndex]
+	eggPicker.Text = Character.IslandNames[island] .. "  ›"
+	stagePicker.Text = stage .. "  ›"
+	local cost = Config.GetEggCost(player)
+	local enabled = myData.UnlockedIslands and myData.UnlockedIslands[island] == true
+	hatchInfo.Text = enabled and string.format("Egg %s Logs  •  Balance %s", Config.FormatNumber(cost), Config.FormatNumber(myData.Logs or 0))
+		or "Unlock " .. Character.IslandNames[island] .. " to hatch"
 	local eq = myData.EquippedPets or {}
+	local equipped = {}
+	for _, id in ipairs(eq) do equipped[id] = (equipped[id] or 0) + 1 end
 	local maxP = Config.MaxPetsEquipped + (player:GetAttribute("Pass_VIP") and 1 or 0)
-	local logs, luck = 0, 0
-	for _, id in ipairs(eq) do local p = Config.PetById[id] if p then logs += p.Logs luck += p.Luck end end
-	bonusLine.Text = string.format("Equipped %d/%d  •  +%d%% Logs  •  +%d%% Luck", #eq, maxP, logs * 100, luck * 100)
+	bonusLine.Text = string.format("%d/%d equipped  •  Log rewards ×%s  •  Roll Luck ×%s", #eq, maxP,
+		tostring(player:GetAttribute("LogMult") or 1), tostring(player:GetAttribute("LuckMult") or 1))
+
+	local defs, tokens = {}, { island, stage }
+	for _, base in ipairs(Config.PetEggs[island]) do
+		local variant = Config.PetById[Character.PetKey(base.Id, stage)]
+		local inventory, key = Config.PetInventory(myData, variant)
+		local count = inventory and inventory[key] or 0
+		table.insert(defs, { variant, count })
+		table.insert(tokens, tostring(count) .. "/" .. tostring(equipped[variant.Id] or 0))
+	end
+	local signature = table.concat(tokens, "|")
+	if drawnKey == signature then return end
+	drawnKey = signature
 	clear(petGrid)
-	for _, p in ipairs(Config.Pets) do
-		local owned = (myData.Pets or {})[p.Id] or 0
-		local using = 0
-		for _, id in ipairs(eq) do if id == p.Id then using += 1 end end
-		local r = Config.RarityById[p.Rarity]
+	for _, entry in ipairs(defs) do
+		local pet, owned = entry[1], entry[2]
+		local using = equipped[pet.Id] or 0
+		local rarity = Config.RarityById[pet.Rarity]
 		local f = Instance.new("Frame")
-		f.LayoutOrder = p.Order
+		f.LayoutOrder = pet.Order
 		f.BackgroundColor3 = owned > 0 and C.Plank or C.WoodDark
 		f.Parent = petGrid
 		T.Corner(f, 12)
-		T.Stroke(f, r.Color, 3)
-		local vp = petViewport(f, p.Id)
-		if owned == 0 then vp.ImageColor3 = Color3.new(0, 0, 0) end
-		T.Label(f, { Position = UDim2.fromOffset(6, 80), Size = UDim2.new(1, -12, 0, 20), Text = owned > 0 and p.Name or "???", TextColor3 = r.Color })
-		T.Label(f, { Position = UDim2.fromOffset(6, 100), Size = UDim2.new(1, -12, 0, 15), Text = string.format("%s • %.1f%%", p.Rarity, p.Weight) })
-		T.Label(f, { Position = UDim2.fromOffset(6, 116), Size = UDim2.new(1, -12, 0, 15), TextColor3 = C.Gold,
-			Text = string.format("+%d%% Logs%s", p.Logs * 100, p.Luck > 0 and string.format(" +%d%% Luck", p.Luck * 100) or "") })
+		T.Stroke(f, rarity.Color, 2)
+		local vp = petViewport(f, pet.Id)
+		if owned == 0 then vp.ImageColor3 = Color3.fromRGB(116, 113, 129) end
+		T.Label(f, { Position = UDim2.fromOffset(5, 80), Size = UDim2.new(1, -10, 0, 21), Text = pet.Name, TextColor3 = rarity.Color })
+		local acquisition = stage == "Normal" and string.format(" • %g%% egg odds", pet.Weight) or " • Evolution"
+		T.Label(f, { Position = UDim2.fromOffset(5, 102), Size = UDim2.new(1, -10, 0, 16), Text = pet.Rarity .. acquisition })
+		T.Label(f, { Position = UDim2.fromOffset(5, 120), Size = UDim2.new(1, -10, 0, 17), TextColor3 = C.Gold,
+			Text = string.format("Owned %d · Equipped %d", owned, using) })
 		if owned > 0 then
-			local b = T.Button(f, { Position = UDim2.fromOffset(6, 134), Size = UDim2.new(1, -12, 0, 30),
-				Text = using > 0 and string.format("UNEQUIP (%d/%d)", using, owned) or string.format("EQUIP (x%d)", owned) }, using > 0 and C.Grey or C.Blue)
-			b.Activated:Connect(function()
-				local ok, msg = call(using > 0 and "UnequipPet" or "EquipPet", p.Id)
-				if not ok then flash(b, msg or "Can't") end
+			local add = T.Button(f, { Position = UDim2.fromOffset(5, 139), Size = UDim2.new(0.5, -7, 0, 27),
+				Text = "EQUIP" }, C.Blue)
+			local remove = T.Button(f, { Position = UDim2.new(0.5, 2, 0, 139), Size = UDim2.new(0.5, -7, 0, 27),
+				Text = "REMOVE" }, C.Grey)
+			add.Activated:Connect(function()
+				local ok, msg = call("EquipPet", pet.Id)
+				if not ok then flash(add, msg) end
 			end)
+			remove.Activated:Connect(function()
+				local ok, msg = call("UnequipPet", pet.Id)
+				if not ok then flash(remove, msg) end
+			end)
+			if stage ~= "Rainbow" then
+				local nextStage = stage == "Normal" and "Golden" or "Rainbow"
+				local price = Character.EvolutionCosts[nextStage]
+				local evolve = T.Button(f, { Position = UDim2.fromOffset(5, 172), Size = UDim2.new(1, -10, 0, 27),
+					Text = string.format("EVOLVE · 3 + %d Souls", price) }, C.GoldDark)
+				local confirming = false
+				evolve.Activated:Connect(function()
+					if owned - using < Character.EvolutionCopies then
+						flash(evolve, "Need 3 unequipped copies")
+						return
+					end
+					if not confirming then
+						confirming = true
+						flash(evolve, "CONFIRM " .. string.upper(nextStage))
+						task.delay(1.4, function() confirming = false end)
+						return
+					end
+					confirming = false
+					local ok, msg = call("EvolvePet", pet.Id)
+					if not ok then flash(evolve, msg) end
+				end)
+			end
 		end
 	end
 end
 
+eggPicker.Activated:Connect(function()
+	eggIndex = eggIndex % #Character.Islands + 1
+	petGrid.CanvasPosition = Vector2.zero
+	refreshPets()
+end)
+stagePicker.Activated:Connect(function()
+	stageIndex = stageIndex % #stages + 1
+	petGrid.CanvasPosition = Vector2.zero
+	refreshPets()
+end)
+player:GetAttributeChangedSignal("LogMult"):Connect(refreshPets)
+player:GetAttributeChangedSignal("LuckMult"):Connect(refreshPets)
+PetModels.ChildAdded:Connect(function()
+	drawnKey = nil
+	task.defer(refreshPets)
+end)
+
 local function doHatch(n, btn)
-	local ok, res = call("Hatch", n)
+	local ok, res = call("Hatch", n, Character.Islands[eggIndex])
 	if not ok then flash(btn, res or "Can't") return end
 	local names = {}
 	for _, id in ipairs(res) do table.insert(names, Config.PetById[id].Name) end
@@ -287,12 +357,18 @@ local function buildPets(p, key)
 	end
 	drawn[p] = v
 end
+PetModels.ChildAdded:Connect(function()
+	for _, p in ipairs(Players:GetPlayers()) do
+		if drawn[p] then drawn[p].Key = nil end
+	end
+end)
 Players.PlayerRemoving:Connect(clearPets)
 
 RunService.RenderStepped:Connect(function()
 	local t = os.clock()
-	local cam = workspace.CurrentCamera.CFrame.Position
-	local parts, cfs = {}, {}
+	local camera = workspace.CurrentCamera
+	if not camera then return end
+	local cam = camera.CFrame.Position
 	for _, p in ipairs(Players:GetPlayers()) do
 		local key = p:GetAttribute("Pets") or ""
 		local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")

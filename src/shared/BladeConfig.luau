@@ -729,10 +729,18 @@ Config.Traits = {
 	{ Id = "TimberTitan",  Name = "Timber Titan",  Mult = 2,    Weight = 6,   SoulWeight = 15, Color = Color3.fromRGB(190, 90, 255) },
 	{ Id = "ForestWarden", Name = "Forest Warden", Mult = 2.5,  Weight = 1.8, SoulWeight = 7,  Color = Color3.fromRGB(70, 255, 150) },
 	{ Id = "AncientRoot",  Name = "Ancient Root",  Mult = 3,    Weight = 0.2, SoulWeight = 1,  Color = Color3.fromRGB(255, 215, 80), Rainbow = true },
+	{ Id = "SapSage", Name = "Sap Sage", Rarity = "Uncommon", Mult = 1, Weight = 13, SoulWeight = 12, Lucky = false, Color = Color3.fromRGB(108, 190, 145), Bonuses = { Renewal = 0.025 }, Desc = "+2.5% to the eligible regrowth reduction" },
+	{ Id = "FortuneBark", Name = "Fortune Bark", Rarity = "Rare", Mult = 1, Weight = 7, SoulWeight = 11, Lucky = true, Color = Color3.fromRGB(90, 180, 255), Bonuses = { Luck = 0.18 }, Desc = "+18% to the permanent Luck pool" },
+	{ Id = "Trailborn", Name = "Trailborn", Rarity = "Rare", Mult = 1, Weight = 4, SoulWeight = 7, Lucky = true, Color = Color3.fromRGB(100, 218, 230), Bonuses = { Mobility = 0.55 }, Desc = "+0.55 studs/s within the movement cap" },
+	{ Id = "Edgekeeper", Name = "Edgekeeper", Rarity = "Epic", Mult = 1, Weight = 2.4, SoulWeight = 4, Lucky = true, Color = Color3.fromRGB(195, 123, 255), Bonuses = { Damage = 0.07 }, Desc = "+7% to the tree damage pool" },
+	{ Id = "Beastmaster", Name = "Beastmaster", Rarity = "Legendary", Mult = 1, Weight = 1, SoulWeight = 2, Lucky = true, Color = Color3.fromRGB(255, 175, 91), Bonuses = { PetLogs = 0.25 }, Desc = "+25% to the pet Logs pool" },
+	{ Id = "AuroraSage", Name = "Aurora Sage", Rarity = "Mythic", Mult = 1, Weight = 0.35, SoulWeight = 1, Lucky = true, Color = Color3.fromRGB(107, 255, 225), Bonuses = { Luck = 0.32 }, Desc = "+32% to the permanent Luck pool" },
 }
 Config.TraitById = {}
 for i, t in ipairs(Config.Traits) do
 	t.Order = i
+	t.Rarity = t.Rarity or ({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic" })[i]
+	t.Desc = t.Desc or string.format("+%g%% to the permanent Logs pool", (t.Mult - 1) * 100)
 	Config.TraitById[t.Id] = t
 end
 -- LEGACY (pre-M1) crate prices by BestArea; kept only so old callers still get a number.
@@ -754,7 +762,7 @@ end
 -- odds table for a crate: { {trait, chancePercent}, ... }
 function Config.GetTraitOdds(crate, lucky)
 	local key = crate == "Souls" and "SoulWeight" or "Weight"
-	local function w(t) return t[key] * ((lucky and t.Mult >= 1.75) and 2 or 1) end
+	local function w(t) return t[key] * ((lucky and (t.Lucky or t.Mult >= 1.75)) and 2 or 1) end
 	local total = 0
 	for _, t in ipairs(Config.Traits) do total += w(t) end
 	local list = {}
@@ -918,20 +926,60 @@ Config.Pets = {
 	{ Id = "Owl",     Name = "Snow Owl",    Rarity = "Legendary", Weight = 0.9, Logs = 1.00, Luck = 0.20 },
 	{ Id = "Dragon",  Name = "Baby Dragon", Rarity = "Mythic",    Weight = 0.1, Logs = 2.00, Luck = 0.50 },
 }
+local PetRoster = require(script.Parent:WaitForChild("PetRoster"))
+local Character = require(script.Parent:WaitForChild("CharacterProgression"))
 Config.PetById = {}
-for i, p in ipairs(Config.Pets) do p.Order = i Config.PetById[p.Id] = p end
+Config.PetEggs = { TimberHaven = table.clone(Config.Pets) }
+for _, island in ipairs(Character.Islands) do
+	local roster = PetRoster[island]
+	if roster then
+		local egg = {}
+		for i, row in ipairs(roster) do
+			local legacy = Config.PetEggs.TimberHaven[i]
+			local pet = {
+				Id = row[1], Name = row[2], Shape = row[3], Logs = row[4], Luck = row[5],
+				Body = Color3.fromRGB(table.unpack(row[6])), Accent = Color3.fromRGB(table.unpack(row[7])),
+				Rarity = legacy.Rarity, Weight = legacy.Weight,
+			}
+			table.insert(egg, pet)
+			table.insert(Config.Pets, pet)
+		end
+		Config.PetEggs[island] = egg
+	end
+	for _, pet in ipairs(Config.PetEggs[island]) do pet.Island = island end
+end
+for i, p in ipairs(Config.Pets) do
+	p.Order = i
+	Config.PetById[p.Id] = p
+	for _, stage in ipairs({ "Golden", "Rainbow" }) do
+		local variant = table.clone(p)
+		variant.BaseId, variant.Stage = p.Id, stage
+		variant.Id = Character.PetKey(p.Id, stage)
+		variant.Name = stage .. " " .. p.Name
+		variant.Luck += stage == "Golden" and 0.06 or 0.15
+		Config.PetById[variant.Id] = variant
+	end
+end
 Config.MaxPetsEquipped = 3 -- VIP gets +1
-Config.PetEggMult = EC.Prices.PetEgg -- egg price = progression price unit x this (M1)
+Config.PetEggMult = EC.Prices.PetEgg
 function Config.GetEggCost(who) return math.floor(Config.GetPriceUnit(who) * Config.PetEggMult) end
-function Config.RollPet(rng)
+function Config.RollPet(rng, island)
+	local pool = Config.PetEggs[island or "TimberHaven"]
+	if not pool then return nil end
 	local total = 0
-	for _, p in ipairs(Config.Pets) do total += p.Weight end
+	for _, p in ipairs(pool) do total += p.Weight end
 	local r = (rng and rng:NextNumber() or math.random()) * total
-	for _, p in ipairs(Config.Pets) do
+	for _, p in ipairs(pool) do
 		r -= p.Weight
 		if r <= 0 then return p end
 	end
-	return Config.Pets[1]
+	return pool[#pool]
+end
+
+function Config.PetInventory(data, pet)
+	if pet.Stage == "Golden" then return data.PetGolden, pet.BaseId end
+	if pet.Stage == "Rainbow" then return data.PetRainbow, pet.BaseId end
+	return data.Pets, pet.Id
 end
 
 --------------------------------------------------------------------

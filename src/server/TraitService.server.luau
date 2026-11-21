@@ -15,8 +15,8 @@ local TraitAction = Remotes:FindFirstChild("TraitAction") or Instance.new("Remot
 TraitAction.Name = "TraitAction"
 TraitAction.Parent = Remotes
 
+local M = require(ReplicatedStorage:WaitForChild("CharacterProgression"))
 local rng = Random.new()
-local pending = {}  -- [player] = traitId waiting for keep/replace
 local lastRoll = {}
 
 --------------------------------------------------------------------
@@ -60,9 +60,8 @@ local function applyTrait(player)
 	task.spawn(applyTitle, player)
 end
 
-local function setTrait(player, id)
-	local d = DataService.Get(player)
-	d.Trait = id
+local function setTrait(player, d, slot, id)
+	if slot == 1 then d.Trait = id else d.Trait2 = id end
 	applyTrait(player)
 	DataService.Sync(player)
 	local t = Config.TraitById[id]
@@ -84,66 +83,106 @@ end
 --------------------------------------------------------------------
 -- Remote: Roll(crate) / Choose(keepNew) / Lock(on)
 --------------------------------------------------------------------
-TraitAction.OnServerInvoke = function(player, action, arg)
+local busy = {}
+local function perform(player, action, arg, slot)
 	local d = DataService.Get(player)
-	if not d then return false, "Loading..." end
+	if not d or not player:GetAttribute("Loaded") or player:GetAttribute("Handoff") then return false, "Loading..." end
+	if action == "Odds" then
+		return true, player:GetAttribute("Pass_LuckyCrates") == true and Policy.AllowPaidOddsModifier(player)
+	end
+	slot = slot == nil and 1 or slot
+	if slot ~= 1 and slot ~= 2 then return false, "Unknown slot" end
+	if slot == 2 and d.UnlockedIslands.FrostboundReach ~= true then return false, "Unlock Frostbound Reach first" end
+	local current, locked = M.Trait(d, slot)
+	local other = M.Trait(d, 3 - slot)
+	local offer = d.TraitOffer
+	local hasOffer = offer.Slot == 1 or offer.Slot == 2
+	if action == "Pending" then
+		local previous = M.Trait(d, offer.Slot)
+		if hasOffer and Config.TraitById[offer.Id] and Config.TraitById[previous] then
+			return true, { Slot = offer.Slot, Result = offer.Id, Current = previous, Pending = true }
+		end
+		return true
+	end
 
 	if action == "Roll" then
-		if os.clock() - (lastRoll[player] or 0) < 0.4 then return false, "Slow down" end
-		if d.TraitLocked then return false, "Your trait is locked 🔒 - unlock it to roll" end
-		local crate = (arg == "Souls" or arg == "Free") and arg or "Logs"
-		if crate == "Free" then
-			local allowPaid = Policy.FreeCrateAccess(player)
+		if arg ~= "Souls" and arg ~= "Free" and arg ~= "Logs" then return false, "Unknown crate" end
+		if os.clock() - (lastRoll[player] or -1) < 0.4 then return false, "Slow down" end
+		if locked then return false, "Unlock this trait slot before rolling" end
+		if hasOffer then
+			local previous = M.Trait(d, offer.Slot)
+			if Config.TraitById[offer.Id] and Config.TraitById[previous] then
+				return true, { Slot = offer.Slot, Result = offer.Id, Current = previous, Pending = true }
+			end
+			d.TraitOffer = {}
+		end
+		lastRoll[player] = os.clock()
+
+		-- Eligibility may yield. Recheck the authoritative profile before currency changes.
+		local lucky = player:GetAttribute("Pass_LuckyCrates") == true and Policy.AllowPaidOddsModifier(player)
+		local allowPaid
+		local allowed, msg = true
+		if arg == "Free" then
+			allowPaid = Policy.FreeCrateAccess(player)
+		else
+			allowed, msg = Policy.CheckCurrencySpend(player, "TraitCrate_" .. arg)
+		end
+		if not allowed then return false, msg end
+		if DataService.Get(player) ~= d or not player.Parent or player:GetAttribute("Handoff") then return false, "Profile unavailable" end
+		if arg == "Free" then
 			local ok, why = DataService.SpendCrate(player, allowPaid)
 			if not ok then
-				if why == "restricted" then
-					return false, "Only Trait Crates earned in-game can be opened on your account."
-				end
-				return false, "No free crates left"
+				return false, why == "restricted" and "Only earned Trait Crates can be opened on your account." or "No free crates left"
 			end
-		elseif crate == "Souls" then
+		elseif arg == "Souls" then
 			if not DataService.SpendSouls(player, Config.SoulCrateCost) then
 				return false, string.format("Need %d Souls", Config.SoulCrateCost)
 			end
 		else
-			local allowed, msg = Policy.CheckCurrencySpend(player, "TraitCrate_Logs")
-			if not allowed then return false, msg end
-			local cost = Config.GetTraitCrateCost(player) -- M1: progression tier
+			local cost = Config.GetTraitCrateCost(player)
 			if not DataService.SpendCoins(player, cost) then
 				return false, string.format("Need %s Logs", Config.FormatNumber(cost))
 			end
 		end
-		lastRoll[player] = os.clock()
-		local lucky = player:GetAttribute("Pass_LuckyCrates") == true and Policy.AllowPaidOddsModifier(player)
-		local id = roll(crate == "Souls" and "Souls" or "Logs", lucky)
+		local id = roll(arg == "Souls" and "Souls" or "Logs", lucky)
 		DataService.Sync(player)
-		if not d.Trait then
-			pending[player] = nil
-			setTrait(player, id)
+		if id == current or id == other then
+			return true, { Result = id, Same = true, OtherSlot = id == other }
+		end
+		if not current then
+			setTrait(player, d, slot, id)
 			return true, { Result = id, Applied = true }
 		end
-		if id == d.Trait then
-			pending[player] = nil
-			return true, { Result = id, Same = true }
-		end
-		pending[player] = id
-		return true, { Result = id, Current = d.Trait, Pending = true }
-
-	elseif action == "Choose" then
-		local id = pending[player]
-		pending[player] = nil
-		if id and arg == true then
-			setTrait(player, id)
-			return true, { Trait = id }
-		end
-		return true, { Trait = d.Trait }
-
-	elseif action == "Lock" then
-		d.TraitLocked = arg == true
+		d.TraitOffer = { Slot = slot, Id = id }
+		return true, { Result = id, Current = current, Pending = true }
+	elseif action == "Choose" and type(arg) == "boolean" then
+		if not hasOffer or offer.Slot ~= slot then return false, "No pending roll for this slot" end
+		d.TraitOffer = {}
 		DataService.Sync(player)
-		return true, { Locked = d.TraitLocked }
+		if arg and not locked and offer.Id ~= other then
+			setTrait(player, d, slot, offer.Id)
+			return true, { Trait = offer.Id }
+		end
+		return true, { Trait = current }
+	elseif action == "Lock" and type(arg) == "boolean" then
+		if hasOffer then return false, "Choose whether to keep your roll first" end
+		if slot == 1 then d.TraitLocked = arg else d.Trait2Locked = arg end
+		DataService.Sync(player)
+		return true, { Locked = arg }
 	end
-	return false, "?"
+	return false, "Unknown trait action"
+end
+
+TraitAction.OnServerInvoke = function(player, action, arg, slot)
+	if busy[player] then return false, "Trait request in progress" end
+	busy[player] = true
+	local called, ok, result = pcall(perform, player, action, arg, slot)
+	busy[player] = nil
+	if not called then
+		warn("[TraitService] " .. tostring(ok))
+		return false, "Trait request failed"
+	end
+	return ok, result
 end
 
 --------------------------------------------------------------------
@@ -161,6 +200,5 @@ end
 Players.PlayerAdded:Connect(onPlayer)
 for _, p in ipairs(Players:GetPlayers()) do onPlayer(p) end
 Players.PlayerRemoving:Connect(function(p)
-	pending[p] = nil
 	lastRoll[p] = nil
 end)

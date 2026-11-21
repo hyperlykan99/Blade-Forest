@@ -107,7 +107,7 @@ function E.LogsBreakdown(ctx)
 	b.PermS = math.max(num(ctx.TraitMult) - 1, 0) + num(ctx.IndexBonus and ctx.IndexBonus.Logs)
 		+ soulLvl(ctx.SoulUpgrades, "SoulBlessing") * SOUL.SoulBlessing.PerLevel + extraSum(ctx, "Logs")
 	b.Perm = 1 + E.soft(b.PermS, P.PermLogsCap)
-	b.PetS = 0
+	b.PetS = extraSum(ctx, "PetLogs")
 	for _, pet in ipairs(ctx.Pets or {}) do b.PetS += num(pet.Logs) end
 	b.Pet = 1 + E.soft(b.PetS, P.PetLogsCap)
 	b.Rebirth = 1 + E.soft(P.RebirthLogsPer * num(ctx.Rebirths), P.RebirthLogsCap)
@@ -172,19 +172,19 @@ function E.MaxLegitWalkSpeed()
 	return EC.Movement.RegularMaxWalkSpeed + EC.Movement.MobilityExtraMax
 end
 
-function E.RenewalReduction(level)
+function E.RenewalReduction(level, extra)
 	local R = EC.Renewal
-	return math.min(UPG.Renewal.PerLevel * math.clamp(math.floor(num(level)), 0, UPG.Renewal.MaxLevel), R.MaxReduction)
+	return math.min(UPG.Renewal.PerLevel * math.clamp(math.floor(num(level)), 0, UPG.Renewal.MaxLevel) + math.max(0, num(extra)), R.MaxReduction)
 end
 
 local RENEW_RARITY = {}
 for _, r in ipairs(EC.Renewal.Rarities) do RENEW_RARITY[r] = true end
 -- respawn delay of a tree felled by a player with this Renewal level
 -- (Legendary and rarer trees are never accelerated)
-function E.RenewedRespawn(respawn, rarity, level)
+function E.RenewedRespawn(respawn, rarity, level, extra)
 	respawn = num(respawn)
 	if not RENEW_RARITY[rarity] then return respawn, false end
-	local red = E.RenewalReduction(level)
+	local red = E.RenewalReduction(level, extra)
 	if red <= 0 then return respawn, false end
 	return math.max(EC.Renewal.MinRespawn, respawn * (1 - red)), true
 end

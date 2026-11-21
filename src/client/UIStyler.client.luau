@@ -121,6 +121,7 @@ layoutDocks()
 
 -- button name -> tile look
 local TILES = {
+	CharacterProgressionButton = { Side = "R", Order = 7, Icon = "✦", Label = "MASTERY", Color = Color3.fromRGB(157, 109, 220) },
 	UpgradesButton    = { Side = "L", Order = 1, Icon = "📈", Label = "UPGRADE", Color = C.Orange },
 	BladesButton      = { Side = "L", Order = 2, Icon = "⚔️", Label = "WEAPONS", Color = C.Purple },
 	IndexButton       = { Side = "L", Order = 3, Icon = "📖", Label = "INDEX", Color = C.Teal },
