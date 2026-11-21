@@ -17,7 +17,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | M7 cloud update `2026-11-21T23:19:38.431Z`. Team Create confirmed no unsaved changes. Numeric M7 version unverified. |
-| Active AI editor | None. Studio is in Edit mode. |
+| Active AI editor | Codex, owner-authorized M8 construction |
 | Last handoff author / time | Codex, M7 Social Systems. Cloud update `2026-11-21T23:19:38.431Z`. |
 | Last confirmed gameplay edit | Parties and three group encounter entry paths, 30-member guilds, profiles, titles, auras and six vault slots. Real trading and paid gifting are disabled. |
 | Current task | None claimed. M7 source, private save and essential checks are recorded. |
