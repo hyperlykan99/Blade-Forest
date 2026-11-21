@@ -16,10 +16,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Private dev M6 v60**, Team Create save confirmed. Cloud update `2026-11-21T04:41:09.178Z`. |
-| Active AI editor | None. Studio in Edit mode. |
+| Active AI editor | Codex, owner-authorized M7 construction |
 | Last handoff author / time | **Codex / 2026-11-20 PST** (M6 Deep Progression and Endgame) |
 | Last confirmed gameplay edit | Forge, Salvage, three Awakening stages, 20 runes, three raid encounters, Heart of Winter, Trial commissions and Expedition rune grants in the private v2 world. |
-| Current task | **None claimed.** M6 implementation saved and essential checks recorded. |
+| Current task | M7 social systems construction in private Studio |
 | Next action | Read the M6 results. Await owner direction before beginning M7. |
 | Code source of truth | Private dev M6 v60 and branch `m6/forging-runes-raids-endgame`, implementation `47fcd18b689cf7590d923e8dff8d37dcbb62b27a`. |
 | Documentation source of truth | GitHub `docs/` |
