@@ -78,6 +78,8 @@ local function refreshVisit(p,d)
 	end
 end
 
+local FinalState=require(script.Parent:WaitForChild("M8State"))
+
 local function act(player,operation,a,b,c)
 	local d=currentProfile(player)
 	if not d then return false,"Profile loading" end
@@ -111,6 +113,7 @@ local function act(player,operation,a,b,c)
 			local reward,why=S.Claim(d,a,st,b)
 			if not reward then return false,why end
 			Rewards.Grant(player,d,reward,a.." contract claimed",st.PriceTier)
+			FinalState.Record(d,a,1,now)
 		end
 	elseif operation=="Shop" then
 		local def=type(a)=="string" and M.Shop[a]

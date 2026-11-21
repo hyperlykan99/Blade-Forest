@@ -382,6 +382,13 @@ function E.M5Reward(unit,plan)
 	}
 end
 
+-- One-time M8 grants follow the established price-unit reward limits.
+function E.M8Reward(unit,plan)
+	local amount=E.M5Reward(unit,plan)
+	amount.Essence=math.floor(math.clamp(num(plan.Essence),0,350))
+	return amount
+end
+
 -- Index editions (H5): completion is recorded per edition and never revoked.
 -- editions = { ["Weapon/<area>/Standard/1"] = true, ... }
 --------------------------------------------------------------------

@@ -7,6 +7,7 @@
 --   Extras:InvokeServer("SawmillInfo")            -> { Rate, Cap, Today, LogsPerSoul }
 
 local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
+local FinalState=require(script.Parent:WaitForChild("M8State"))
 local SocialItems=require(script.Parent:WaitForChild("M7Items"))
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -74,6 +75,7 @@ Extras.OnServerInvoke = function(player, action, a, b)
 			local p = Config.RollPet(rng, island)
 			local before=d.Pets[p.Id] or 0
 			d.Pets[p.Id] = before + 1
+			d.M8.PetDiscoveries.Normal[p.Id]=true
 			if not Policy.LogsArePaidCurrency() then SocialItems.Credit(d,"Pet",p.Id,before,d.Pets[p.Id],true) end
 			d.Stats.PetsHatched = (d.Stats.PetsHatched or 0) + 1
 			table.insert(results, p.Id)
@@ -139,6 +141,7 @@ Extras.OnServerInvoke = function(player, action, a, b)
 		if not ok then return false, result end
 		DataService.Sync(player)
 		SocialItems.Credit(d,"Pet",a,before,d.Pets[a] or 0,false)
+		FinalState.MarkPets(d)
 		NotifyRemote:FireClient(player, "Evolution complete • " .. result.Name, "rare_Legendary")
 		return true, result.Id
 

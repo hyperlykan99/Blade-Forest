@@ -33,7 +33,7 @@ local function cosmetics(p,d,counts)
 	counts=counts or numbers(d)
 	counts.Guild=guild and D.GuildLevel(guild.XP) or 0
 	for _,c in ipairs(D.Cosmetics) do
-		if counts[c.Kind]>=c.Count then d.M7.Titles[c.Id]=true d.M7.Auras[c.Id]=true end
+		if counts[c.Kind] and counts[c.Kind]>=c.Count then d.M7.Titles[c.Id]=true d.M7.Auras[c.Id]=true end
 	end
 	local aura=d.M7.Auras[d.M7.Aura] and d.M7.Aura or ""
 	local title=d.M7.Titles[d.M7.Title] and d.M7.Title or ""
@@ -47,6 +47,7 @@ local function updateGuild(p,d,write)
 	cache[p]=g restricted[p]=issue
 	local id=g and g.Id or nil
 	d.M7.ActiveGuild=id
+	if id then d.M8.Counts.Guild=1 end
 	p:SetAttribute("M7GuildId",id)
 	p:SetAttribute("M7GuildName",g and g.Name or nil)
 	cosmetics(p,d)
@@ -156,6 +157,7 @@ local function action(p,op,a,b,c)
 		return false,"Party encounter unavailable"
 	elseif op:sub(1,5)=="Party" then
 		local okay,msg=Parties.Action(p,op,a)
+		if okay and op=="PartyAccept" then d.M8.Counts.Party=1 Data.Sync(p) end
 		if okay and op=="PartyInvite" then
 			local other=Players:GetPlayerByUserId(a)
 			if other then notice:FireClient(other,p.DisplayName.." invited you to a party. Open Social to respond.","info") end
@@ -183,6 +185,7 @@ local function action(p,op,a,b,c)
 		if b~=nil and (b~="Weapon" and b~="Pet" or type(c)~="string" or #c>64) then return false,"Select an owned item" end
 		local ok,why=Items.Move(d,a,b,c)
 		if not ok then return false,why end
+		if b then d.M8.Counts.Showcase=1 end
 	elseif op=="VaultPublic" then
 		if type(a)~="number" or a%1~=0 or a<1 or a>D.VaultSize or type(b)~="boolean" then return false,"Select a showcase slot" end
 		local item=d.M7.Vault[tostring(a)]
@@ -191,6 +194,7 @@ local function action(p,op,a,b,c)
 	elseif op=="Showcase" then
 		if (a~="Weapon" and a~="Pet") or type(b)~="string" or #b>64 or b~="" and not Items.Owns(d,a,b) then return false,"Select an owned item" end
 		d.M7[a=="Weapon" and "FavoriteWeapon" or "PetShowcase"]=b
+		if b~="" then d.M8.Counts.Showcase=1 end
 	elseif op=="Cosmetic" then
 		if type(b)~="string" or #b>32 or a~="Title" and a~="Aura" then return false,"Select an earned cosmetic" end
 		cosmetics(p,d)

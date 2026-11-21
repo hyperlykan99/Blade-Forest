@@ -76,7 +76,7 @@ local function makeDock(name, left)
 		local tile = compact and 44 or 52
 		local gap = compact and 4 or 5
 		local columns = compact and size.Y < 300 and size.X > size.Y and 4 or 3
-		local rows = math.ceil((left and 9 or 11) / columns)
+		local rows = math.ceil((left and 9 or 12) / columns)
 		local width = columns * tile + (columns - 1) * gap
 		local height = rows * tile + (rows - 1) * gap
 		local y
@@ -122,6 +122,7 @@ layoutDocks()
 -- button name -> tile look
 local TILES = {
 	M6ForgeButton = { Side = "R", Order = 10, Icon = "⚒", Label = "FORGE", Color = C.GoldDark },
+	M8SeasonButton = { Side = "R", Order = 12, Icon = "❧", Label = "SEASONS", Color = C.Leaf },
 	M7SocialButton = { Side = "R", Order = 11, Icon = "♜", Label = "SOCIAL", Color = C.Teal },
 	M5AdventuresButton = { Side = "R", Order = 9, Icon = "⟡", Label = "ADVENTURES", Color = C.Teal },
 	CharacterProgressionButton = { Side = "R", Order = 7, Icon = "✦", Label = "MASTERY", Color = Color3.fromRGB(157, 109, 220) },

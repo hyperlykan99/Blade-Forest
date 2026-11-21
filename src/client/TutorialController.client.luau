@@ -6,10 +6,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local Guide = require(ReplicatedStorage:WaitForChild("M8Design")).Guide
 local T = require(ReplicatedStorage:WaitForChild("UITheme"))
 local C = T.Color
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local Meta = Remotes:WaitForChild("Meta")
+local FieldGuide=Remotes:WaitForChild("M8Progression")
 local GetData = Remotes:WaitForChild("GetData")
 
 local player = Players.LocalPlayer
@@ -36,11 +38,11 @@ box.Parent = gui
 T.Corner(box, 7)
 T.Stroke(box, C.WoodLight, 1)
 local stepLbl = T.Label(box, {
-	Position = UDim2.fromOffset(7, 2), Size = UDim2.new(1, -61, 0, 13), Text = "",
+	Position = UDim2.fromOffset(7, 2), Size = UDim2.new(1, -56, 0, 13), Text = "",
 	TextSize = 11, TextScaled = false, TextColor3 = C.Gold, TextXAlignment = Enum.TextXAlignment.Left,
 })
 local text = T.Label(box, {
-	Position = UDim2.fromOffset(7, 16), Size = UDim2.new(1, -61, 1, -18),
+	Position = UDim2.fromOffset(7, 16), Size = UDim2.new(1, -56, 1, -18),
 	Text = "", TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left,
 })
 text:SetAttribute("NoTheme", true)
@@ -49,12 +51,16 @@ limit.MaxTextSize = 13
 limit.Parent = text
 local skip = T.Button(box, {
 	AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -4, 0.5, 0),
-	Size = UDim2.fromOffset(46, 44), Text = "SKIP", TextSize = 13, TextScaled = false,
+	Size = UDim2.fromOffset(42, 24), Text = "SKIP", TextSize = 13, TextScaled = false,
 }, C.Grey)
 local skipPadding = skip:FindFirstChildOfClass("UIPadding")
 skipPadding.PaddingLeft = UDim.new(0, 2)
 skipPadding.PaddingRight = UDim.new(0, 2)
 skip.TextWrapped = false
+skip.Position=UDim2.new(1,-4,0,15)
+local nextButton=T.Button(box,{AnchorPoint=Vector2.new(1,.5),Position=UDim2.new(1,-4,0,47),
+	Size=UDim2.fromOffset(42,24),Text="NEXT",TextSize=11,TextScaled=false},C.Teal)
+
 local gameUI = pg:WaitForChild("GameUI", math.huge)
 local rail = gameUI:WaitForChild("StatusRail")
 local feed = gameUI:WaitForChild("Toasts")
@@ -62,7 +68,7 @@ local function fitGuide()
 	local w = gui.AbsoluteSize.X
 	local narrow = w < 640
 	local guideWidth = narrow and math.min(w - 100, 246) or math.clamp(w - 450, 180, 284)
-	box.Size = UDim2.fromOffset(math.max(146, guideWidth), 54)
+	box.Size = UDim2.fromOffset(math.max(146, guideWidth), 65)
 	local y = 52
 	if narrow then
 		local statusBottom = rail.Position.Y.Offset + rail.AbsoluteSize.Y
@@ -106,40 +112,56 @@ local function findButton(name)
 	end
 end
 
-local STEPS = {
-	{ Text = "Walk into a tree - your spinning blades chop it! Follow the golden line.", Beam = true,
-		Done = function(s) local ls = player:FindFirstChild("leaderstats") return ls and ls.Logs.Value > (s.StartLogs or 0) end },
-	{ Text = "Nice! Open UPGRADE and buy your first upgrade.", Button = "UpgradesButton",
-		Done = function()
-			for _, u in ipairs(Config.Upgrades) do if (player:GetAttribute("Lvl_" .. u.Id) or 0) > 0 then return true end end
-			return false
-		end },
-	{ Text = "Press ROLL to get a new weapon. Rolling is FREE - rarer weapons are stronger!", Button = "RollButton",
-		Done = function(s) return s.Rolled end },
-	{ Text = "Tap AUTO and your avatar chops trees by itself!", Button = "AutoButton",
-		Done = function() return player:GetAttribute("AutoChop") == true end },
-	{ Text = "You're ready! Tip: AFK mode rolls and chops while you're away. Have fun!", Final = true },
+local STEPS={}
+local current=data
+local sync=Remotes:WaitForChild("DataSync").OnClientEvent:Connect(function(latest) current=latest end)
+local function firstUpgrade()
+	for _,u in ipairs(Config.Upgrades) do
+		if (player:GetAttribute("Lvl_"..u.Id) or 0)>0 then return true end
+	end
+	return false
+end
+local completed={
+	Move=function() return (current.Stats.TreesChopped or 0)>0 end,
+	Upgrade=firstUpgrade,
+	Roll=function() return (current.Rolls.Total or 0)>0 end,
+	Pets=function() return next(current.Pets)~=nil end,
+	Traits=function() return current.Trait~=nil end,
 }
-
-local state = { StartLogs = 0, Rolled = false }
-task.spawn(function()
-	local rc = player.PlayerScripts:WaitForChild("RollController", 10)
-	local ev = rc and rc:WaitForChild("RollResult", 10)
-	if ev then ev.Event:Connect(function() state.Rolled = true end) end
-end)
+for _,topic in ipairs(Guide) do
+	if not topic.Mastery or (data.Mastery and data.Mastery.Level or 1)>=topic.Mastery then
+		table.insert(STEPS,{Id=topic.Id,Text=topic.Text,Button=topic.Button,Done=completed[topic.Id],Beam=topic.Id=="Move"})
+	end
+end
+table.insert(STEPS,{Text="Explore at your pace. The Seasons menu keeps this guide and tracks your collection.",Final=true})
+local step=1
+local connection
+local okGuide,record=pcall(function() return select(2,FieldGuide:InvokeServer("Read")) end)
+if okGuide and type(record)=="table" then
+	while not STEPS[step].Final and record.Guide[STEPS[step].Id] do step+=1 end
+end
+local function advance()
+	local info=STEPS[step]
+	if not info or info.Final then return end
+	step+=1
+	task.spawn(function() pcall(FieldGuide.InvokeServer,FieldGuide,"Guide",info.Id) end)
+end
+nextButton.Activated:Connect(advance)
 
 local finished = false
 local function finish()
 	if finished then return end
 	finished = true
 	pcall(function() Meta:InvokeServer("TutorialDone") end)
+	if connection then connection:Disconnect() end
+	sync:Disconnect()
 	beam:Destroy()
+	att0:Destroy()
 	att1:Destroy()
 	gui:Destroy()
 end
 skip.Activated:Connect(finish)
 
-local step = 1
 local function nearestTree()
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
@@ -154,18 +176,21 @@ local function nearestTree()
 	return best, root
 end
 
-local ls = player:WaitForChild("leaderstats")
-state.StartLogs = ls:WaitForChild("Logs").Value
-local t0 = os.clock()
 local lastScan = 0
-RunService.RenderStepped:Connect(function()
+local started=os.clock()
+local lastStep=started
+local displayed=step
+connection=RunService.RenderStepped:Connect(function()
 	if finished then return end
 	local s = STEPS[step]
+	if step~=displayed then displayed=step lastStep=os.clock() end
+	nextButton.Visible=not s.Final
+	if os.clock()-started>600 then finish() return end
 	stepLbl.Text = s.Final and "TUTORIAL COMPLETE" or ("STEP " .. step .. " / " .. (#STEPS - 1))
 	text.Text = s.Text
 	skip.Text = s.Final and "OK" or "SKIP"
 	-- beam
-	if s.Beam then
+	if s.Beam and not player:GetAttribute("Pref_ReducedMotion") and player:GetAttribute("Pref_Graphics")~="Low" then
 		if os.clock() - lastScan > 0.5 then
 			lastScan = os.clock()
 			local tree, root = nearestTree()
@@ -184,12 +209,12 @@ RunService.RenderStepped:Connect(function()
 		arrow.Visible = true
 		local p, sz = btn.AbsolutePosition, btn.AbsoluteSize
 		p -= gui.AbsolutePosition
-		local bob = math.sin(os.clock() * 6) * 3
+		local bob = player:GetAttribute("Pref_ReducedMotion") and 0 or math.sin(os.clock() * 6) * 3
 		arrow.Position = UDim2.fromOffset(p.X + sz.X / 2, p.Y - 4 + bob)
 	else
 		arrow.Visible = false
 	end
-	if s.Done and s.Done(state) then
-		step += 1
+	if s.Done and os.clock()-lastStep>3 and s.Done() then
+		advance()
 	end
 end)

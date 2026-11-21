@@ -1,0 +1,142 @@
+{
+  "method": "Bounded reward overlay anchored to M6 and the M2 late-game median price unit",
+  "inputs": {
+    "new-free-active": {
+      "play_days": 3,
+      "hours": 1.0,
+      "trees": 140,
+      "daily": 1,
+      "weekly": 0,
+      "trials": 0,
+      "boss": 0,
+      "depth": 0
+    },
+    "free-active": {
+      "play_days": 4,
+      "hours": 1.5,
+      "trees": 350,
+      "daily": 2,
+      "weekly": 1,
+      "trials": 1,
+      "boss": 1,
+      "depth": 0
+    },
+    "paid-active": {
+      "play_days": 4,
+      "hours": 1.5,
+      "trees": 560,
+      "daily": 2,
+      "weekly": 1,
+      "trials": 1,
+      "boss": 1,
+      "depth": 1
+    },
+    "unattended-afk": {
+      "play_days": 6,
+      "hours": 4,
+      "trees": 1800,
+      "daily": 0,
+      "weekly": 0,
+      "trials": 0,
+      "boss": 0,
+      "depth": 0
+    }
+  },
+  "runs": {
+    "new-free-active": {
+      "week_levels": [
+        0,
+        1,
+        3,
+        3,
+        4,
+        5,
+        7,
+        8
+      ],
+      "completion": null,
+      "reachable_reward_total": {
+        "Logs": 1.35,
+        "Souls": 42.0,
+        "Essence": 125.0,
+        "XP": 740.0
+      }
+    },
+    "free-active": {
+      "week_levels": [
+        3,
+        7,
+        11,
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "completion": {
+        "week": 4,
+        "play_day_in_week": 1,
+        "play_hours": 19.5
+      },
+      "reachable_reward_total": {
+        "Logs": 2.35,
+        "Souls": 78.0,
+        "Essence": 395.0,
+        "XP": 1590.0
+      },
+      "gross_season_logs_at_late_unit": 258500000,
+      "portion_of_m5_200h_logs_pct": 0.0259
+    },
+    "paid-active": {
+      "week_levels": [
+        3,
+        7,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "completion": {
+        "week": 3,
+        "play_day_in_week": 4,
+        "play_hours": 18.0
+      },
+      "reachable_reward_total": {
+        "Logs": 2.35,
+        "Souls": 78.0,
+        "Essence": 395.0,
+        "XP": 1590.0
+      },
+      "gross_season_logs_at_late_unit": 282000000,
+      "portion_of_m5_200h_logs_pct": 0.0117
+    },
+    "unattended-afk": {
+      "week_levels": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        5,
+        6,
+        7
+      ],
+      "completion": null,
+      "reachable_reward_total": {
+        "Logs": 0.7,
+        "Souls": 22.0,
+        "Essence": 125.0,
+        "XP": 515.0
+      }
+    }
+  },
+  "collection": {
+    "weapon_target": 119,
+    "forms_target": 63,
+    "tree_discoveries": 28,
+    "buying_required": false,
+    "estimated_full_completion": null
+  }
+}

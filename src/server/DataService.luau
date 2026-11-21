@@ -46,6 +46,7 @@ local writers = {}   -- [player] = ProfileWriter (M0.1: one serialized writer pe
 local lost = {}      -- [player] = true once another session took the profile
 local Analytics      -- optional, set via DataService.SetAnalytics
 
+local FinalState=require(script.Parent:WaitForChild("M8State"))
 local SocialItems=require(script.Parent:WaitForChild("M7Items"))
 local TradeJournal=require(script.Parent:WaitForChild("M7Journal"))
 local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
@@ -96,6 +97,7 @@ local DEFAULT = {
 	-- v4 (M0) additions; see SaveMigrations
 	WeaponItems = {}, -- M6 references an awakened representative without consuming the stack
 	M7=SocialItems.Default,
+	M8=FinalState.Default,
 	M6={
 		Schema=1,ItemByWeapon={},Materials={},Runes={},Acquired={},Keys=0,Revision=0,TrialBest=0,
 		RaidSlots={},BossClears={},HeartWeek=-1,Daily={Key=-1,ChopCount={},ChopGrants={},Salvage=0,Raids=0,Heart=0},
@@ -161,7 +163,7 @@ end
 function DataService.Snapshot(data)
 	local snap = {}
 	for k, v in pairs(data) do
-		if k ~= "M7" and k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" and k ~= "_WriteSeq" then
+		if k ~= "M8" and k ~= "M7" and k ~= "Purchases" and k ~= "_Meta" and k ~= "_Session" and k ~= "_NoSave" and k ~= "Analytics" and k ~= "_WriteSeq" then
 			snap[k] = deepCopy(v)
 		end
 	end
@@ -897,7 +899,9 @@ local function prepare(data)
 	end
 	if type(data.M6)~="table" then data.M6=nil end
 	if type(data.M7)~="table" then data.M7=nil end
+	if type(data.M8)~="table" then data.M8=nil end
 	reconcile(data, DEFAULT)
+	FinalState.MarkPets(data)
 	local weekly = type(data.M5.Weekly) == "table" and data.M5.Weekly
 	data.M6.TrialBest = math.max(tonumber(data.M6.TrialBest) or 0, tonumber(weekly and weekly.Trial) or 0)
 	if type(data.TechTree.Nodes) ~= "table" then data.TechTree.Nodes = {} end

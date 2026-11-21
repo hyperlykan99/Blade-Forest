@@ -1167,6 +1167,7 @@ for _, w in ipairs(W) do
 end
 
 -- how a weapon is obtained (Gallery text)
+local M8= require(script.Parent:WaitForChild("M8Design"))
 function Config.AcquireText(w)
 	if not w then return "" end
 	if w.SoulCost then return "Soul Shop: " .. Config.FormatNumber(w.SoulCost) .. " Souls" end
@@ -1174,6 +1175,7 @@ function Config.AcquireText(w)
 	if w.Exclusive then return "Starter Pack exclusive" end
 	local isl = Config.IslandById[w.Island]
 	local t = "Roll at the " .. (isl and isl.Name or w.Island) .. " altar (or any later island's)"
+	if M8.WeaponRoutes[w.Id] then t ..= "  •  or " .. M8.WeaponRoutes[w.Id] end
 	if Config.AttunementWeapon[w.Id] then
 		t = t .. "  •  or Divine Attunement: " .. Config.FormatNumber(EC.Essence.AttuneCost) .. " Altar Essence"
 	end

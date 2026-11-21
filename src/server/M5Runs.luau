@@ -3,6 +3,7 @@ local Players=game:GetService("Players")
 local ReplicatedStorage=game:GetService("ReplicatedStorage")
 local Storage=game:GetService("ServerStorage")
 local M=require(ReplicatedStorage:WaitForChild("M5Design"))
+local FinalState=require(script.Parent:WaitForChild("M8State"))
 local Guilds=require(script.Parent:WaitForChild("M7Guilds"))
 local M6Inventory=require(ReplicatedStorage:WaitForChild("M6Inventory"))
 local C=require(ReplicatedStorage:WaitForChild("BladeConfig"))
@@ -136,6 +137,7 @@ local function finish(job,p,reason,returnPlayer)
 		local budget=State.Budget(d,now)
 		local rank=M.TrialRank(job.Tier,job.Score)
 		d.M5.TrialFinishes+=1
+		if rank>0 and job.Score>0 then FinalState.Record(d,"Trials",1,now) end
 		local tokens=math.min(M.Trial.Tokens[rank] or 0,math.max(0,M.Trial.TokenCap-budget.Tokens))
 		budget.Tokens+=tokens
 		d.M5.Tokens+=tokens
@@ -181,6 +183,7 @@ local function depthComplete(job)
 		member.BoardDirty=member.BoardDirty or frontier
 		if frontier and budget.DepthClaims<M.Expedition.RewardClaimsPerDay then
 			budget.DepthClaims+=1
+			FinalState.Record(d,"Depths",1,now)
 			local reward=M.DepthReward(job.Depth)
 			reward.Material=M.Expedition.Material
 			if job.Depth%3==0 then

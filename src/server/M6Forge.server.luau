@@ -68,6 +68,9 @@ local function execute(p,op,id,arg,revision)
 	elseif op=="Reroll" then ok,result=Rules.Reroll(d,id,rng)
 	else return false,"Unknown Forge action" end
 	if not ok then return false,result end
+	if op=="Recipe" or op=="Awaken" or op=="CreateRune" then
+		d.M8.Counts.Crafts=(d.M8.Counts.Crafts or 0)+1
+	end
 	d.M6.Revision+=1
 	Data.RefreshM6(p)
 	local anchor=anchors[p:GetAttribute("CurrentIsland")]

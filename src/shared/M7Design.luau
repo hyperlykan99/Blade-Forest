@@ -18,6 +18,9 @@ S.Cosmetics={
 	{Id="GuildBanner",Title="Banner Keeper",Aura="Guild Pennant",Kind="Guild",Count=3,Color=Color3.fromRGB(255,225,147)},
 	{Id="SeasonedGuild",Title="Forest Standard",Aura="Astral Standard",Kind="Guild",Count=7,Color=Color3.fromRGB(185,169,255)},
 }
+for _,cosmetic in ipairs(require(script.Parent:WaitForChild("M8Design")).Cosmetics) do
+	table.insert(S.Cosmetics,cosmetic)
+end
 S.CosmeticById={}
 for _,c in ipairs(S.Cosmetics) do S.CosmeticById[c.Id]=c end
 function S.Week(now)
