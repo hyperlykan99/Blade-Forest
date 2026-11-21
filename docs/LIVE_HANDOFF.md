@@ -14,10 +14,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Private dev v52**, confirmed by Studio Team Create. Open Cloud update `2026-11-21T02:47:44.314Z`. |
-| Active AI editor | **None** (M4 saved and editor released) |
+| Active AI editor | **Codex** (owner-authorized M5 construction) |
 | Last handoff author / time | **Codex / 2026-11-20 PST** (M4 World Construction) |
 | Last confirmed gameplay edit | Private dev v52 has both replacement islands, the Crystal annex, three progression boss integrations and the reversible world switch. |
-| Current task | **None claimed.** M4 construction and essential checks are complete. |
+| Current task | M5 gameplay-loop construction on private dev only. |
 | Next action | Review the v52 M4 results. Begin M5 only on a new owner instruction. |
 | Code source of truth | Private dev v52 and Git branch `m4/complete-world-construction`. The implementation SHA is `2f50bfbf340b8cd104a083f6c7db308da526158a`. |
 | Documentation source of truth | GitHub `docs/` |
@@ -81,7 +81,7 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | None (released) |
+| AI | Codex |
 | Started (date/time/timezone) | — |
 | Task / owner approval | Owner-authorized M4 world construction and private save complete. |
 | Studio place ID and saved version checked | Dev `103379930563763` / `10777797608`, Edit mode, **saved v52**, startup flag `v2`. |
