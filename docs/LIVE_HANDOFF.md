@@ -15,7 +15,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **Private dev M5 saved state**, cloud update `2026-11-21T03:15:54.138Z`. Team Create reported no unsaved changes. Numeric M5 save version unverified. Last confirmed numbered baseline **v52**. |
-| Active AI editor | **None** (M5 saved and editor released) |
+| Active AI editor | Codex (owner-authorized M6 construction) |
 | Last handoff author / time | **Codex / 2026-11-20 PST** (M5 Gameplay Loop) |
 | Last confirmed gameplay edit | Private dev v2 with 30 story steps, UTC Contracts, isolated Trials, playable Frostbound Expeditions and three regional events. |
 | Current task | **None claimed.** M5 construction and essential checks are complete. |
@@ -82,7 +82,7 @@
 
 | Item | Entry |
 | --- | --- |
-| AI | None (released) |
+| AI | Codex |
 | Started (date/time/timezone) | — |
 | Task / owner approval | Owner-authorized M5 gameplay loop and private save complete. |
 | Studio place ID and saved version checked | Private dev `103379930563763` / `10777797608`, Edit mode, v2. Cloud timestamp `2026-11-21T03:15:54.138Z`. Numeric save version unverified. |
