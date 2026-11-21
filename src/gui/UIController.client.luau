@@ -157,6 +157,9 @@ local function fmt(u, level)
 		-- spin is capped for comfort; extra levels become damage
 		return string.format("max spin +%d%% dmg", math.floor((v / Config.MaxSpinSpeed - 1) * 100 + 0.5))
 	end
+	-- M1: Lucky Charm adds to the permanent luck pool; Forest Renewal shows its regrow cut
+	if u.Id == "Luck" then return string.format(u.Format, v - 1) end
+	if u.Id == "Renewal" then return string.format(u.Format, math.floor(v * 100 + 0.5)) end
 	return string.format(u.Format, v)
 end
 
@@ -393,12 +396,12 @@ refresh = function()
 		local u = Config.ById[id]
 		local level = Config.GetLevel(player, id)
 		if level >= u.MaxLevel then
-			card.Info.Text = "MAX • " .. fmt(u, level)
+			card.Info.Text = string.format("MAX %d/%d • %s", level, u.MaxLevel, fmt(u, level))
 			card.BuyButton.Text = "MAXED"
 			card.BuyButton.BackgroundColor3 = GOLD
 		else
 			local cost = Config.GetCost(id, level)
-			card.Info.Text = string.format("Lv %d • %s → %s", level, fmt(u, level), fmt(u, level + 1))
+			card.Info.Text = string.format("Lv %d/%d • %s → %s", level, u.MaxLevel, fmt(u, level), fmt(u, level + 1))
 			card.BuyButton.Text = Config.FormatNumber(cost) .. " Logs"
 			card.BuyButton.BackgroundColor3 = coins >= cost and GREEN or GREY
 		end

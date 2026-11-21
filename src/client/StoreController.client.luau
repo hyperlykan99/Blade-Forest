@@ -199,7 +199,7 @@ refresh = function()
 		r.Frame.Visible = visible
 		local id = r.Kind == "Pass" and item.PassId or item.ProductId
 		if item.PackMult then
-			r.Desc.Text = "+" .. Config.FormatNumber(Config.GetLogPackAmount(item.Id, myData and myData.BestArea)) .. " Logs (grows with your area)"
+			r.Desc.Text = "+" .. Config.FormatNumber(Config.GetLogPackAmount(item.Id, player)) .. " Logs (grows with your area)"
 		end
 		if r.Kind == "Pass" and player:GetAttribute("Pass_" .. item.Id) then
 			r.Buy.Text = "OWNED"

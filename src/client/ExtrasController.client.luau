@@ -117,7 +117,7 @@ end
 
 local function refreshPets()
 	if not myData or not pPanel.Visible then return end
-	local cost = Config.GetEggCost(myData.BestArea)
+	local cost = Config.GetEggCost(player) -- M1: progression tier (server sets PriceUnit)
 	hatchInfo.Text = string.format("🥚 Pet Egg: %s Logs each  •  you have %s", Config.FormatNumber(cost), Config.FormatNumber(myData.Logs or 0))
 	local eq = myData.EquippedPets or {}
 	local maxP = Config.MaxPetsEquipped + (player:GetAttribute("Pass_VIP") and 1 or 0)
@@ -218,7 +218,7 @@ local function refreshAch()
 		local shown = a.Stat == "Rarest" and (prog >= a.Goal and "done" or Config.FormatOneIn(math.max(prog, 1))) or (Config.FormatNumber(math.min(prog, a.Goal)) .. " / " .. Config.FormatNumber(a.Goal))
 		T.Label(row, { Position = UDim2.fromOffset(10, 32), Size = UDim2.new(0.62, 0, 0, 22), Text = a.Desc .. "  •  " .. shown, TextColor3 = C.WoodLight, TextXAlignment = Enum.TextXAlignment.Left })
 		local b = T.Button(row, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Size = UDim2.new(0.36, 0, 0, 44),
-			Text = claimed and "CLAIMED" or ("🎁 " .. Config.RewardText(a.Reward, myData.BestArea)) }, claimed and C.Grey or (done and C.Gold or C.WoodDark))
+			Text = claimed and "CLAIMED" or ("🎁 " .. Config.RewardText(a.Reward, player)) }, claimed and C.Grey or (done and C.Gold or C.WoodDark))
 		if done and not claimed then
 			b.Activated:Connect(function()
 				local ok, msg = call("ClaimAchievement", a.Id)

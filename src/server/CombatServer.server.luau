@@ -8,6 +8,7 @@ local DataStoreService = game:GetService("DataStoreService")
 local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local Economy = require(ReplicatedStorage:WaitForChild("Economy")) -- M1
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local ShopAction = Remotes.ShopAction
 local HitsRemote = Remotes.Hits
@@ -29,6 +30,8 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local Progress = require(script.Parent:WaitForChild("Progress"))
 -- M0.1 (H1): server-side movement sanity before any blade hit is credited
 local guard = require(script.Parent:WaitForChild("MovementGuard")).shared
+local Telemetry = require(script.Parent:WaitForChild("EconomyTelemetry")) -- M1.7
+local BossRules = require(script.Parent:WaitForChild("BossRules"))
 local violationLog = {} -- [player] = os.clock() of the last warning (throttle)
 guard.onViolation = function(player, dist, allowed, dt)
 	if typeof(player) ~= "Instance" then return end
@@ -107,12 +110,38 @@ local function growIn(new)
 	new:ScaleTo(final)
 end
 
-local function respawnLater(model)
+-- M1.4 Forest Renewal: a tree felled by a player with the upgrade regrows sooner
+-- (Common..Epic only, -2%/level, max -40%). Personal: only trees THAT player fells.
+-- Server-wide token bucket caps accelerated regrowths (TreeKit rebuild CPU), so 20
+-- players with max Renewal cannot flood the server; when empty the normal timer applies.
+-- Legendary, Mythic and Secret trees always use their full respawn time.
+local RENEW = Config.Economy.Renewal
+local renewTokens, renewLast = RENEW.ServerBudgetPerSecond * 2, os.clock()
+local function takeRenewToken()
+	local now = os.clock()
+	renewTokens = math.min(RENEW.ServerBudgetPerSecond * 2, renewTokens + (now - renewLast) * RENEW.ServerBudgetPerSecond)
+	renewLast = now
+	if renewTokens >= 1 then renewTokens -= 1 return true end
+	return false
+end
+
+local function respawnDelay(model, killer)
+	local base = model:GetAttribute("Respawn") or 10
+	if not killer then return base end
+	local level = Config.GetLevel(killer, "Renewal")
+	local renewed, accelerated = Economy.RenewedRespawn(base, model:GetAttribute("Rarity"), level)
+	if not accelerated then return base end
+	local ok = takeRenewToken()
+	Telemetry.Renewal(ok)
+	return ok and renewed or base
+end
+
+local function respawnLater(model, killer)
 	if model:GetAttribute("IsTree") then
 		-- trees regrow on the same spot with a freshly rolled rarity
 		local spot = model:GetPivot()
 		local area = model:GetAttribute("Area") or Config.GetAreaAt(spot.Position)
-		task.delay(model:GetAttribute("Respawn") or 10, function()
+		task.delay(respawnDelay(model, killer), function()
 			local new = TreeKit.BuildRandom(area, spot)
 			local rar = new:GetAttribute("Rarity")
 			local mut = new:GetAttribute("Mutation")
@@ -240,6 +269,7 @@ local lastAttacker = setmetatable({}, { __mode = "k" }) -- [humanoid] = {player,
 local function onCharacter(player, char)
 	guard:Reset(player) -- respawn: new baseline, never a violation
 	local hum = char:WaitForChild("Humanoid")
+	DataService.ApplyMovement(player) -- M1.3: server-authoritative Walk Speed on every spawn
 	-- debris chunks pass through players
 	for _, d in ipairs(char:GetDescendants()) do
 		if d:IsA("BasePart") then d.CollisionGroup = "Characters" end
@@ -292,18 +322,31 @@ local function killNPC(model, killer, pos)
 	if model:GetAttribute("Dead") then return end
 	model:SetAttribute("Dead", true)
 	if model:GetAttribute("IsBoss") then
+		-- M1: every eligible fighter (>= 2% of the damage or the top hitter) gets a
+		-- tier-scaled reward (EconomyConfig.Bosses.BladeKing): co-op friendly, and the
+		-- kill counts for the Crystal Wilds gate. One-touch players get nothing.
 		local shares = damageShare[model] or {}
 		local total = 0
-		for _, d in pairs(shares) do total += d end
+		for p, d in pairs(shares) do if p.Parent then total += d end end
+		local top, topD = nil, -1
+		for p, d in pairs(shares) do if p.Parent and d > topD then top, topD = p, d end end
 		for p, d in pairs(shares) do
 			if p.Parent then
-				local amt = math.max(100, math.floor(Config.BossRewardPool * d / math.max(total, 1)))
-				local souls = math.max(5, math.floor(Config.BossSoulPool * d / math.max(total, 1)))
-				addCoins(p, amt, pos)
-				DataService.AddSouls(p, souls, pos)
-				Progress.Add(p, "Boss", 1)
-				Progress.Add(p, "NPCs", 1)
-				NotifyRemote:FireClient(p, string.format("Blade King defeated! +%s logs  +%d Souls", Config.FormatNumber(amt), souls), "boss")
+				local share = d / math.max(total, 1)
+				if share >= BossRules.MIN_SHARE or p == top then
+					local rw = Economy.BossReward("BladeKing", DataService.PriceUnit(p), share, p == top, p:GetAttribute("LogMultBase"))
+					-- raw: boss Logs are already tier-scaled, no multiplier on top
+					local amt = DataService.AddCoins(p, rw.Logs, pos, true) or rw.Logs
+					DataService.AddSouls(p, rw.Souls, pos)
+					DataService.AddBossKill(p, "BladeKing")
+					Telemetry.Logs(p, amt, "boss")
+					Telemetry.Souls(p, rw.Souls)
+					Progress.Add(p, "Boss", 1)
+					Progress.Add(p, "NPCs", 1)
+					NotifyRemote:FireClient(p, string.format("Blade King defeated! +%s logs  +%d Souls", Config.FormatNumber(amt), rw.Souls), "boss")
+				else
+					NotifyRemote:FireClient(p, "Blade King defeated - deal at least 2% of the damage to earn a reward", "info")
+				end
 			end
 		end
 		NotifyRemote:FireAllClients("The Blade King has fallen!", "boss")
@@ -385,6 +428,12 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 	if attackerPlayer then
 		-- trees: logs fly into the player (client shows the +N), so no floating text here
 		earned = addCoins(attackerPlayer, target:GetAttribute("Reward") or 1, not target:GetAttribute("IsTree") and hitPos or nil) or 0
+		if target:GetAttribute("IsTree") then
+			Telemetry.Logs(attackerPlayer, earned, "chop")
+			Telemetry.Tree(attackerPlayer)
+		else
+			Telemetry.Logs(attackerPlayer, earned, "other")
+		end
 		if not target:GetAttribute("IsTree") then
 			DataService.AddSouls(attackerPlayer, soulsFor(target:GetAttribute("Kind")), hitPos + Vector3.new(0, 2, 0))
 			Progress.Add(attackerPlayer, "NPCs", 1)
@@ -417,7 +466,7 @@ local function applyDamage(attacker, target, damage, hitPos, weak)
 	end
 	shatter(target, hitPos, info)
 	if target.Parent == Breakables then
-		respawnLater(target)
+		respawnLater(target, target:GetAttribute("IsTree") and attackerPlayer or nil)
 	end
 	target:Destroy()
 end
@@ -549,6 +598,7 @@ RunService.Heartbeat:Connect(function(dt)
 	acc += dt
 	if acc < TICK then return end
 	acc = 0
+	local tick0 = os.clock()
 	local now = workspace:GetServerTimeNow()
 
 	-- filters: players hit everything; NPCs only hit player characters
@@ -584,4 +634,5 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 
 	flushHits()
+	Telemetry.Heartbeat((os.clock() - tick0) * 1000) -- M1.7 server resource usage
 end)

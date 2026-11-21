@@ -17,6 +17,8 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local Policy = require(script.Parent:WaitForChild("PaidRandomPolicy")) -- M0-D server-side eligibility
 local Progress = require(script.Parent:WaitForChild("Progress"))
 local BossRules = require(script.Parent:WaitForChild("BossRules")) -- M0.1 (M5)
+local Economy = require(ReplicatedStorage:WaitForChild("Economy")) -- M1
+local Telemetry = require(script.Parent:WaitForChild("EconomyTelemetry")) -- M1.7
 
 local Extras = Remotes:FindFirstChild("Extras") or Instance.new("RemoteFunction")
 Extras.Name = "Extras"
@@ -57,7 +59,7 @@ Extras.OnServerInvoke = function(player, action, a)
 		local n = (a == 3) and 3 or 1
 		local allowed, msg = Policy.CheckCurrencySpend(player, "PetEgg_Logs")
 		if not allowed then return false, msg end
-		local cost = Config.GetEggCost(d.BestArea) * n
+		local cost = Config.GetEggCost(player) * n -- M1: progression tier
 		if not DataService.SpendCoins(player, cost) then return false, "Need " .. Config.FormatNumber(cost) .. " Logs" end
 		local results = {}
 		for _ = 1, n do
@@ -119,7 +121,7 @@ Extras.OnServerInvoke = function(player, action, a)
 			SecondsLeft = 3600 - os.time() % 3600,
 			Cap = Config.Sawmill.DailyCap,
 			Today = d.Sawmill.Souls,
-			LogsPerSoul = Config.GetTraitCrateCost(d.BestArea) * Config.Sawmill.LogsPerSoul,
+			LogsPerSoul = Config.GetPriceUnit(player) * Config.Sawmill.LogsPerSoul,
 		}
 
 	elseif action == "SawmillSell" then
@@ -129,7 +131,7 @@ Extras.OnServerInvoke = function(player, action, a)
 		local left = Config.Sawmill.DailyCap - d.Sawmill.Souls
 		if left <= 0 then return false, "Sawmill is closed for you today - come back tomorrow!" end
 		local rate = Config.SawmillRate(hourKey())
-		local logsPerSoul = Config.GetTraitCrateCost(d.BestArea) * Config.Sawmill.LogsPerSoul / rate
+		local logsPerSoul = Config.GetPriceUnit(player) * Config.Sawmill.LogsPerSoul / rate
 		local souls = math.min(left, math.floor(d.Logs * frac / logsPerSoul))
 		if souls < 1 then return false, "Need " .. Config.FormatNumber(logsPerSoul) .. " Logs for 1 Soul" end
 		local cost = math.ceil(souls * logsPerSoul)
@@ -250,14 +252,19 @@ down.Event:Connect(function(m)
 		local d = p and DataService.Get(p)
 		if d then
 			local share = r[2] / math.max(total, 1)
-			local souls = math.floor(WB.Souls + (WB.TopSouls - WB.Souls) * share)
+			-- M1: tier-scaled reward (EconomyConfig.Bosses.Treant) for every eligible chopper
+			local rw = Economy.BossReward("Treant", DataService.PriceUnit(p), share, i == 1, p:GetAttribute("LogMultBase"))
+			local souls = rw.Souls
 			DataService.AddSouls(p, souls)
-			DataService.AddCoins(p, Config.GetTraitCrateCost(d.BestArea) * WB.LogsMult, nil, true)
-			d.FreeCrates = (d.FreeCrates or 0) + WB.Crates + (i == 1 and 1 or 0)
+			local logs = DataService.AddCoins(p, rw.Logs, nil, true)
+			Telemetry.Logs(p, logs, "boss")
+			Telemetry.Souls(p, souls)
+			DataService.AddBossKill(p, "Treant")
+			d.FreeCrates = (d.FreeCrates or 0) + rw.Crates
 			d.Stats.Treants = (d.Stats.Treants or 0) + 1
 			DataService.Sync(p)
-			NotifyRemote:FireClient(p, string.format("🌳 Treant chopped! #%d (%d%% damage): +%d Souls, +%d Trait Crate%s, +Logs",
-				i, math.floor(share * 100 + 0.5), souls, WB.Crates + (i == 1 and 1 or 0), (i == 1) and "s" or ""), "boss")
+			NotifyRemote:FireClient(p, string.format("🌳 Treant chopped! #%d (%d%% damage): +%d Souls, +%d Trait Crate%s, +%s Logs",
+				i, math.floor(share * 100 + 0.5), souls, rw.Crates, rw.Crates > 1 and "s" or "", Config.FormatNumber(logs)), "boss")
 			achievementReady(p)
 		end
 	end

@@ -214,7 +214,7 @@ local function refresh()
 	lockBtn.Text = locked and "🔒 Locked" or "Lock"
 	lockBtn.BackgroundColor3 = locked and Color3.fromRGB(200, 150, 40) or Color3.fromRGB(80, 75, 95)
 	for id, rs in pairs(traitRows) do rs.Thickness = (t and t.Id == id) and 3 or 0 end
-	local cost = Config.GetTraitCrateCost(myData and myData.BestArea)
+	local cost = Config.GetTraitCrateCost(player) -- M1: progression tier
 	local free = myData and myData.FreeCrates or 0
 	if free > 0 then
 		logBtn.Text = string.format("FREE Crate  (%d left)", free)

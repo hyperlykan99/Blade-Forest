@@ -108,7 +108,7 @@ TraitAction.OnServerInvoke = function(player, action, arg)
 		else
 			local allowed, msg = Policy.CheckCurrencySpend(player, "TraitCrate_Logs")
 			if not allowed then return false, msg end
-			local cost = Config.GetTraitCrateCost(d.BestArea)
+			local cost = Config.GetTraitCrateCost(player) -- M1: progression tier
 			if not DataService.SpendCoins(player, cost) then
 				return false, string.format("Need %s Logs", Config.FormatNumber(cost))
 			end

@@ -100,7 +100,7 @@ function P.Grant(player, rw, why)
 	local d = DataService.Get(player)
 	if not d or not rw then return end
 	if rw.Kind == "Logs" then
-		DataService.AddCoins(player, Config.GetTraitCrateCost(d.BestArea) * rw.Mult, nil, true)
+		DataService.AddCoins(player, Config.GetPriceUnit(player) * rw.Mult, nil, true) -- M1: progression price unit
 	elseif rw.Kind == "Souls" then
 		DataService.AddSouls(player, rw.Amount)
 	elseif rw.Kind == "Crate" then
@@ -109,7 +109,7 @@ function P.Grant(player, rw, why)
 		DataService.AddBoost(player, rw.Boost, rw.Seconds)
 	end
 	DataService.Sync(player)
-	NotifyRemote:FireClient(player, (why and (why .. ": ") or "") .. "+" .. Config.RewardText(rw, d.BestArea), "rare_Epic")
+	NotifyRemote:FireClient(player, (why and (why .. ": ") or "") .. "+" .. Config.RewardText(rw, player), "rare_Epic")
 end
 
 return P

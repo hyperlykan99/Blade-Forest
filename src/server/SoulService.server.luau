@@ -20,6 +20,20 @@ SoulShop.OnServerInvoke = function(player, itemId)
 	if item.Kind == "Soon" then return false, "Coming soon!" end
 	if item.Kind == "OpenTraits" then return false, "Open it at the Trait Crate" end
 	if item.Kind == "Weapon" and d.Weapons[item.Weapon] then return false, "Already owned" end
+	if item.Kind == "SoulUpgrade" then
+		-- M1: permanent Soul upgrade, next level
+		d.SoulUpgrades = d.SoulUpgrades or {}
+		local lv = d.SoulUpgrades[item.Upgrade] or 0
+		if lv >= item.MaxLevel then return false, "MAXED" end
+		local cost = Config.GetSoulUpgradeCost(item.Upgrade, lv)
+		if (d.Souls or 0) < cost then return false, string.format("Need %d more Souls", cost - (d.Souls or 0)) end
+		if not DataService.SpendSouls(player, cost) then return false, "Not enough Souls" end
+		d.SoulUpgrades[item.Upgrade] = lv + 1
+		DataService.RecalcMultipliers(player)
+		NotifyRemote:FireClient(player, string.format("%s level %d/%d!", item.Name, lv + 1, item.MaxLevel), "rare_Epic")
+		DataService.Sync(player)
+		return true
+	end
 	if (d.Souls or 0) < item.Cost then
 		return false, string.format("Need %d more Souls", item.Cost - (d.Souls or 0))
 	end

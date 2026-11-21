@@ -8,6 +8,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local Economy = require(ReplicatedStorage:WaitForChild("Economy")) -- M1: exact altar odds
 local T = require(ReplicatedStorage:WaitForChild("UITheme"))
 local C = T.Color
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -56,7 +57,10 @@ for i, a in ipairs(Config.Areas) do
 end
 
 -- row 3: progress + completion reward
-local header = T.Label(body, { Position = UDim2.fromOffset(12, 108), Size = UDim2.new(1, -24, 0, 22), Text = "", TextXAlignment = Enum.TextXAlignment.Left })
+local header = T.Label(body, { Position = UDim2.fromOffset(12, 108), Size = UDim2.new(1, -270, 0, 22), Text = "", TextXAlignment = Enum.TextXAlignment.Left })
+-- M1.5: which island altar your rolls use (click to switch between unlocked islands)
+local altarButton = T.Button(body, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 106), Size = UDim2.fromOffset(250, 26), Text = "" }, C.Teal)
+local RollRemote = Remotes:WaitForChild("Roll")
 local bonusLabel = T.Label(body, { Position = UDim2.fromOffset(12, 131), Size = UDim2.new(1, -24, 0, 18), Text = "", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = C.WoodLight })
 
 local grid = new("ScrollingFrame", { Position = UDim2.fromOffset(8, 154), Size = UDim2.new(1, -16, 1, -162), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -70,6 +74,19 @@ new("UIPadding", { PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 8) }
 --------------------------------------------------------------------
 local cards = { Weapon = {}, Tree = {} }
 local myData
+local function unlockedIslands()
+	local list = {}
+	for _, id in ipairs(Config.Economy.IslandOrder) do
+		if id == Config.HomeIsland or (myData and myData.UnlockedIslands and myData.UnlockedIslands[id]) then table.insert(list, id) end
+	end
+	return list
+end
+local function currentAltar()
+	local list = unlockedIslands()
+	local chosen = myData and myData.Settings and myData.Settings.Altar
+	if chosen and table.find(list, chosen) then return chosen end
+	return list[#list] or Config.HomeIsland
+end
 local mode = "Weapon"
 local currentArea = Config.Areas[1].Id
 local refresh
@@ -91,7 +108,7 @@ end
 
 local function rewardText(kind, rarity)
 	local rw = (kind == "Weapon" and Config.IndexRewards or Config.TreeIndexRewards)[rarity]
-	return rw and Config.RewardText(rw, myData and myData.BestArea) or ""
+	return rw and Config.RewardText(rw, player) or ""
 end
 
 local function makeCard(kind, def)
@@ -200,7 +217,13 @@ end
 refresh = function()
 	updateBadge()
 	if not panel.Visible then return end
-	local luck = (player:GetAttribute("LuckMult") or 1) * (workspace:GetAttribute("EventLuck") or 1)
+	local luck = player:GetAttribute("LuckMult") or 1 -- M1: already includes events (strongest temp only)
+	-- M1.5: exact odds of ONE roll at your altar (same pool + luck the server uses)
+	local altar = currentAltar()
+	local oddsById = {}
+	for _, o in ipairs((Economy.AltarOdds(altar, luck))) do oddsById[o.Weapon.Id] = o.P end
+	local isl = Config.IslandById[altar]
+	altarButton.Text = string.format("🛕 Altar: %s  (luck x%s) ▸", isl and isl.Name or altar, tostring(luck))
 	local found, count, ready = 0, 0, 0
 	for _, c in pairs(cards[mode == "Weapon" and "Tree" or "Weapon"]) do c.Frame.Visible = false end
 
@@ -223,8 +246,15 @@ refresh = function()
 				if def.Exclusive then
 					c.Line1.Text = def.SoulCost and "Soul Shop exclusive" or "Starter Pack exclusive"
 				else
-					local eff = Config.EffectiveOneIn(def, luck)
-					c.Line1.Text = Config.FormatOneIn(def.OneIn or 2) .. ((eff < (def.OneIn or 2) * 0.99) and ("  (you: " .. Config.FormatOneIn(eff):gsub("1 in ", "") .. ")") or "")
+					local pr = oddsById[def.Id]
+					if pr and pr > 0 then
+						local you = 1 / pr
+						c.Line1.Text = Config.FormatOneIn(def.OneIn or 2) .. ((you < (def.OneIn or 2) * 0.99) and ("  (you: " .. Config.FormatOneIn(you):gsub("1 in ", "") .. ")") or "")
+					else
+						local from = Config.AreaIsland[def.Area]
+						local fi = from and Config.IslandById[from]
+						c.Line1.Text = "🛕 " .. (fi and fi.Name or "?") .. " altar"
+					end
 				end
 			else
 				c.Line1.Text = "⚡ " .. Config.FormatNumber(def.Strength) .. "  •  +" .. Config.FormatNumber(def.Logs) .. " logs"
@@ -267,7 +297,23 @@ refresh = function()
 	header.Text = string.format("%s  —  %d / %d %s found%s", area.Name, found, count, mode == "Weapon" and "weapons" or "trees",
 		ready > 0 and ("  •  " .. ready .. " to claim!") or "")
 	if mode == "Weapon" then
-		bonusLabel.Text = string.format("Complete it: +%d%% Luck, +%d%% Logs forever  %s", Config.IndexBonus.Luck * 100, Config.IndexBonus.Logs * 100, complete and "✔ UNLOCKED" or "🔒")
+		-- M1 (H5): editions - each part is recorded once and kept forever
+		local ed = (myData and myData.IndexEditions) or {}
+		local def1 = Config.IndexEditions.Weapon[currentArea] and Config.IndexEditions.Weapon[currentArea][1]
+		local I = Config.Economy.Index
+		local parts = {}
+		if def1 and def1.Standard then
+			local full = def1.StandardBonusFull
+			table.insert(parts, string.format("Set: +%d%% Luck, +%d%% Logs %s",
+				(I.WeaponStandard.Luck + (full and I.WeaponMastery.Luck or 0)) * 100, (I.WeaponStandard.Logs + (full and I.WeaponMastery.Logs or 0)) * 100,
+				ed["Weapon/" .. currentArea .. "/Standard/1"] and "✔" or "🔒"))
+		end
+		if def1 and def1.Mastery then
+			table.insert(parts, string.format("Mastery (Secret): +%d%% / +%d%% %s", I.WeaponMastery.Luck * 100, I.WeaponMastery.Logs * 100,
+				ed["Weapon/" .. currentArea .. "/Mastery/1"] and "✔" or "🔒"))
+		end
+		bonusLabel.Text = "Forever: " .. table.concat(parts, "   •   ")
+		complete = def1 ~= nil and (not def1.Standard or ed["Weapon/" .. currentArea .. "/Standard/1"]) and (not def1.Mastery or ed["Weapon/" .. currentArea .. "/Mastery/1"]) and true or false
 	else
 		local muts = {}
 		for _, m in ipairs(Config.Mutations) do
@@ -291,6 +337,19 @@ local function redrawSoon()
 	task.delay(0.4, redrawModels)
 	task.delay(1.5, redrawModels)
 end
+
+altarButton.Activated:Connect(function()
+	local list = unlockedIslands()
+	local cur = currentAltar()
+	local i = table.find(list, cur) or #list
+	local nextId = list[i % #list + 1]
+	local ok, res = pcall(function() return RollRemote:InvokeServer("SetAltar", nextId) end)
+	if ok and res and myData then
+		myData.Settings = myData.Settings or {}
+		myData.Settings.Altar = nextId
+	end
+	refresh()
+end)
 
 for id, b in pairs(areaButtons) do
 	b.Activated:Connect(function()

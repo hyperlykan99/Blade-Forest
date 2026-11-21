@@ -274,7 +274,7 @@ local function refreshGifts()
 		f.Parent = days
 		T.Corner(f, 8)
 		T.Label(f, { Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 0.4, 0), Text = "DAY " .. i }, true)
-		T.Label(f, { Position = UDim2.new(0, 2, 0.42, 0), Size = UDim2.new(1, -4, 0.55, 0), Text = Config.RewardText(rw, d.BestArea), TextWrapped = true })
+		T.Label(f, { Position = UDim2.new(0, 2, 0.42, 0), Size = UDim2.new(1, -4, 0.55, 0), Text = Config.RewardText(rw, player), TextWrapped = true })
 	end
 	local b = T.Button(h, { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -8), Size = UDim2.new(0.6, 0, 0, 40),
 		Text = canClaim and "CLAIM DAY " .. nextStreak or "COME BACK TOMORROW" }, canClaim and C.Leaf or C.Grey)
@@ -290,7 +290,7 @@ local function refreshGifts()
 	T.Label(ph, { Size = UDim2.fromScale(1, 1), Text = "PLAYTIME GIFTS  (this visit)", TextColor3 = C.Gold }, true)
 	for i, g in ipairs(Config.PlaytimeGifts) do
 		local r = row(gList, 2 + i, 52)
-		T.Label(r, { Position = UDim2.fromOffset(12, 8), Size = UDim2.new(0.55, 0, 1, -16), Text = Config.RewardText(g, d.BestArea), TextXAlignment = Enum.TextXAlignment.Left })
+		T.Label(r, { Position = UDim2.fromOffset(12, 8), Size = UDim2.new(0.55, 0, 1, -16), Text = Config.RewardText(g, player), TextXAlignment = Enum.TextXAlignment.Left })
 		local left = g.Minutes * 60 - elapsed
 		local txt, col = "CLAIM", C.Leaf
 		if claimed[i] then txt, col = "CLAIMED", C.Grey
@@ -364,7 +364,7 @@ local function refreshRebirth()
 	if not rPanel.Visible then return end
 	clear(rBody)
 	local n = (myData and myData.Rebirths) or 0
-	local cost = Config.GetRebirthCost(n)
+	local cost = Config.GetRebirthCost(n, player) -- M1: tier-scaled
 	local logs = (myData and myData.Logs) or 0
 	local R = Config.Rebirth
 	T.Label(rBody, { Position = UDim2.fromOffset(16, 14), Size = UDim2.new(1, -32, 0, 40), Text = "REBIRTHS: " .. n, TextColor3 = C.Gold }, true)
@@ -495,7 +495,7 @@ RunService.Heartbeat:Connect(function(dt)
 	acc = 0
 	giftsBtn:SetAttribute("Badge", player:GetAttribute("GiftReady") == true)
 	questsBtn:SetAttribute("Badge", player:GetAttribute("QuestReady") == true)
-	local canRebirth = myData and myData.Logs and myData.Logs >= Config.GetRebirthCost(myData.Rebirths or 0)
+	local canRebirth = myData and myData.Logs and myData.Logs >= Config.GetRebirthCost(myData.Rebirths or 0, player)
 	rebirthBtn:SetAttribute("Badge", canRebirth == true)
 	-- event banner
 	local id = workspace:GetAttribute("EventId")

@@ -2,6 +2,9 @@
 -- Shared by server (damage/rolls) and client (visuals/UI) so they always agree.
 
 local Config = {}
+-- M1: every economy number comes from EconomyConfig (generated from tools/econsim/economy_params.json)
+local EC = require(script.Parent:WaitForChild("EconomyConfig"))
+Config.Economy = EC
 
 --------------------------------------------------------------------
 -- World
@@ -127,6 +130,13 @@ Config.TreeTypes = {
 	Frost_Secret      = { Area = "FrostPeaks",    Rarity = "Secret", Name = "Ancient Frost Giant", Strength = 45000, Health = 5500000, Logs = 4000000, Respawn = 240, Weight = 0.1 },
 }
 for id, t in pairs(Config.TreeTypes) do t.Id = id end
+-- M1: one Logs ladder for every area: Logs = area base x rarity step (EconomyConfig.TreeLadder).
+-- Crystal Canyon / Frost Peaks values are unchanged within 1%; Starter Grove and Pine Forest
+-- rare trees no longer pay 2-5x more per rarity step than every other area.
+for _, t in pairs(Config.TreeTypes) do
+	local base, step = EC.TreeBaseLogs[t.Area], EC.TreeLadder[t.Rarity]
+	if base and step then t.Logs = math.floor(base * step + 0.5) end
+end
 
 --------------------------------------------------------------------
 -- Tree MUTATIONS: any tree can spawn mutated (rolled on every spawn).
@@ -326,8 +336,8 @@ end
 
 Config.Pity = { Epic = 100, Legendary = 1000 }
 
--- Altar positions (one per area). The server only lets you roll an area's
--- altar while standing near it.
+-- LEGACY (unused since rolls became free/HUD-based; M1 altars are per island in
+-- EconomyConfig.Altars and Economy.AltarPool). Kept so nothing indexes nil.
 Config.Altars = {
 	StarterGrove = Vector3.new(-19, 0, -19),
 	PineForest = Vector3.new(-150, 0, 16),
@@ -371,14 +381,13 @@ end
 --------------------------------------------------------------------
 -- Long progression: the last levels need Crystal Canyon / Frost Peaks income
 -- (and rebirths). Reach also makes the blades physically bigger (BladeSizePerReach).
-Config.Upgrades = {
-	-- max 6 blades from upgrades (+1 with the Blade Slot pass) - more was too busy on screen
-	{ Id = "Blades", Name = "+1 Blade",        Base = 1,   PerLevel = 1,    MaxLevel = 5,   BaseCost = 100, CostMult = 18,   Format = "%d blades" },
-	{ Id = "Speed",  Name = "Faster Spin",     Base = 3,   PerLevel = 0.15, MaxLevel = 50,  BaseCost = 30,  CostMult = 1.28, Format = "%.2f spin" },
-	{ Id = "Damage", Name = "Sharper Blades",  Base = 1,   PerLevel = 0.1,  MaxLevel = 100, BaseCost = 40,  CostMult = 1.15, Format = "x%.1f damage" },
-	{ Id = "Reach",  Name = "Longer Reach",    Base = 4,   PerLevel = 0.2,  MaxLevel = 40,  BaseCost = 60,  CostMult = 1.3,  Format = "%.1f studs" },
-	{ Id = "Luck",   Name = "Lucky Charm",     Base = 1,   PerLevel = 0.05, MaxLevel = 100, BaseCost = 150, CostMult = 1.16, Format = "x%.2f luck" },
-}
+-- M1: upgrades come from EconomyConfig (Blades, Speed, Damage, Reach, Luck, WalkSpeed, Renewal).
+-- Every regular upgrade resets on rebirth. Values: Base + PerLevel * level.
+Config.Upgrades = {}
+for _, u in ipairs(EC.Upgrades) do
+	table.insert(Config.Upgrades, { Id = u.Id, Name = u.Name, Base = u.Base, PerLevel = u.PerLevel, MaxLevel = u.MaxLevel,
+		BaseCost = u.BaseCost, CostMult = u.CostMult, Format = u.Format, Resets = u.Resets, Category = u.Category })
+end
 Config.BladeSizePerReach = 0.025 -- each Reach level = +2.5% blade length & size (x2 at max)
 -- Comfort cap: blades never spin faster than this (radians/sec, ~0.9 turns/sec)
 -- so nobody gets dizzy. Spin levels past the cap turn into extra damage instead.
@@ -387,8 +396,22 @@ Config.MaxSpinSpeed = 5.5
 --------------------------------------------------------------------
 -- Multipliers
 --------------------------------------------------------------------
--- Completing an area's Index gives a permanent bonus (stacks per area)
-Config.IndexBonus = { Luck = 0.10, Logs = 0.10 }
+-- Completing an area's Index gives a permanent bonus (stacks per area).
+-- M1 (audit H5/M9): completion is stored per EDITION and never revoked. Edition 1 of each
+-- area is the catalog below. Standard = Common..Mythic, Mastery = Secret + Divine.
+-- New weapons in M2 open edition 2; edition 1 records keep their bonus forever.
+Config.IndexBonus = { Luck = EC.Index.WeaponStandard.Luck + EC.Index.WeaponMastery.Luck, Logs = EC.Index.WeaponStandard.Logs + EC.Index.WeaponMastery.Logs }
+Config.IndexEditions = {
+	Weapon = {
+		StarterGrove = { [1] = { Standard = { "Wooden", "LumberHatchet", "WoodsmanAxe", "FarmhandScythe", "RustySickle", "Iron", "EngravedAxe", "WillowScythe", "BoneScythe", "RoninKatana", "Golden", "EmberHatchet", "RedcliffAxe", "Bloodthorn" }, Mastery = { "Starbreaker" } } },
+		PineForest = { [1] = { Standard = { "Emerald", "BloodvineScythe", "SilverLabrys", "Frost", "WarlordAxe", "CrimsonCrescent", "Inferno", "VenomfangAxe", "SoulfireScythe" }, Mastery = { "StarfallReaper" } } },
+		CrystalCanyon = { [1] = { Standard = { "GlacierFang", "BonewhiteReaper", "SunsteelSword", "Void", "Umbraxe", "ShadowKatana", "MagmaHook" }, Mastery = { "Galaxy", "Celestial", "PrismSaber" } } },
+		-- Frost Peaks has only its 4 Divines: they ARE its standard set (keeps the old +10%/+10% for completers)
+		FrostPeaks = { [1] = { Standard = { "GlacialEdge", "Dragonflame", "SeraphsLight", "FrostboundReaper" }, StandardBonusFull = true } },
+	},
+	-- tree index edition 1 = every tree type of the area as of M1
+	Tree = { StarterGrove = { [1] = true }, PineForest = { [1] = true }, CrystalCanyon = { [1] = true }, FrostPeaks = { [1] = true } },
+}
 -- Completing an area's TREE index: +5% Logs forever (stacks per area)
 Config.TreeIndexBonus = { Logs = 0.05 }
 
@@ -517,6 +540,9 @@ end
 
 function Config.FormatNumber(n)
 	n = math.floor(n)
+	if n >= 1e18 then return string.format("%.1fQi", n / 1e18) end
+	if n >= 1e15 then return string.format("%.1fQa", n / 1e15) end
+	if n >= 1e12 then return string.format("%.1fT", n / 1e12) end
 	if n >= 1e9 then return string.format("%.1fB", n / 1e9) end
 	if n >= 1e6 then return string.format("%.1fM", n / 1e6) end
 	if n >= 1e4 then return string.format("%.1fK", n / 1e3) end
@@ -564,6 +590,18 @@ Config.SoulShop = {
 	{ Id = "SoulHarvester",  Kind = "Weapon", Weapon = "SoulHarvester" },
 	{ Id = "ForsakenAxe",    Kind = "Weapon", Weapon = "ForsakenAxe" },
 }
+-- M1: permanent Soul upgrades (Souls sink; they feed the capped Logs / Luck pools and
+-- are never reset by rebirth). Cost = BaseCost x CostMult^level (EconomyConfig.SoulUpgrades).
+for _, su in ipairs(EC.SoulUpgrades) do
+	table.insert(Config.SoulShop, { Id = su.Id, Name = su.Name, Desc = su.Desc, Cost = su.BaseCost, Kind = "SoulUpgrade",
+		Upgrade = su.Id, MaxLevel = su.MaxLevel })
+end
+function Config.GetSoulUpgradeCost(id, level)
+	for _, su in ipairs(EC.SoulUpgrades) do
+		if su.Id == id then return math.floor(su.BaseCost * su.CostMult ^ (level or 0)) end
+	end
+	return math.huge
+end
 Config.SoulShopById = {}
 for i, item in ipairs(Config.SoulShop) do
 	item.Order = i
@@ -592,11 +630,21 @@ for i, t in ipairs(Config.Traits) do
 	t.Order = i
 	Config.TraitById[t.Id] = t
 end
--- Logs crate price grows with the best area you've reached
+-- LEGACY (pre-M1) crate prices by BestArea; kept only so old callers still get a number.
 Config.TraitCrateCost = { StarterGrove = 750, PineForest = 25000, CrystalCanyon = 600000, FrostPeaks = 8000000 }
 Config.SoulCrateCost = 150
-function Config.GetTraitCrateCost(bestArea)
-	return Config.TraitCrateCost[bestArea or "StarterGrove"] or Config.TraitCrateCost.StarterGrove
+-- M1: prices follow the player's PROGRESSION TIER (Economy.PriceTier), not BestArea.
+-- `who` = a price unit (number), a Player (reads the server-set "PriceUnit" attribute)
+-- or, for old callers only, a legacy area id.
+function Config.GetPriceUnit(who)
+	if type(who) == "number" then return who end
+	if typeof(who) == "Instance" and who:IsA("Player") then
+		return who:GetAttribute("PriceUnit") or EC.PriceTiers[1].Unit
+	end
+	return Config.TraitCrateCost[who or "StarterGrove"] or Config.TraitCrateCost.StarterGrove
+end
+function Config.GetTraitCrateCost(who)
+	return math.floor(Config.GetPriceUnit(who) * EC.Prices.TraitCrate)
 end
 -- odds table for a crate: { {trait, chancePercent}, ... }
 function Config.GetTraitOdds(crate, lucky)
@@ -645,10 +693,10 @@ for i, p in ipairs(Config.DevProducts) do
 end
 Config.StarterPackBonus = { Weapon = "FoundersEdge", Crates = 3, Boost = "StarterLuck", Seconds = 1800 }
 Config.VIPDailyCrateHours = 20
--- Log packs scale with the Trait Crate price of your best area
-function Config.GetLogPackAmount(productId, bestArea)
+-- Log packs scale with the player's progression price unit (M1)
+function Config.GetLogPackAmount(productId, who)
 	local p = Config.ProductById[productId]
-	return math.floor(Config.GetTraitCrateCost(bestArea) * (p and p.PackMult or 1))
+	return math.floor(Config.GetPriceUnit(who) * (p and p.PackMult or 1))
 end
 --------------------------------------------------------------------
 -- Rolling helpers (shared by server roll + client odds display)
@@ -659,10 +707,11 @@ for _, w in ipairs(Config.Weapons) do
 end
 table.sort(Config.RollPool, function(a, b) return a.OneIn > b.OneIn end) -- rarest first
 
--- luck only boosts weapons rarer than 1 in 10 (commons stay common)
+-- luck only boosts weapons rarer than 1 in 10 (commons stay common).
+-- M1: rarer tiers feel luck less: OneIn / luck ^ gamma(rarity) (EconomyConfig.LuckGamma)
 function Config.EffectiveOneIn(w, luck)
-	if w.OneIn <= 10 then return w.OneIn end
-	return math.max(w.OneIn / math.max(luck or 1, 1), 1)
+	if w.OneIn <= EC.LuckMinOneIn then return w.OneIn end
+	return math.max(w.OneIn / math.max(luck or 1, 1) ^ (EC.LuckGamma[w.Rarity] or 1), 1)
 end
 
 function Config.RollWeapon(rng, luck)
@@ -681,9 +730,12 @@ end
 --------------------------------------------------------------------
 -- REBIRTH: reset Logs + upgrades for permanent +25% Logs, +10% Luck each
 --------------------------------------------------------------------
-Config.Rebirth = { LogsPer = 0.25, LuckPer = 0.10, BaseCost = 1000000, CostMult = 3 }
-function Config.GetRebirthCost(n)
-	return math.floor(Config.Rebirth.BaseCost * Config.Rebirth.CostMult ^ (n or 0))
+-- M1: rebirth Logs bonus tapers (Economy: 1 + soft(0.25 n, 3)); luck +0.10 per rebirth into the
+-- permanent luck pool. Cost = max(MinCost, Units x Growth^n x price unit) so it tracks the tier.
+Config.Rebirth = { LogsPer = EC.Pools.RebirthLogsPer, LuckPer = EC.Rebirth.LuckPer }
+function Config.GetRebirthCost(n, who)
+	local R = EC.Rebirth
+	return math.max(R.MinCost, math.floor(R.Units * R.Growth ^ (n or 0) * Config.GetPriceUnit(who or EC.PriceTiers[2].Unit)))
 end
 
 --------------------------------------------------------------------
@@ -746,11 +798,7 @@ Config.WeeklyQuests = {
 --------------------------------------------------------------------
 -- CODES (type in Settings). Case-insensitive. Add new ones here.
 --------------------------------------------------------------------
-Config.Codes = {
-	RELEASE = { Souls = 100, Crates = 1 },
-	BLADES = { Boost = "LuckPotion", Seconds = 1800 },
-	TIMBER = { LogsMult = 10 },
-}
+Config.Codes = EC.Codes -- M1: fixed amounts (audit L10), never scaled by area
 
 --------------------------------------------------------------------
 -- PETS (ReplicatedStorage.PetModels, Creator Store models). Hatched from
@@ -768,8 +816,8 @@ Config.Pets = {
 Config.PetById = {}
 for i, p in ipairs(Config.Pets) do p.Order = i Config.PetById[p.Id] = p end
 Config.MaxPetsEquipped = 3 -- VIP gets +1
-Config.PetEggMult = 1.5    -- egg price = Trait Crate price of your best area x this
-function Config.GetEggCost(bestArea) return math.floor(Config.GetTraitCrateCost(bestArea) * Config.PetEggMult) end
+Config.PetEggMult = EC.Prices.PetEgg -- egg price = progression price unit x this (M1)
+function Config.GetEggCost(who) return math.floor(Config.GetPriceUnit(who) * Config.PetEggMult) end
 function Config.RollPet(rng)
 	local total = 0
 	for _, p in ipairs(Config.Pets) do total += p.Weight end
@@ -785,7 +833,7 @@ end
 -- SAWMILL (Log Market): trade Logs for Souls. The rate changes every hour.
 --------------------------------------------------------------------
 Config.Sawmill = {
-	LogsPerSoul = 0.35,   -- x Trait Crate price of your best area = Logs for 1 Soul at rate 1.0
+	LogsPerSoul = EC.Prices.SawmillLogsPerSoul, -- x progression price unit = Logs for 1 Soul at rate 1.0 (M1)
 	RateMin = 0.6, RateMax = 1.6, -- hourly market rate (higher = more Souls)
 	DailyCap = 200,       -- max Souls per day from the sawmill
 }
@@ -856,8 +904,8 @@ function Config.AchievementProgress(d, stat)
 end
 
 -- describe a reward for UI
-function Config.RewardText(rw, bestArea)
-	if rw.Kind == "Logs" then return Config.FormatNumber(Config.GetTraitCrateCost(bestArea) * rw.Mult) .. " Logs" end
+function Config.RewardText(rw, who)
+	if rw.Kind == "Logs" then return Config.FormatNumber(Config.GetPriceUnit(who) * rw.Mult) .. " Logs" end
 	if rw.Kind == "Souls" then return rw.Amount .. " Souls" end
 	if rw.Kind == "Crate" then return rw.Amount .. " Trait Crate" .. (rw.Amount > 1 and "s" or "") end
 	if rw.Kind == "Boost" then return (rw.Label or rw.Boost) .. " " .. math.floor(rw.Seconds / 60) .. "m" end
@@ -894,10 +942,14 @@ function Config.GetIslandAt(pos)
 	return nil
 end
 
--- P1a unlock rule = the legacy area gate (no new economy gates yet)
+-- M1: island gates are staged (EconomyConfig.Gates: Power + requirements, Economy.GateStatus)
 function Config.GetIslandRequiredPower(isl)
+	local g = isl and EC.Gates[isl.Id]
+	if g then return g.Power end
 	local a = isl and isl.LegacyArea and Config.AreaById[isl.LegacyArea]
 	return a and a.RequiredPower or 0
 end
+-- legacy areas on the Timber Haven map that belong to a later island's gate
+Config.AreaIsland = EC.AreaIsland
 
 return Config

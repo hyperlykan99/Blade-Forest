@@ -252,3 +252,15 @@ if resume then
 		setAFK(true)
 	end)
 end
+
+-- M1.7: report AFK / Auto Chop state for economy STATISTICS only (never affects rewards)
+task.spawn(function()
+	local remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ClientState", 30)
+	if not remote then return end
+	local lastSent
+	while true do
+		local afk = player:GetAttribute("AFKMode") == true or player:GetAttribute("AutoChop") == true
+		if afk ~= lastSent then remote:FireServer(afk) lastSent = afk end
+		task.wait(30)
+	end
+end)

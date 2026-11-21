@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local Economy = require(ReplicatedStorage:WaitForChild("Economy")) -- M1: every economy formula
 local SessionStore = require(script.Parent:WaitForChild("SessionStore"))
 local SaveMigrations = require(script.Parent:WaitForChild("SaveMigrations"))
 local ProfileWriter = require(script.Parent:WaitForChild("ProfileWriter")) -- M0.1 serialized, sequence-fenced saves
@@ -95,6 +96,13 @@ local DEFAULT = {
 	Collections = {}, -- reserved for later collectible systems
 	-- M0.1 (H6): playtime-gift visit kept across server hops (see PlaytimeGifts)
 	Playtime = { Seconds = 0, Claimed = {}, LastSeen = 0, Day = 0, Visits = 0 },
+	-- M1 (additive; absent = default, so v4 saves load unchanged)
+	IndexEditions = {}, -- ["Weapon/<area>/Standard|Mastery/<ed>"] / ["Tree/<area>/All/<ed>"] = true, never removed
+	SoulUpgrades = {}, -- [soulUpgradeId] = level (permanent, Souls)
+	BossKills = {}, -- [bossId] = kills (gate requirements)
+	AltarRolls = {}, -- [islandId] = rolls at that altar since its progression guarantee was last used
+	AltarGuarantee = {}, -- [islandId] = true once the island's progression guarantee was granted
+	EconomyVersion = 0, -- 1 once the M1 economy notice was shown
 	_Meta = { Applied = { ["4"] = true } },
 }
 
@@ -154,92 +162,160 @@ GetData.OnServerInvoke = function(player)
 end
 
 --------------------------------------------------------------------
--- Multipliers (luck + coins). Recalculated whenever a source changes.
---   Luck  = Lucky Charm upgrade x potions x 2x Luck pass x (1 + index bonus)
---   Coins = trait x 2x Coins pass x VIP x coin boost x (1 + index bonus)
--- Pass/trait parts read attributes that later steps set.
+-- Multipliers (M1): ONE central formula in ReplicatedStorage.Economy.
+--   Logs  = (1+soft(perm,6)) x (1+soft(pets,3)) x (1+soft(0.25 n,3)) x passes x strongest temp
+--   Luck  = min(50, (1+soft(S_luck,4)) x 2x Luck pass x strongest temp)
+-- Attributes: LogMult (incl. temp, what a chop pays now), LogMultBase (no temp),
+-- LuckMult (incl. temp/events, what the next normal roll uses), PriceTier/PriceUnit,
+-- BestPower, WalkSpeedStat. Recalculated whenever a source changes (and on events).
 --------------------------------------------------------------------
 local NotifyRemote = Remotes:WaitForChild("Notify")
 
-local function areaComplete(d, areaId)
-	for _, w in ipairs(Config.Weapons) do
-		if w.Area == areaId and not w.Exclusive and not d.Weapons[w.Id] then return false end
-	end
-	return true
+local function owned(d, id)
+	return d.Weapons[id] ~= nil
 end
+
+-- record newly completed index editions (sticky: a record is never removed, so adding
+-- content later can never take a bonus away - audit H5)
+local function updateIndexEditions(player, d)
+	d.IndexEditions = d.IndexEditions or {}
+	local ed = d.IndexEditions
+	local changed = false
+	for area, eds in pairs(Config.IndexEditions.Weapon) do
+		for n, def in pairs(eds) do
+			for _, part in ipairs({ "Standard", "Mastery" }) do
+				local list = def[part]
+				local key = "Weapon/" .. area .. "/" .. part .. "/" .. n
+				if list and #list > 0 and not ed[key] then
+					local all = true
+					for _, id in ipairs(list) do if not owned(d, id) then all = false break end end
+					if all then
+						ed[key] = true
+						changed = true
+						local a = Config.AreaById[area]
+						if player then
+							NotifyRemote:FireClient(player, string.format("📖 %s %s Index complete! Permanent bonus unlocked", a and a.Name or area,
+								part == "Mastery" and "Mastery" or "Weapon"), "boss")
+						end
+					end
+				end
+			end
+		end
+		-- legacy flag for old UI
+		local std = ed["Weapon/" .. area .. "/Standard/1"]
+		local mas = ed["Weapon/" .. area .. "/Mastery/1"] or not (Config.IndexEditions.Weapon[area][1].Mastery)
+		if std and mas and not d.IndexDone[area] then d.IndexDone[area] = true end
+	end
+	for area, eds in pairs(Config.IndexEditions.Tree) do
+		for n in pairs(eds) do
+			local key = "Tree/" .. area .. "/All/" .. n
+			if not ed[key] then
+				local all = true
+				for id, tt in pairs(Config.TreeTypes) do
+					if tt.Area == area and not (d.Trees and d.Trees[id]) then all = false break end
+				end
+				if all then
+					ed[key] = true
+					changed = true
+					d.TreeIndexDone[area] = true
+					local a = Config.AreaById[area]
+					if player then
+						NotifyRemote:FireClient(player, string.format("🌳 %s Tree Index complete! +%d%% Logs forever", a and a.Name or area,
+							Config.Economy.Index.Tree.Logs * 100), "boss")
+					end
+				end
+			end
+		end
+	end
+	return changed
+end
+DataService.UpdateIndexEditions = updateIndexEditions
+
+-- best Power of any owned weapon (the progression measure; equip choice does not matter)
+function DataService.BestPower(d)
+	local best = 0
+	for id, entry in pairs(d.Weapons) do
+		if Config.WeaponById[id] then
+			best = math.max(best, Config.GetWeaponPower(id, entry.Star or 0, entry.Shiny))
+		end
+	end
+	return best
+end
+
+-- economy context for Economy.* from a profile + live player state
+function DataService.EconomyContext(player, d)
+	local passes = {}
+	for _, gp in ipairs(Config.GamePasses) do
+		if player and player:GetAttribute("Pass_" .. gp.Id) then passes[gp.Id] = true end
+	end
+	local pets = {}
+	for _, id in ipairs(d.EquippedPets or {}) do
+		local pd = Config.PetById[id]
+		if pd then table.insert(pets, pd) end
+	end
+	return {
+		Levels = d.Levels, SoulUpgrades = d.SoulUpgrades, Rebirths = d.Rebirths or 0,
+		TraitMult = player and player:GetAttribute("TraitMult") or 1, Pets = pets, Passes = passes,
+		InGroup = player and player:GetAttribute("InGroup") == true, Boosts = d.Boosts, Now = os.time(),
+		EventLogs = workspace:GetAttribute("EventLogs") or 1, EventLuck = workspace:GetAttribute("EventLuck") or 1,
+		PvP = player and player:GetAttribute("PvP") == true,
+		IndexBonus = Economy.IndexBonus(d.IndexEditions), Extra = {},
+	}
+end
+
+local function round2(x) return math.floor(x * 100 + 0.5) / 100 end
 
 function DataService.RecalcMultipliers(player)
 	local d = profiles[player]
 	if not d then return end
-	local now = os.time()
-
-	-- index completion
-	local done = 0
-	for _, a in ipairs(Config.Areas) do
-		if areaComplete(d, a.Id) then
-			done += 1
-			if not d.IndexDone[a.Id] then
-				d.IndexDone[a.Id] = true
-				NotifyRemote:FireClient(player, string.format("📖 %s Index complete! +%d%% Luck, +%d%% Logs forever", a.Name,
-					Config.IndexBonus.Luck * 100, (Config.IndexBonus.Logs or 0) * 100), "boss")
-			end
-		end
-	end
-
-	-- tree index completion (+Logs per area)
-	local treeDone = 0
-	for _, a in ipairs(Config.Areas) do
-		local all = true
-		for id, tt in pairs(Config.TreeTypes) do
-			if tt.Area == a.Id and not (d.Trees and d.Trees[id]) then all = false break end
-		end
-		if all then
-			treeDone += 1
-			if not d.TreeIndexDone[a.Id] then
-				d.TreeIndexDone[a.Id] = true
-				NotifyRemote:FireClient(player, string.format("🌳 %s Tree Index complete! +%d%% Logs forever", a.Name,
-					Config.TreeIndexBonus.Logs * 100), "boss")
-			end
-		end
-	end
-
-	local luck = Config.GetValue("Luck", d.Levels.Luck or 0)
-	local coins = 1
-	for id, expires in pairs(d.Boosts) do
-		local b = Config.Boosts[id]
-		if b and expires > now then
-			luck *= b.Luck or 1
-			coins *= b.Logs or 1
-		end
-	end
-	if player:GetAttribute("Pass_2xLuck") then luck *= 2 end
-	if player:GetAttribute("Pass_2xLogs") then coins *= 2 end
-	if player:GetAttribute("Pass_VIP") then coins *= 1.1 end
-	coins *= player:GetAttribute("TraitMult") or 1
-	-- rebirths: +25% Logs and +10% Luck each
-	coins *= 1 + Config.Rebirth.LogsPer * (d.Rebirths or 0)
-	luck *= 1 + Config.Rebirth.LuckPer * (d.Rebirths or 0)
-	if player:GetAttribute("InGroup") then luck *= Config.GroupLuck end
-	if player:GetAttribute("PvP") then coins *= Config.PvP.LogMult end
-	-- pets: bonuses add up, then multiply
-	local petLogs, petLuck, names = 0, 0, {}
-	for _, id in ipairs(d.EquippedPets or {}) do
-		local p = Config.PetById[id]
-		if p then
-			petLogs += p.Logs
-			petLuck += p.Luck
-			table.insert(names, id)
-		end
-	end
-	coins *= 1 + petLogs
-	luck *= 1 + petLuck
+	updateIndexEditions(player, d)
+	local ctx = DataService.EconomyContext(player, d)
+	local logs = Economy.LogsBreakdown(ctx)
+	local luck = Economy.LuckBreakdown(ctx)
+	local names = {}
+	for _, id in ipairs(d.EquippedPets or {}) do if Config.PetById[id] then table.insert(names, id) end end
 	player:SetAttribute("Pets", table.concat(names, ",")) -- clients draw the pets from this
-	luck *= 1 + done * Config.IndexBonus.Luck
-	coins *= 1 + done * (Config.IndexBonus.Logs or 0)
-	coins *= 1 + treeDone * Config.TreeIndexBonus.Logs
+	player:SetAttribute("LogMult", round2(logs.Total))
+	player:SetAttribute("LogMultBase", round2(logs.Base))
+	player:SetAttribute("LogTemp", round2(logs.Temp))
+	player:SetAttribute("LuckMult", round2(luck.Total))
+	player:SetAttribute("LuckTemp", round2(luck.Temp))
+	-- progression price tier (audit M4: not BestArea)
+	local best = DataService.BestPower(d)
+	local tier = Economy.PriceTier(best, d.UnlockedIslands)
+	player:SetAttribute("BestPower", math.floor(best))
+	local isl = {}
+	for id, on in pairs(d.UnlockedIslands or {}) do if on then table.insert(isl, id) end end
+	table.sort(isl)
+	player:SetAttribute("UnlockedIslands", table.concat(isl, ","))
+	player:SetAttribute("PriceTier", tier.Tier)
+	player:SetAttribute("PriceUnit", tier.Unit)
+	DataService.ApplyMovement(player)
+end
 
-	player:SetAttribute("LuckMult", math.floor(luck * 100 + 0.5) / 100)
-	player:SetAttribute("LogMult", math.floor(coins * 100 + 0.5) / 100)
+-- recompute every loaded player (luck events, server-wide changes)
+function DataService.RecalcAll()
+	for player in pairs(profiles) do
+		if player.Parent then pcall(DataService.RecalcMultipliers, player) end
+	end
+end
+workspace:GetAttributeChangedSignal("EventLogs"):Connect(DataService.RecalcAll)
+workspace:GetAttributeChangedSignal("EventLuck"):Connect(DataService.RecalcAll)
+
+-- M1.3: server-authoritative walk speed (Walk Speed upgrade + future capped mobility).
+-- Set on the server Humanoid, so MovementGuard and replication both use it.
+function DataService.ApplyMovement(player)
+	local d = profiles[player]
+	if not d then return end
+	local speed = Economy.WalkSpeed(d.Levels, 0)
+	player:SetAttribute("WalkSpeedStat", speed)
+	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if hum and hum.WalkSpeed ~= speed then hum.WalkSpeed = speed end
+end
+
+-- price unit of this player's progression tier (prices and Logs rewards)
+function DataService.PriceUnit(player)
+	return player:GetAttribute("PriceUnit") or Config.Economy.PriceTiers[1].Unit
 end
 
 -- Add (or extend) a timed boost
@@ -277,6 +353,7 @@ end)
 --------------------------------------------------------------------
 -- Coins
 --------------------------------------------------------------------
+-- M1: LogMult already includes the strongest temporary source (event / Log Boost / PvP)
 function DataService.GetCoinMultiplier(player)
 	return player:GetAttribute("LogMult") or 1
 end
@@ -285,7 +362,7 @@ function DataService.AddCoins(player, amount, pos, raw)
 	local d = profiles[player]
 	local ls = player:FindFirstChild("leaderstats")
 	if not d or not ls or amount <= 0 then return 0 end
-	if not raw then amount *= DataService.GetCoinMultiplier(player) * (workspace:GetAttribute("EventLogs") or 1) end
+	if not raw then amount *= DataService.GetCoinMultiplier(player) end
 	amount = math.floor(amount)
 	d.Logs += amount
 	d.Stats.LogsEarned += amount
@@ -553,7 +630,54 @@ function DataService.SetLevel(player, upgradeId, level)
 	if not d then return end
 	d.Levels[upgradeId] = level
 	player:SetAttribute("Lvl_" .. upgradeId, level)
-	DataService.RecalcMultipliers(player)
+	DataService.RecalcMultipliers(player) -- also re-applies the server WalkSpeed
+end
+
+-- M1.6: inputs for Economy.GateStatus
+function DataService.GateContext(d)
+	return { BestPower = DataService.BestPower(d), BossKills = d.BossKills or {}, TreesByArea = Economy.TreesByArea(d.Trees) }
+end
+
+-- M1.6: the island gate (staged requirements). Already-unlocked islands stay unlocked.
+function DataService.IslandGate(player, islandId)
+	local d = profiles[player]
+	if not d then return false, {} end
+	if d.UnlockedIslands[islandId] then return true, {}, true end
+	local ok, list = Economy.GateStatus(islandId, DataService.GateContext(d))
+	return ok, list, false
+end
+
+-- M1.6: unlock an island if its active gate requirements are met (Power is checked by
+-- the caller against the equipped Power, like AreaService). Returns ok, message.
+-- Already-unlocked islands (incl. grandfathered legacy progress) are never re-gated.
+function DataService.TryUnlockIsland(player, islandId)
+	local d = profiles[player]
+	if not d then return false, "Loading..." end
+	if islandId == Config.HomeIsland or d.UnlockedIslands[islandId] then return true end
+	local ok, list = DataService.IslandGate(player, islandId)
+	if not ok then
+		local missing = {}
+		for _, r in ipairs(list) do
+			if r.Stage == "active" and not r.Met then
+				table.insert(missing, string.format("%s (%s/%s)", r.Text, Config.FormatNumber(r.Have), Config.FormatNumber(r.Need)))
+			end
+		end
+		local isl = Config.IslandById[islandId]
+		return false, "🔒 " .. (isl and isl.Name or islandId) .. ": " .. (#missing > 0 and table.concat(missing, " • ") or "Locked")
+	end
+	d.UnlockedIslands[islandId] = true
+	DataService.RecalcMultipliers(player) -- price tier can rise
+	DataService.Sync(player)
+	local isl = Config.IslandById[islandId]
+	NotifyRemote:FireClient(player, "🏝 " .. (isl and isl.Name or islandId) .. " unlocked!", "boss")
+	return true
+end
+
+function DataService.AddBossKill(player, bossId)
+	local d = profiles[player]
+	if not d then return end
+	d.BossKills = d.BossKills or {}
+	d.BossKills[bossId] = (d.BossKills[bossId] or 0) + 1
 end
 
 --------------------------------------------------------------------
@@ -626,6 +750,18 @@ local function prepare(data)
 		data.Weapons[Config.StarterWeapon] = { Copies = 0, Star = 0, Pulled = 1 }
 	end
 	normalizeCrates(data)
+	-- M1 (H5): existing index completions become permanent edition-1 records (only ever adds)
+	for area, done in pairs(data.IndexDone or {}) do
+		local def = done and Config.IndexEditions.Weapon[area] and Config.IndexEditions.Weapon[area][1]
+		if def then
+			for _, part in ipairs({ "Standard", "Mastery" }) do
+				if def[part] then data.IndexEditions["Weapon/" .. area .. "/" .. part .. "/1"] = true end
+			end
+		end
+	end
+	for area, done in pairs(data.TreeIndexDone or {}) do
+		if done and Config.IndexEditions.Tree[area] then data.IndexEditions["Tree/" .. area .. "/All/1"] = true end
+	end
 	return data
 end
 

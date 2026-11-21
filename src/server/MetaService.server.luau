@@ -119,7 +119,8 @@ Meta.OnServerInvoke = function(player, action, a, b)
 		if c.Souls then DataService.AddSouls(player, c.Souls) end
 		if c.Crates then d.FreeCrates = (d.FreeCrates or 0) + c.Crates end
 		if c.Boost then DataService.AddBoost(player, c.Boost, c.Seconds or 600) end
-		if c.LogsMult then DataService.AddCoins(player, Config.GetTraitCrateCost(d.BestArea) * c.LogsMult, nil, true) end
+		if c.Logs then DataService.AddCoins(player, c.Logs, nil, true) end -- M1: fixed amounts (L10)
+		if c.LogsMult then DataService.AddCoins(player, Config.GetPriceUnit(player) * c.LogsMult, nil, true) end
 		DataService.Sync(player)
 		NotifyRemote:FireClient(player, "Code " .. code .. " redeemed!", "rare_Legendary")
 		return true
@@ -181,7 +182,7 @@ Meta.OnServerInvoke = function(player, action, a, b)
 		return true
 
 	elseif action == "Rebirth" then
-		local cost = Config.GetRebirthCost(d.Rebirths)
+		local cost = Config.GetRebirthCost(d.Rebirths, player) -- M1: tier-scaled
 		if d.Logs < cost then return false, "Need " .. Config.FormatNumber(cost) .. " Logs" end
 		DataService.SpendCoins(player, d.Logs) -- all logs reset
 		for _, u in ipairs(Config.Upgrades) do DataService.SetLevel(player, u.Id, 0) end

@@ -134,7 +134,7 @@ local LEGENDARY = Config.RarityById.Legendary.Order
 local closeReveal, doRoll -- defined below
 
 local function getLuck()
-	return (player:GetAttribute("LuckMult") or 1) * (workspace:GetAttribute("EventLuck") or 1)
+	return player:GetAttribute("LuckMult") or 1 -- M1: includes events / potions (strongest only, capped)
 end
 
 local function refreshBar()

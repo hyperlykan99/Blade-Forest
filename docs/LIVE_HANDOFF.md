@@ -1,7 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
-> This is a shared, human-readable status page, not a live connection or an automatic lock.
+> Last documented snapshot: **2026-11-20 16:15 PST** (Claude, end of M1 Unified Economy & Progression). Written on branch `m1/unified-economy-progression` (based on `m0.1/foundations-corrections`; not merged to `main`). **Re-verify Studio before editing.**
 > Last documented snapshot: **2026-11-20 04:50 PST** (Claude, end of M0.1 Foundations Corrections). Written on branch `m0.1/foundations-corrections` (based on `m0/foundations`; not merged to `main`). **Re-verify Studio before editing.**
 
 ## Quick dashboard
@@ -11,16 +11,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **Dev:** **v29** "M0.1 FOUNDATIONS CORRECTIONS" (Team Create save; dev Open Cloud `updateTime` 2026-11-20T12:42:47.246Z). Checkpoint **v23** relabelled "M0.1 PRE-CORRECTIONS (checkpoint = M0 v23 state)". v24–v28 not saved explicitly by Claude (probably Team Create auto-saves, unverified). Earlier: v18 "M0 PRE-FOUNDATIONS"; v17 and v19–v22 unexplained/auto-saves. **Production:** documented v48; not accessed or touched |
-| Active AI editor | **Claude** (M1 Unified Economy & Progression, claimed 2026-11-20 05:10 PST, branch `m1/unified-economy-progression`) |
-| Last handoff author / time | **Claude / 2026-11-20 04:50 PST** (M0.1 Foundations Corrections) |
-| Last confirmed gameplay edit | **Dev place only:** v29, M0.1 corrections: serialized + sequence-fenced saves, migration lock-leak fix, movement sanity for chopping credit, confirmed AFK lock handoff, profile-stored playtime gifts, Treant/Blade King proximity scaling and Treant minimum contribution. No economy formulas or reward amounts changed. Production: none since the P0 baseline |
-| Current task | **M1 in progress** (owner-authorized: economy engine, balance, Walk Speed, Forest Renewal, island altars, staged gates, AFK integration, simulator; dev place only). Checkpoint: dev v29 labelled "M1 PRE-ECONOMY checkpoint (= M0.1 v29 state)"; 48 script backups + dev profile JSON snapshot in `ServerStorage.M1Backups` |
-| Next action | Owner: review M0 and M0.1 results. Decide: (1) visit cap (3 paying playtime visits/UTC day) and Treant eligibility (≥2% or ≥12 hits); (2) the pre-existing CurrentIsland/LastIsland join-lag bug (M0.1 results §5); (3) keep or roll back the extra dev Logs (836,279 → 8,836,279 from one gift claim in M0.1; earlier M0 smoke test; pre-M0 copy in `bk3_p_394034825`). Pending validation: real cross-server locks/fence (≥50 cycles), real AFK teleport, real receipts, two-player bosses, iPhone. **M1 NOT authorized.** |
-| Code source of truth | **Roblox dev place** (v29). Branch `m0.1/foundations-corrections` holds checksum-matched exports of all M0.1 changed and new scripts (results §2). `main` does not contain `src/` changes |
+| Most recent documented place version | **Dev:** **v35** "M1 UNIFIED ECONOMY & PROGRESSION (dev only, not published)" (Team Create save; dev Open Cloud `updateTime` 2026-11-21T00:06:47.217Z). M1 rollback checkpoint **v29** relabelled "M1 PRE-ECONOMY checkpoint (= M0.1 v29 state)"; v30–v34 not saved explicitly by Claude (probably auto-saves during playtests). Earlier: v23 M0.1 checkpoint, v18 M0 checkpoint. **Production:** documented v48; not accessed or touched |
+| Active AI editor | **None** (released by Claude 2026-11-20 16:15 PST) |
+| Last handoff author / time | **Claude / 2026-11-20 16:15 PST** (M1 Unified Economy & Progression) |
+| Last confirmed gameplay edit | **Dev place only:** v35, M1: central Economy engine (soft-capped additive pools, Luck cap ×50, strongest temp boost only), progression-tier pricing, new tree Logs ladder, tier rebirth cost, Walk Speed (25 lv, 16→24) and Forest Renewal (20 lv, −40 %) upgrades, Soul Blessing/Fortune sinks, island altars with exact odds and guarantees, staged island gates, economy telemetry. Pass effects unchanged; no paid products activated. Production: none since the P0 baseline |
+| Current task | **None claimed.** M1 complete on dev v35 (see `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md`). Rollback: dev v29 or `ServerStorage.M1Backups` (48 `_PreM1` copies + dev profile snapshot) |
+| Next action | Owner: review M1 results and decide §10 #1 (AFK ratio 0.49–0.57 at 8–24 h), #2 (dev profile 3rd rebirth 9M → 238M), #3 (multiplayer tree supply). Earlier open M0/M0.1 decisions still stand (visit cap, Treant eligibility, CurrentIsland join-lag bug, extra dev Logs). Pending validation: multiplayer/bosses, gate unlock, Renewal respawns, cross-server, real teleport, receipts, iPhone. **Next milestone not authorized.** |
+| Code source of truth | **Roblox dev place** (v35). Branch `m1/unified-economy-progression` holds checksum-matched exports of all M1 changed and new scripts (results §1). `main` does not contain `src/` changes |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Owner review of M0 and M0.1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
+| Blockers | Owner review of M0, M0.1 and M1. Cross-server locking/fencing, real teleports, live receipts, real PolicyService, analytics dashboard, iPhone and two-player all unverified. Production update-time re-check needs permission |
 
 ## Who is responsible
 
@@ -55,6 +55,15 @@
 - **Test hooks (Studio only):** `ServerStorage.DevTravel:Invoke(player, islandId, {unlock=,cooldown=,same=})`, `ServerStorage.DevGrant:Invoke(player, "Get"|"Save"|"AddWeapon", ...)`. Note: a command-bar `require(DataService)` returns a separate copy with no players; use DevGrant `Get`.
 - **Production:** 73142469975141 untouched; `updateTime` `2026-11-18T15:12:30.520Z` (last checked 22:05 PST).
 - **Not authorized:** P1b, gameplay/economy/monetization changes, production edits, asset imports, deleting import folders.
+
+## Claude → next AI handoff (2026-11-20 16:15 PST, M1)
+
+- **Studio state:** dev place 103379930563763 / 10777797608, **Edit mode, saved v35**, no play session, profile lock released. Studio instance used: one client only.
+- **What changed:** see `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md` §1 (26 files, all checksum-matched between Studio and branch `m1/unified-economy-progression`).
+- **Economy parameters:** edit `tools/econsim/economy_params.json`, run `python3 tools/econsim/gen_luau.py` to regenerate `src/shared/EconomyConfig.luau`, re-run `tools/econsim/run_all.sh` and `golden.py`, then update `M1Tests` golden values. Never hand-edit EconomyConfig.
+- **Test hooks (Studio only):** `require(game.ServerStorage.M1Tests).RunAll()`; `ServerStorage.DevEconomy:Invoke("Report")` (telemetry). Earlier hooks unchanged.
+- **Rollback:** dev v29, or `ServerStorage.M1Backups` (`<Name>_PreM1` + `OriginalPath`).
+- **Production:** not accessed.
 
 ## Current session (claim before editing)
 

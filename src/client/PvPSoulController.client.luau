@@ -247,7 +247,7 @@ layout.Parent = list
 local myData
 local rows = {}
 
-local BOOST_ICON = { LuckPotion = "🍀", LogBoost = "💰", MegaLuck = "🍀", SoulCrate = "✨" }
+local BOOST_ICON = { LuckPotion = "🍀", LogBoost = "💰", MegaLuck = "🍀", SoulCrate = "✨", SoulBlessing = "🪵", SoulFortune = "🌟" }
 
 local function weaponViewport(parent, weaponId)
 	local vp = Instance.new("ViewportFrame")
@@ -350,6 +350,17 @@ refreshShop = function()
 		elseif item.Kind == "Weapon" and myData and myData.Weapons and myData.Weapons[item.Weapon] then
 			r.Buy.Text = "OWNED"
 			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 140, 80)
+		elseif item.Kind == "SoulUpgrade" then
+			-- M1: level-based cost, level shown on the button
+			local lv = (myData and myData.SoulUpgrades and myData.SoulUpgrades[item.Upgrade]) or 0
+			if lv >= item.MaxLevel then
+				r.Buy.Text = "MAX " .. lv .. "/" .. item.MaxLevel
+				r.Buy.BackgroundColor3 = Color3.fromRGB(60, 140, 80)
+			else
+				local cost = Config.GetSoulUpgradeCost(item.Upgrade, lv)
+				r.Buy.Text = string.format("Lv %d/%d  ✨ %s", lv, item.MaxLevel, Config.FormatNumber(cost))
+				r.Buy.BackgroundColor3 = souls >= cost and Color3.fromRGB(150, 80, 230) or Color3.fromRGB(85, 75, 100)
+			end
 		else
 			r.Buy.Text = "✨ " .. Config.FormatNumber(item.Cost)
 			r.Buy.BackgroundColor3 = souls >= item.Cost and Color3.fromRGB(150, 80, 230) or Color3.fromRGB(85, 75, 100)

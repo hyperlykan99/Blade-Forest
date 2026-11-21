@@ -99,7 +99,15 @@ local function myPower() return player:GetAttribute("Power") or 0 end
 
 local function areaUnlocked(areaId)
 	local a = areaId and Config.AreaById[areaId]
-	return a == nil or myPower() >= (a.RequiredPower or 0)
+	if a == nil then return true end
+	if myPower() < (a.RequiredPower or 0) then return false end
+	-- M1.6: legacy areas behind a later island's gate (server sets "UnlockedIslands")
+	local gate = Config.AreaIsland and Config.AreaIsland[areaId]
+	if gate and gate ~= Config.HomeIsland then
+		local list = player:GetAttribute("UnlockedIslands") or ""
+		if not string.find("," .. list .. ",", "," .. gate .. ",", 1, true) then return false end
+	end
+	return true
 end
 
 local function treeAlive(tree)
@@ -114,6 +122,8 @@ local function myDps()
 end
 
 local function pickTarget(root)
+	local h = root.Parent and root.Parent:FindFirstChildOfClass("Humanoid")
+	local walk = math.max(h and h.WalkSpeed or 16, 1)
 	local power, dps = myPower(), myDps()
 	local pos = root.Position
 	local now = os.clock()
@@ -127,7 +137,7 @@ local function pickTarget(root)
 				local d = (pp.Position - pos).Magnitude
 				if d <= SEARCH_RADIUS then
 					-- logs per second including the walk there
-					local secs = hp / dps + d / 16 + 0.4
+					local secs = hp / dps + d / walk + 0.4 -- M1.3: real (server-set) Walk Speed
 					local score = (t:GetAttribute("Reward") or 1) / secs
 					if score > bestScore then best, bestScore = t, score end
 				end

@@ -149,7 +149,7 @@ function grantProduct(player, p)
 		DataService.AddBoost(player, p.Boost, p.Seconds)
 		NotifyRemote:FireClient(player, string.format("%s active for %d min!", p.Name, p.Seconds // 60), "rare_Epic")
 	elseif p.PackMult then
-		local amt = Config.GetLogPackAmount(p.Id, d.BestArea)
+		local amt = Config.GetLogPackAmount(p.Id, player) -- M1: progression tier
 		DataService.AddCoins(player, amt, nil, true)
 		NotifyRemote:FireClient(player, string.format("+%s Logs!", Config.FormatNumber(amt)), "rare_Legendary")
 	elseif p.Crates then

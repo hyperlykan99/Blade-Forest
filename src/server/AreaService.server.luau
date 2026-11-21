@@ -22,12 +22,19 @@ while true do
 			local areaId = Config.GetAreaAt(root.Position)
 			local area = Config.AreaById[areaId]
 			local power = player:GetAttribute("Power") or 0
-			if power < (area.RequiredPower or 0) then
+			-- M1.6: a legacy area that belongs to a later island (Crystal Canyon wedge,
+			-- Frost Peaks annex on the Timber Haven map) also needs that island's gate
+			local gateIsland = Config.AreaIsland[areaId]
+			local gateOk, gateMsg = true, nil
+			if gateIsland and gateIsland ~= Config.HomeIsland and power >= (area.RequiredPower or 0) then
+				gateOk, gateMsg = DataService.TryUnlockIsland(player, gateIsland)
+			end
+			if power < (area.RequiredPower or 0) or not gateOk then
 				-- not allowed here: send back
 				local back = lastSafe[player] or CFrame.new(0, 5, 16)
 				guard:Allow(player, 2, nil, back.Position, player.Character:GetPivot().Position) -- M0.1 (H1): server-sanctioned push-back
 				player.Character:PivotTo(back)
-				NotifyRemote:FireClient(player, string.format("🔒 %s needs %d Power", area.Name, area.RequiredPower), "death")
+				NotifyRemote:FireClient(player, gateMsg or string.format("🔒 %s needs %d Power", area.Name, area.RequiredPower), "death")
 			else
 				lastSafe[player] = root.CFrame
 				if player:GetAttribute("CurrentArea") ~= areaId then

@@ -39,8 +39,9 @@ local function isUnlocked(player, isl)
 	if (player:GetAttribute("Power") or 0) < need then
 		return false, string.format("🔒 %s needs %d Power", isl.Name, need)
 	end
-	d.UnlockedIslands[isl.Id] = true -- remember it (for P1c gates / UI)
-	return true
+	-- M1.6 staged gate: Power + active requirements (Blade King, tree counts); planned
+	-- requirements (unbuilt bosses) never block. Unlocked once = unlocked for good.
+	return DataService.TryUnlockIsland(player, isl.Id)
 end
 
 -- arrival spot: center first, then a ring of 8 so players don't stack.

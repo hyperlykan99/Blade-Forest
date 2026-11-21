@@ -2,6 +2,16 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-20 — M1 Unified Economy & Progression (DEV PLACE ONLY, v35)
+- Checkpoint **v29** "M1 PRE-ECONOMY"; result **v35**. Branch `m1/unified-economy-progression` (not merged). Backups in `ServerStorage.M1Backups`. Details: `docs/m1/M1_UNIFIED_ECONOMY_RESULTS.md`.
+- New `Economy` engine + generated `EconomyConfig` (single source `tools/econsim/economy_params.json`): soft-capped additive pools (perm Logs +600 %, pets +300 %, tapering rebirth), Luck ×5 permanent soft cap and ×50 hard cap, strongest temporary boost only, rarity luck exponents. Game-pass effects unchanged.
+- Progression-tier pricing (8 tiers by best Power + island access) for crates, eggs, Sawmill, Log Packs, rewards, codes, rebirth and bosses; new tree Logs ladder; Lucky Charm +0.04/level, base cost 1,500.
+- New upgrades: Walk Speed (25 levels, 16 → 24, server-authoritative) and Forest Renewal (20 levels, −40 % regrow for Common–Epic, personal, 10/s server budget). New permanent Souls sinks: Soul Blessing, Soul Fortune.
+- Island altars (Timber Haven 24 / Crystal Wilds 34 / Frostbound 38 weapons) with exact odds in the Index, altar choice and guaranteed progression weapons. Staged island gates (Crystal Wilds: Power 250 + Blade King + 600 trees; Frostbound: Power 2,000 + 6,000 Crystal trees, Colossus planned). Edition-based index records.
+- `EconomyTelemetry` (AFK/active Logs/h, rolls, trees, congestion, heartbeat). Simulator `tools/econsim/` (7 scenarios × 200 h).
+- Tests: M1 41/41, M0.1 64/64, M0 107/107, real-DataStore locks 11/11, single-client smoke test. Not run: multiplayer, cross-server, real teleport, receipts, iPhone.
+- Dev save: Walk Speed L1, Soul Blessing L1, one altar roll, Auto Chop test (Logs 8,836,279 → 9,246,033; Souls 314 → 114).
+
 ## 2026-11-20 — M0.1 Foundations Corrections (DEV PLACE ONLY, v29)
 - Checkpoint **v23** "M0.1 PRE-CORRECTIONS"; result **v29**. Branch `m0.1/foundations-corrections` (not merged). Script backups in `ServerStorage.M01Backups`.
 - H2: per-player serialized writes (`ProfileWriter`) plus a persistent monotonic `_WriteSeq` fence in `SessionStore.Write`; older snapshots can no longer overwrite newer data or confirmed purchases.
