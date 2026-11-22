@@ -54,7 +54,7 @@ local function plaque(parent,frame,title,subtitle,w)
 	lettering(board,Enum.NormalId.Front,title,subtitle)
 end
 
-local function restyle(root,winterTheme)
+function Scenery.Restyle(root,winterTheme)
 	for _,part in ipairs(root:GetDescendants()) do
 		if not part:IsA("BasePart") then continue end
 		if not winterTheme and part.Name=="Pitch roof" then
@@ -326,8 +326,8 @@ function Scenery.Build(world,timberRoot,frostRoot,layout,breakables)
 	timber(model(root,"Timber Haven"),timberRoot,layout,breakables)
 	crystal(model(root,"Crystal Wilds"),layout)
 	winter(model(root,"Frostbound Reach"),frostRoot,layout)
-	restyle(timberRoot,false)
-	restyle(frostRoot,true)
+	Scenery.Restyle(timberRoot,false)
+	Scenery.Restyle(frostRoot,true)
 	root.Parent=world
 	return root
 end

@@ -2,6 +2,7 @@
 local Art={}
 local V=Vector3.new
 local CF=CFrame.new
+local R=Color3.fromRGB
 local TreeSources={
 	Grove_Common="Sapling",Grove_Uncommon="Blossom",Grove_Rare="AutumnMaple",Grove_Epic="RubyMaple",
 	Grove_Legendary="GoldenOak",Grove_Mythic="Sakura",Grove_Secret="AncientCrown",
@@ -9,6 +10,14 @@ local TreeSources={
 	Pine_Legendary="GoldenPine",Pine_Mythic="GiantMushroom",Pine_Secret="MoonlitBonsai",
 	Frost_Common="SnowPine",Frost_Uncommon="GlacierPine",Frost_Rare="Frostwood",Frost_Epic="AuroraPine",
 	Frost_Legendary="Starfrost",Frost_Mythic="Frostleaf",Frost_Secret="FrostGiant",
+}
+local TimberTints={
+	Grove_Common=R(143,179,102),Grove_Uncommon=R(177,196,130),
+	Grove_Rare=R(225,160,106),Grove_Epic=R(238,122,99),Grove_Legendary=R(244,196,103),
+	Grove_Mythic=R(239,177,204),Grove_Secret=R(187,182,238),
+	Pine_Common=R(139,176,113),Pine_Uncommon=R(140,166,132),
+	Pine_Rare=R(167,190,157),Pine_Epic=R(211,141,94),Pine_Legendary=R(239,179,95),
+	Pine_Mythic=R(214,158,124),Pine_Secret=R(150,173,121),
 }
 local Props={
 	"Bridge","Trail","River","Waterfall","Boulder","Cliff","Crystal","CrystalSpine","Fern","Foxglove","Fence",
@@ -18,7 +27,7 @@ local Props={
 local Textures={"Chip","Leaf","Glint","Snow","Dust"}
 local Buildings={
 	["Haven Lodge"]="Cottage",["Trail Guide"]="Cottage",["Village Records"]="Cottage",
-	["Log Market"]="Workshop",["Upgrade Hall"]="Workshop",["Forge Workshop"]="Workshop",
+	["Log Market"]="Cottage",["Upgrade Hall"]="Workshop",["Forge Workshop"]="Workshop",
 	["Weapon Gallery"]="Workshop",["Pet Sanctuary"]="Cottage",["Trait Shrine"]="Cottage",["Timber Altar"]="Cottage",
 	["Frost Egg"]="Cottage",["Frost Altar"]="Cottage",["Forge Annex"]="Workshop",["Vault of Winter"]="RecordsHall",
 }
@@ -31,7 +40,7 @@ local function place(root,source,name,base,dimensions,rotation,query)
 	local part=source:Clone()
 	part.Name=name
 	part.Size=dimensions
-	part.CFrame=CF(base+V(0,dimensions.Y*.5,0))*CF.Angles(0,rotation or 0,0)
+	part.CFrame=CF(base+V(0,dimensions.Y*.5,0))*CFrame.Angles(0,rotation or 0,0)
 	part.Anchored=true
 	part.CanCollide=false
 	part.CanTouch=false
@@ -48,7 +57,8 @@ local function visualTemplate(name,source)
 	local limit=name:sub(1,5)=="Frost" and 11 or 9
 	local width=math.max(original.X,original.Z)
 	local factor=math.min(3.57,limit/width)
-	local part=place(model,source,"Choppable crown",V.zero,original*factor,0,true)
+	local part=place(model,source,"Choppable crown",Vector3.zero,original*factor,0,true)
+	part.Color=TimberTints[name] or R(220,234,243)
 	part:SetAttribute("Leaf",true)
 	part:SetAttribute("LeafColor",part.Color)
 	model.WorldPivot=CF()
@@ -115,8 +125,10 @@ local function dressBuilding(set,scope)
 		if not foot or not foot:IsA("BasePart") then continue end
 		local source=set.Meshes[key]
 		local width,depth=foot.Size.X-2,foot.Size.Z-2
-		place(obj,source,"Authored building shell",foot.Position+V(0,foot.Size.Y/2,0),
-			V(width,14.1,depth),0)
+		local height=key=="Workshop" and 15.2 or 13.3
+		if obj.Name=="Forge Workshop" or obj.Name=="Forge Annex" then height+=1.7 end
+		local shell=place(obj,source,"Authored building shell",foot.Position+V(0,foot.Size.Y/2,0),V(width,height,depth),0)
+		shell.Color=key=="Workshop" and R(211,219,198) or R(218,178,151)
 		for _,child in ipairs(obj:GetChildren()) do
 			if child:IsA("BasePart") and Surfaces[child.Name] then child.Transparency=1 end
 		end
@@ -138,6 +150,15 @@ function Art.Dress(set,world,timber,frost)
 	local f=regional(root,"Frostbound Reach")
 	dressBuilding(set,timber)
 	dressBuilding(set,frost)
+	local architecture=require(script.Parent.ForestScenery)
+	architecture.Restyle(timber,false)
+	architecture.Restyle(frost,true)
+	for _,source in {timber:FindFirstChild("Forest details"),frost:FindFirstChild("Aurora")} do
+		for _,part in source:GetDescendants() do
+			if part:IsA("BasePart") then part.Transparency=1
+			elseif part:IsA("ParticleEmitter") then part.Enabled=false end
+		end
+	end
 	local decorations=timber:FindFirstChild("Timber Haven • trailworks")
 	if decorations then
 		for _,part in ipairs(decorations:GetChildren()) do

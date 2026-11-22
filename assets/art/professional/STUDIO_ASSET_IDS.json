@@ -1,0 +1,206 @@
+{
+  "comparisonModel": "140026274751968",
+  "comparisonTexture": "84206723648942",
+  "catalogModel": "108287874035412",
+  "catalogTexture": "133242499067852",
+  "woodlandTexture": "113956782550679",
+  "sprites": {
+    "Chip": "116733808356112",
+    "Leaf": "78626799140247",
+    "Glint": "83650116315445",
+    "Snow": "115508848182626",
+    "Dust": "122845210917156"
+  },
+  "catalog": {
+    "AncientCrown": {
+      "mesh": "rbxassetid://125997824995787",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "AuroraPine": {
+      "mesh": "rbxassetid://140075454306142",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "AutumnMaple": {
+      "mesh": "rbxassetid://80011218853487",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Blossom": {
+      "mesh": "rbxassetid://113432609105119",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Boulder": {
+      "mesh": "rbxassetid://128484676297925",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Bridge": {
+      "mesh": "rbxassetid://103339509803694",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Cart": {
+      "mesh": "rbxassetid://128179507901202",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Cliff": {
+      "mesh": "rbxassetid://101264143598189",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Cottage": {
+      "mesh": "rbxassetid://88252983006588",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Crystal": {
+      "mesh": "rbxassetid://130012000105914",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "CrystalSpine": {
+      "mesh": "rbxassetid://111769514950147",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "EmberPine": {
+      "mesh": "rbxassetid://82972004577967",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Fence": {
+      "mesh": "rbxassetid://127162267023637",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Fern": {
+      "mesh": "rbxassetid://138538141732885",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Foxglove": {
+      "mesh": "rbxassetid://126729683879664",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "FrostGiant": {
+      "mesh": "rbxassetid://139815190863534",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "FrostSpruce": {
+      "mesh": "rbxassetid://115978764494932",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Frostleaf": {
+      "mesh": "rbxassetid://85064044605716",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Frostwood": {
+      "mesh": "rbxassetid://76440251751322",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "GateArch": {
+      "mesh": "rbxassetid://101043990539189",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "GiantMushroom": {
+      "mesh": "rbxassetid://96838932141348",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "GlacierPine": {
+      "mesh": "rbxassetid://89877209235460",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "GoldenOak": {
+      "mesh": "rbxassetid://121420436618445",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "GoldenPine": {
+      "mesh": "rbxassetid://81367698647355",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Lantern": {
+      "mesh": "rbxassetid://106470479959621",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "MarketStall": {
+      "mesh": "rbxassetid://94838395484663",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "MoonlitBonsai": {
+      "mesh": "rbxassetid://124165141003246",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "NurseLog": {
+      "mesh": "rbxassetid://120741143931026",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Pavers": {
+      "mesh": "rbxassetid://116063269919689",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "RecordsHall": {
+      "mesh": "rbxassetid://104232941063304",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "River": {
+      "mesh": "rbxassetid://73568260488900",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "RubyMaple": {
+      "mesh": "rbxassetid://75969591328585",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "RuinedWall": {
+      "mesh": "rbxassetid://109681025699873",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Sakura": {
+      "mesh": "rbxassetid://75025067859074",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Sapling": {
+      "mesh": "rbxassetid://106643522498987",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "SnowPine": {
+      "mesh": "rbxassetid://103395680482965",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Spruce": {
+      "mesh": "rbxassetid://107232694906164",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "Starfrost": {
+      "mesh": "rbxassetid://108892129728770",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "TallPine": {
+      "mesh": "rbxassetid://140081256834438",
+      "texture": "rbxassetid://133242499067852",
+      "bankTexture": "rbxassetid://113956782550679"
+    },
+    "TimberSign": {
+      "mesh": "rbxassetid://110169069309495",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Trail": {
+      "mesh": "rbxassetid://136623204079128",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Waterfall": {
+      "mesh": "rbxassetid://99003463519047",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "WinterArch": {
+      "mesh": "rbxassetid://111668114146651",
+      "texture": "rbxassetid://133242499067852"
+    },
+    "Workshop": {
+      "mesh": "rbxassetid://116970330874163",
+      "texture": "rbxassetid://133242499067852"
+    }
+  }
+}
