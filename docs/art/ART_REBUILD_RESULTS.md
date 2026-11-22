@@ -1,33 +1,56 @@
 # Blade Forest — Professional Asset Rebuild results
 
-**Incomplete.** The CC0 asset catalog and integration are prepared in source. Roblox Studio MCP rejected uploads from the local intake folder. The previous v87 visual build remains active in the private place. No replacement asset was installed.
+The private place runs the imported Kenney Fantasy Town and Nature assets with the professional-art switch enabled. See the [visual style bible](BLADE_FOREST_VISUAL_STYLE_BIBLE.md), [source and license manifest](PROFESSIONAL_ASSET_MANIFEST.md), and [Roblox asset IDs](../../assets/art/professional/STUDIO_ASSET_IDS.json).
 
-## Delivered in the branch
+## Import and integration
 
-- [Visual style bible](BLADE_FOREST_VISUAL_STYLE_BIBLE.md) and [source and license manifest](PROFESSIONAL_ASSET_MANIFEST.md).
-- A coherent Kenney environment family in two self-contained packages. The comparison sheet contains **11** meshes. The full catalog contains **44** meshes, including **21** Timber and Frost tree variants and **three** buildings assembled from the creator's modular assets. Five licensed Kenney particle sprites are staged.
-- Reversible source integration covering all eight Timber districts, the Records Lodge, the Crystal annex and the Frostgate, Monarch and Sanctum areas. Existing tree IDs, HP and rewards remain authoritative. The proposed render replacements leave the hitboxes, prompts, board rows, trees and gameplay locations in place. These placements await in-client validation.
-- The Roblox engine compiled the four changed or new Luau sources without installing them. Both GLBs passed structural and embedded texture checks. The asset bank gate requires each tree and prop entry plus the five licensed effect texture IDs.
+The exact approved directory was the workspace’s `work/art-intake` folder. The 11-mesh comparison was reviewed at player camera height before importing the full 44-mesh catalog. The cottage, bridge, trees and props shared consistent faceted outlines and readable proportions. Both model packages were inspected in private ServerStorage quarantine. All 44 catalog meshes, their shared atlas, the Timber atlas and the five VFX images fetched successfully in Studio. The packages contained no scripts. The temporary comparison scene was removed. The safe runtime mesh bank and raw quarantine are retained in ServerStorage.
 
-![Local render of the shortlisted authored mesh composition](Blade-Forest-Kenney-Style-Review.png)
+| Area | Installed art and Studio Play observations |
+| --- | --- |
+| Haven Village and Records Lodge | Kenney gables and shuttered façades, an entry arch, a brook crossing, and a Records Hall backdrop. All three leaderboard faces displayed populated rows. The walk-up lanes remain open. |
+| Crafters’ Plaza and Collectors’ Row | Station shells use the same window and roof proportions, with open storefronts over existing service foundations. Restored mounted wayfinding where oversized signs obscured façades. |
+| Sapling Woods, Pinewood Hollow and Elderpine Ridge | 14 Timber variants across 1,200 slots. Rounded broadleaf, multiple conifers, branching crowns and a mushroom silhouette. The custom Woodland grade darkens the canopy palette and is confined to Timber meshes. Imported trunks and crowns use the existing tree base position. |
+| Kingsfall Arena and Portal Cliffs | Ruins and paving frame the combat floor, and catalog arches dress two approaches. Blade King reached the victory state in the isolated Play client. |
+| Crystal Wilds | Imported mineral formations near arrival and around the Colossus annex. The protected Crystal forest uses its existing trees and camera code. Colossus spawned in the Play client. |
+| Frostbound Reach | Seven evergreen silhouettes across 830 slots, authored shells at Frostgate, frozen slopes and a bridge, and imported arches and mineral accents at Monarch’s Throne and Heart of Winter. Frost Monarch spawned and its existing telegraphs were visible. Player-height spot checks also covered Snowfield, Glacier Pass, Aurora Basin, Giant’s Hollow and Expedition Gate. |
 
-The image is a local perspective render of the actual authored meshes rendered outside Studio. Local review found mismatched roof ends in the first assembly. Switching to the kit's complete gables and orienting the shutter and doorway modules to the street corrected the issue in the review render. Blender 4.5.16 crashed during Metal initialization in this session, so a static glTF converter normalized and assembled the licensed mesh data directly. The conversion and review tools are checked in.
+The Play server kept `300 StarterGrove + 900 PineForest + 620 CrystalCanyon + 830 FrostPeaks`. Crystal’s position signature stayed `620:1325136453`. All 2,030 Timber and Frostbound trees used the imported fall templates and retained their original queryable hitbox and collidable trunk. Initial rarity, health, strength, regrowth and Logs values matched the existing configuration. Timber’s minimum measured tree-center clearance from main roads was 9.52 studs. The imported canopy bounds had zero measured main-road intrusions. New scenery meshes do not collide, touch, or participate in spatial queries.
 
-## Studio baseline and remaining verification
+The isolated Play client recorded 38 tree hits, 38 imported falls, 19 matched regrowths before the sample ended and zero missing fall templates. The client fetched all five sprite IDs successfully and used the leaf, glint and dust sprites in its active effects pool.
 
-The six-second Studio baseline used one isolated QA account, a 957 × 532 viewport, Low graphics, Reduced Motion and fixed camera poses after streaming settled. These are local Studio measurements.
+Existing tree-hit, falling-tree and encounter events still drive the cosmetic client. Five licensed sprites are assigned to the existing distance-gated effect pool. Low graphics suppresses the cosmetic bursts. Reduced Motion reduces emission and suppresses optional motion. Weapon models, tree rules and mutation probabilities and rewards use their existing sources.
 
-| Camera | FPS | Median frame time | p95 frame time | Client memory |
+## Studio evidence
+
+| View | Actual Studio capture |
+| --- | --- |
+| Imported comparison | [Player-height staging scene](KENNEY_STUDIO_COMPARISON.jpg) |
+| Timber Haven | [Village](KENNEY_PLAY_HAVEN.jpg) · [Woodland canopy](KENNEY_PLAY_WOODLAND.jpg) · [Records Lodge](KENNEY_PLAY_LODGE.jpg) |
+| Crystal Wilds | [Protected approach](KENNEY_PLAY_CRYSTAL.jpg) · [Colossus encounter](KENNEY_PLAY_COLOSSUS.jpg) |
+| Frostbound Reach | [Frostgate](KENNEY_PLAY_FROSTGATE.jpg) · [Heart of Winter approach](KENNEY_PLAY_SANCTUM.jpg) |
+
+The old build was measured before a matched screenshot set was captured. The comparison and Play captures above show actual imported Studio assets. The [local catalog render](Blade-Forest-Kenney-Style-Review.png) remains separate.
+
+## Performance
+
+One isolated Studio client, a 957 × 532 logical viewport, Low graphics, Reduced Motion, matched fixed camera positions and a five-second streaming settle. Samples were approximately six seconds per location. The after measurements include the imported geometry and mounted wayfinding and precede the final texture-only Woodland grade.
+
+| Camera | FPS before → after | Median ms | p95 ms | Client MB |
 | --- | ---: | ---: | ---: | ---: |
-| Haven Village `(-52, 14, -3023)` | 6.6 | 143.1 ms | 232.2 ms | 7,127 MB |
-| Crystal Wilds `(2776, 17, -48)` | 8.4 | 92.1 ms | 220.8 ms | 7,124 MB |
-| Winter Sanctum `(6262, 18, -12)` | 8.6 | 117.4 ms | 171.5 ms | 7,118 MB |
+| Haven Village `(-52, 14, -3023)` | 6.6 → 7.3 | 143.1 → 132.5 | 232.2 → 224.3 | 7,127 → 8,320 |
+| Crystal Wilds `(2776, 17, -48)` | 8.4 → 6.8 | 92.1 → 143.6 | 220.8 → 216.5 | 7,124 → 8,307 |
+| Winter Sanctum `(6262, 18, -12)` | 8.6 → 8.3 | 117.4 → 125.3 | 171.5 → 215.9 | 7,118 → 8,298 |
 
-The asset-led after shots, import and texture verification, station collision and route checks, actual chop and regrowth smoke tests, boss art review and after measurements are pending. The source-proposed Crystal outcrops require a silhouette review. No physical phone test ran.
+Studio performance remains poor. The session measured higher client memory at all three locations, and Crystal and the Sanctum had lower average FPS. The samples do not isolate the asset cost from the Studio process’s other allocations. Physical mobile performance remains unverified.
 
-## Save and rollback
+## Remaining visual and gameplay checks
 
-- Place `103379930563763`, universe `10777797608`. The last numerically confirmed visual build is **v87**, corresponding to `Workspace.UltimateVisualDevBuild=56c23ffb1ca70ea15b45457af045a770bf4cdba9`. The later private cloud save was confirmed at **2026-11-22T07:02:47.260Z** after the isolated QA flag was cleared. Its numeric version was unverified. Team Create reported no unsaved changes. Studio was released in Edit mode.
-- Rollback checkpoint `2026-11-22T06:49:28.114Z`. `ServerStorage.ProfessionalArtRollback` contains six unchanged baseline source copies recorded against private v87 and Git `db3a009baf4b211d90ef32e5f0a4a9bc7383c54c`. The professional-art switch is absent from the saved editor. Trading and paid gifting stay disabled. Production was untouched.
-- Prepared implementation commit `0e1c21e0390c683bca28cbb7afa980472cd3a5ec` on `art/professional-asset-rebuild`.
-- The Roblox Studio `rbx-import-asset` workflow requires an approved uploads directory. The owner needs to add this workspace's `work/art-intake` folder in **Assistant Settings → MCP Permissions → Approved upload directories**. Asset read and write scopes were verified. After approval, the review GLB is the first upload, followed by quarantine, dependency checks and a player-height Studio review before placing the wider catalog.
+Some large legacy terrain and arena surfaces remain visible, especially at Kingsfall, along Crystal’s arena ring and against the Frost skyline. Shared shop modules are still visually repetitive from some angles. Dense Frost canopies and legacy slabs can obstruct low camera angles. Crystal received a perimeter treatment. Full boss-model redesign, walking every route, complete travel prompt traversal, prolonged play and physical mobile tests remain open.
+
+## Save, commit and rollback
+
+- Private place `103379930563763`, universe `10777797608`. Studio confirmed private cloud save **v98**. Roblox reported cloud update `2026-11-22T23:37:17.200Z`. The editor was released in Edit mode with the isolated QA switch cleared.
+- Implementation `862bb5b50b09a1df04aa5eebffd9564db4694c64` on `art/professional-asset-rebuild`.
+- Clear the startup attribute `Workspace.BladeForestAssetArt` in Edit and start a fresh private session to return to the previous art. For complete restoration, use the private cloud checkpoint at `2026-11-22T06:49:28.114Z`. Six baseline source copies are retained in `ServerStorage.ProfessionalArtRollback` against the v87 art implementation.
+- Production stayed untouched and the place was never published. Trading and paid gifting stayed disabled. QA instrumentation ran against the isolated Studio profile.

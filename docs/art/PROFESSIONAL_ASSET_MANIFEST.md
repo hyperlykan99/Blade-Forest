@@ -1,6 +1,6 @@
 # Professional asset manifest
 
-**Status.** Selected and converted locally. Roblox rejected the model and image upload requests at the approved-directory check. No Roblox asset IDs were issued. There are no imported or active assets from this catalog in the private place.
+**Status.** Imported and tested in the private development place. The catalog and texture dependencies have verified Roblox IDs.
 
 ## Verified source archives
 
@@ -15,7 +15,7 @@ The [CC0 1.0 dedication](https://creativecommons.org/publicdomain/zero/1.0/) app
 
 ## Selected catalog and intended use
 
-The [44-entry catalog](../../assets/art/professional/BladeForestAssetCatalog.json) records the exact source names, triangle counts and bounding dimensions in meters. The [review sheet](../../assets/art/professional/BladeForestStyleReview.json) identifies the 11 assets prepared for the first Studio import. Both GLBs embed one 64 × 64 palette, with no external dependencies and no code. Studio part counts and mesh and texture permissions remain unverified. Each exported entry has a single glTF mesh primitive.
+The [44-entry catalog](../../assets/art/professional/BladeForestAssetCatalog.json) records the exact source names, triangle counts and bounding dimensions in meters. The [review sheet](../../assets/art/professional/BladeForestStyleReview.json) identifies the 11 assets prepared for the first Studio import. Both GLBs embed one 64 × 64 palette, with no external dependencies and no code. Studio imported one MeshPart per entry and verified mesh and texture fetches in the private place. Each exported entry has a single glTF mesh primitive.
 
 | Category | Selected assets and location |
 | --- | --- |
@@ -25,7 +25,7 @@ The [44-entry catalog](../../assets/art/professional/BladeForestAssetCatalog.jso
 | Bridges and paths | `bridge_woodRound`, `path_stone`, `path_stoneCircle`. Village brook, frost approach, plaza and arena paving. |
 | Fences, props and signage | `fence_planksDouble`, `log_large`, `cart-high`, `lantern`, `stall-green`, `banner-green`. Village edge, shops, forestry and trailheads. Existing signs and prompts retain their functional text. |
 | Water and waterfalls | `ground_riverStraight`, `cliff_waterfall_rock`. Brook, cliffs and mineral runoff. |
-| Crystal formations | Kenney's `rock_tallF` and `rock_tallA`, adapted in teal and violet as mineral outcrops for the Colossus annex. A more crystalline silhouette remains a candidate for Studio review. |
+| Crystal formations | Kenney's `rock_tallF` and `rock_tallA`, adapted in teal and violet as mineral outcrops for the Colossus annex. The new facets sit around the boss annex and the approach, outside the protected tree grid. |
 | Snow and ice | Seven source evergreen meshes with cold palette grading, slate cliff pieces, tinted ruin modules and the Frostgate bridge. The frost palette is baked into the exported asset. |
 | Ruins and boss approaches | `wall-broken`, paired segments of `wall-doorway-round` and `wall-wood-doorway-round`, plus stone pavers. Kingsfall, Colossus, Monarch and Sanctum. |
 | Ambient, combat and portal VFX | `dirt_02.png` for chips, `slash_01.png` for slivers, `spark_01.png` for glints, `star_04.png` for snow and `smoke_04.png` for dust or shadow. Existing event triggers and budgets are reused. The PNGs are staged alongside their license. |
@@ -33,10 +33,11 @@ The [44-entry catalog](../../assets/art/professional/BladeForestAssetCatalog.jso
 
 ## Studio import record
 
-| Prepared batch | Local result | Studio result |
-| --- | --- | --- |
-| Style review mesh sheet | 11 entries, 3,271 triangles, one embedded palette | Upload denied before asset creation |
-| Full environment catalog | 44 entries, 11,553 total triangles, largest entry 1,348 | Awaiting comparison-scene acceptance |
-| Five particle PNGs | Authored files selected and retained with their license | First image upload denied before asset creation |
+| Batch | Studio result |
+| --- | --- |
+| Comparison GLB | Model `140026274751968`, 11 meshes, 3,271 source triangles, shared atlas `84206723648942` |
+| Full catalog GLB | Model `108287874035412`, 44 meshes, 11,553 source triangles, largest entry 1,348, shared atlas `133242499067852` |
+| Kenney VFX PNGs | Chip `116733808356112`, Leaf `78626799140247`, Glint `83650116315445`, Snow `115508848182626`, Dust `122845210917156` |
+| Woodland palette PNG | `113956782550679`, 64 × 64 color grade of the embedded CC0 atlas for the 14 Timber tree meshes. UVs and geometry are unchanged. |
 
-The rejection came from Roblox Studio MCP's folder permission gate. No imported asset script was executed. Any future import belongs in ServerStorage quarantine, with a geometry-only audit and a client fetch check for every dependency before it is moved into the asset bank.
+The exact per-entry mesh and texture IDs are in [STUDIO_ASSET_IDS.json](../../assets/art/professional/STUDIO_ASSET_IDS.json). Source names, dimensions and triangle counts are in the catalog linked above. The approved path was the workspace's `work/art-intake` directory. The model packages went into `ServerStorage.ProfessionalArtQuarantine` and contained mesh, model and package metadata. There were zero executable scripts to remove. Only checked geometry and approved appearance data were copied to `ServerStorage.ProfessionalArtAssets`. Catalog sizes matched the expected import dimensions within 0.01 units. Normalized orientation, scale and texture appearance were reviewed at player height in Studio. Roblox approved the images and Studio successfully fetched them through their actual dependencies.

@@ -1,7 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
-> **Codex Professional Asset Rebuild.** The Kenney catalog and world integration are prepared on GitHub. Studio MCP blocked local uploads pending approval of the intake directory. The v87 visual build remains active, and Studio is released. See the [rebuild results](art/ART_REBUILD_RESULTS.md).
+> **Codex Professional Asset Rebuild.** The imported Kenney rebuild is active in private **v98**. Studio is in Edit mode and the editor is released. See the [rebuild results and Play captures](art/ART_REBUILD_RESULTS.md).
 > **Codex Project Wow Factor.** The three-biome visual pass is saved as private **v87**. Studio is in Edit mode and the editor is released. See the [art direction, test evidence and performance report](art/ULTIMATE_VISUAL_OVERHAUL.md).
 > **Codex Timber Haven art.** Private development saved at `2026-11-22T06:02:10.093Z`. The Studio editor is released. See the [tree and visual overhaul](art/TIMBER_HAVEN_TREE_OVERHAUL.md).
 > **Codex full game QA.** Private development saved as **v75**. Release is on hold for physical devices, multi-client load and independent server persistence. Studio editor released. See the [QA results](qa/FULL_GAME_QA_RESULTS.md).
@@ -21,13 +21,13 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | Active visual build v87. Latest private cloud update `2026-11-22T07:02:47.260Z`. Latest numeric version unverified. |
+| Most recent documented place version | Private **v98**, cloud update `2026-11-22T23:37:17.200Z`. |
 | Active AI editor | None. Studio in Edit mode. |
-| Last handoff author / time | Codex, Professional Asset Rebuild, November 21 at 11:02 p.m. PST. |
+| Last handoff author / time | Codex, Professional Asset Rebuild, November 22 at 3:37 p.m. PST. |
 | Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
-| Current task | None claimed. Asset bank installation blocked by the Studio MCP approved-directory gate. |
-| Next action | After intake folder approval, import the comparison GLB into private quarantine and review it at player height. |
-| Code source of truth | Active private v87 runs the prior `art/ultimate-visual-overhaul` implementation `56c23ffb1ca70ea15b45457af045a770bf4cdba9`. Prepared asset-led source is in `art/professional-asset-rebuild` at `0e1c21e0390c683bca28cbb7afa980472cd3a5ec`. |
+| Current task | None claimed. The professional art bank is installed. |
+| Next action | Review private v98 in Play using the [art report and screenshots](art/ART_REBUILD_RESULTS.md). |
+| Code source of truth | Private v98 uses `art/professional-asset-rebuild` implementation `862bb5b50b09a1df04aa5eebffd9564db4694c64`, recorded as `Workspace.ProfessionalArtDevBuild`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
 | Blockers | Physical iPhone and Android, 20-player load, genuinely separate server sessions for saves and escrow, and full natural balance remain unverified. |
@@ -90,12 +90,12 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Task | Professional Asset Rebuild. Offline catalog and gated source prepared. |
-| Private place | `103379930563763` / `10777797608`. Edit mode. Active v87 visuals, latest cloud update `2026-11-22T07:02:47.260Z`. QA profile toggle cleared. |
+| Task | Professional Asset Rebuild. Imported assets are active across the three biomes. |
+| Private place | `103379930563763` / `10777797608`. **v98**, Edit mode. QA profile switch cleared. |
 | Git branch | `art/professional-asset-rebuild` |
-| Rollback | Checkpoint `2026-11-22T06:49:28.114Z`. Source copies in `ServerStorage.ProfessionalArtRollback`. |
-| Blocker | Roblox Studio MCP denied uploads from `work/art-intake`. No prepared art scripts or models have been installed. |
-| Evidence | [Local mesh review, Studio baseline and remaining checks](art/ART_REBUILD_RESULTS.md) |
+| Rollback | Clear `Workspace.BladeForestAssetArt` and restart the private runtime. Full checkpoint `2026-11-22T06:49:28.114Z` and baseline source copies in `ServerStorage.ProfessionalArtRollback`. |
+| Open checks | Studio performance remains poor in matched samples, with higher observed memory. Physical mobile performance, full navigation and extended gameplay remain unverified. |
+| Evidence | [Studio Play captures, counts, asset IDs and performance](art/ART_REBUILD_RESULTS.md) |
 
 ## Codex → next editor (Project Wow Factor)
 
