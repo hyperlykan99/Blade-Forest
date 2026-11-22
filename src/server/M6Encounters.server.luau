@@ -18,6 +18,7 @@ local Progress=require(script.Parent:WaitForChild("Progress"))
 local A=require(Storage:WaitForChild("M4Architecture"))
 local Notify=RS:WaitForChild("Remotes"):WaitForChild("Notify")
 local random=Random.new()
+local polished=workspace:GetAttribute("BladeForestArt")=="v1"
 local V=Vector3.new
 local fightRoot=Instance.new("Folder") fightRoot.Name="M6Encounters" fightRoot.Parent=workspace
 local jobs={}
@@ -98,6 +99,10 @@ local function shape(job,id)
 	gui.StudsOffset=V(0,15,0) gui.MaxDistance=120 gui.Parent=body
 	local info=Instance.new("TextLabel") info.Size=UDim2.fromScale(1,1) info.BackgroundColor3=theme
 	info.TextColor3=s.Color info.TextScaled=true info.Font=Enum.Font.GothamBold info.Parent=gui
+	if polished then
+		m:SetAttribute("ForestBossId",id)
+		m:AddTag("ForestBoss")
+	end
 	job.Boss=m job.Caption=info
 end
 
@@ -105,6 +110,7 @@ local function display(job)
 	if not job.Boss then return end
 	local whole=math.max(0,math.ceil(job.HP))
 	job.Boss:SetAttribute("Health",whole)
+	if polished then job.Boss:SetAttribute("ForestBossPhase",whole<=0 and "Victory" or job.Heart and job.Phase or "I") end
 	job.Caption.Text=job.Spec.Name.."\n"..C.FormatNumber(whole).." / "..C.FormatNumber(job.Max)
 	if job.Heart then
 		for p in pairs(job.Members) do
@@ -291,6 +297,7 @@ local function attack(job,present)
 		local disk=A.Part(warning,"Warning",V(.13,radius*2,radius*2),CFrame.new(pos+V(0,.55,0))*CFrame.Angles(0,0,math.pi/2),
 			s.Color,Enum.Material.Neon,false,Enum.PartType.Cylinder)
 		disk.Transparency=.42
+		if polished then disk:AddTag("ForestWindup") end
 	end
 	local windup=job.Heart and job.Phase=="III" and 1.10 or 1.65
 	if job.Heart then
@@ -305,7 +312,10 @@ local function attack(job,present)
 				end
 			end
 		end
-		for _,obj in ipairs(warning:GetChildren()) do obj.Transparency=.77 end
+		for _,obj in ipairs(warning:GetChildren()) do
+			obj.Transparency=.77
+			if polished then obj:AddTag("ForestImpact") end
+		end
 		task.delay(.3,function() if warning.Parent then warning:Destroy() end end)
 		if job.Heart then
 			for p in pairs(job.Members) do if p.Parent then p:SetAttribute("M6HeartWarning",nil) end end

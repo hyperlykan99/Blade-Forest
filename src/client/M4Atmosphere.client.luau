@@ -20,6 +20,9 @@ local clips={
 	{ "TimberHaven","East waterfall",9120550180,Vector3.new(340,5,-3319),78,.13 },
 	{ "FrostboundReach","Frostbound wind",551546110,Vector3.new(6055,12,48),300,.14 },
 }
+if workspace:GetAttribute("BladeForestArt")=="v1" then
+	table.insert(clips,{"TimberHaven","Alder Brook",9120550180,Vector3.new(22,1,-2960),45,.065})
+end
 local tint=Instance.new("ColorCorrectionEffect")
 tint.Name="M4BiomeTone"
 tint.Enabled=false
@@ -48,7 +51,7 @@ end
 local function update()
 	local island=Layout.Enabled() and player:GetAttribute("CurrentIsland")
 	local p=palettes[island]
-	tint.Enabled=p~=nil
+	tint.Enabled=p~=nil and workspace:GetAttribute("BladeForestArt")~="v1"
 	if p then tint.TintColor=p.Tint tint.Brightness=p.Bright tint.Saturation=p.Saturation end
 	for _,entry in ipairs(sounds) do
 		local sound=entry.Sound

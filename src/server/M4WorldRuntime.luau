@@ -128,5 +128,18 @@ for name,id in pairs({M4TimberTree="Grove_Common",M4SnowTree="Frost_Common"}) do
 	visual:SetAttribute("LeafColor",visual:FindFirstChild("Canopy 1").Color)
 	visual.Parent=templates
 end
+if workspace:GetAttribute("BladeForestArt")=="v1" then
+	local ok,err=pcall(function()
+		require(ServerStorage.ForestScenery).Build(active,timber.TimberHaven,frost.FrostboundReach,layout,breakables)
+		for _,tree in ipairs(breakables:GetChildren()) do
+			if tree:GetAttribute("Mutation") then
+				tree:AddTag("ForestMutation")
+				local marker=tree.PrimaryPart and tree.PrimaryPart:FindFirstChild("MutationFX")
+				if marker then marker:Destroy() end
+			end
+		end
+	end)
+	if not ok then warn("Forest scenery:",err) end
+end
 runtime.Active=true
 return runtime

@@ -16,6 +16,7 @@ local breakables=workspace:WaitForChild("Breakables")
 local v=Vector3.new
 local state={}
 local rng=Random.new()
+local polished=workspace:GetAttribute("BladeForestArt")=="v1"
 
 local function localPlayers(spec)
 	local found={}
@@ -64,10 +65,18 @@ local function create(id,spec,number)
 	label.Size=UDim2.fromScale(1,1) label.BackgroundTransparency=.22 label.BackgroundColor3=spec.Dark
 	label.TextColor3=spec.Color label.TextScaled=true label.Font=Enum.Font.GothamBold label.Parent=gui
 	local function update()
+		if polished then
+			local remaining=model:GetAttribute("Health")/hp
+			model:SetAttribute("ForestBossPhase",remaining<=0 and "Victory" or remaining<.5 and "II" or "I")
+		end
 		label.Text=spec.Name.."\n"..Config.FormatNumber(math.max(0,model:GetAttribute("Health") or 0)).." / "..Config.FormatNumber(hp)
 	end
 	update()
 	model:GetAttributeChangedSignal("Health"):Connect(update)
+	if polished then
+		model:SetAttribute("ForestBossId",id)
+		model:AddTag("ForestBoss")
+	end
 	model.Parent=breakables
 	return model
 end
@@ -99,6 +108,7 @@ local function telegraph(id,spec,current,players)
 		local part=A.Part(signals,"Warning",v(.12,radius*2,radius*2),CFrame.new(p+v(0,.6,0))*CFrame.Angles(0,0,math.pi/2),
 			id=="CrystalColossus" and Color3.fromRGB(255,159,108) or spec.Color,Enum.Material.Neon,false,Enum.PartType.Cylinder)
 		part.Transparency=.52
+		if polished then part:AddTag("ForestWindup") end
 	end
 	task.delay(spec.Windup,function()
 		if not current.Parent or (current:GetAttribute("Health") or 0)<=0 then return end
@@ -110,7 +120,15 @@ local function telegraph(id,spec,current,players)
 				end
 			end
 		end
-		signals:Destroy()
+		if polished then
+			for _,part in ipairs(signals:GetChildren()) do
+				part.Transparency=.76
+				part:AddTag("ForestImpact")
+			end
+			task.delay(.22,function() if signals.Parent then signals:Destroy() end end)
+		else
+			signals:Destroy()
+		end
 	end)
 end
 

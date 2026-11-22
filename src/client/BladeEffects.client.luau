@@ -10,6 +10,7 @@ local Debris = game:GetService("Debris")
 
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local ForestFX=require(script.Parent:WaitForChild("ForestEffects"))
 
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -86,15 +87,15 @@ local BladeModels = ReplicatedStorage:WaitForChild("BladeModels")
 --   At most ONE PointLight per wielder (template lights are always removed).
 local AURA_TEX = "rbxasset://textures/particles/sparkles_main.dds"
 local pulsing = {} -- [emitter] = baseRate (Divine pulse, animated below)
-local function tierFx(core, b, tier, idx, isLocal, lowGfx)
+local function tierFx(core, b, tier, idx, isLocal, lowGfx, cinematic)
 	if lowGfx then return end
-	local full = isLocal and idx <= 3 or (not isLocal and idx == 1)
+	local full = cinematic and isLocal and idx==1 or not cinematic and (isLocal and idx <= 3 or (not isLocal and idx == 1))
 	if not full then return end
 	if tier >= 4 then -- Legendary+: soft glow aura in the accent colour
 		local e = Instance.new("ParticleEmitter")
 		e.Name = "TierAura"
 		e.Texture = AURA_TEX
-		e.Rate = tier >= 6 and 10 or 6
+		e.Rate = cinematic and (tier>=6 and 5 or 3) or (tier>=6 and 10 or 6)
 		e.Lifetime = NumberRange.new(0.5, 0.9)
 		e.Speed = NumberRange.new(0.2, 0.6)
 		e.SpreadAngle = Vector2.new(180, 180)
@@ -110,7 +111,7 @@ local function tierFx(core, b, tier, idx, isLocal, lowGfx)
 		local l = Instance.new("PointLight")
 		l.Name = "TierLight"
 		l.Range = tier >= 7 and 10 or 7
-		l.Brightness = tier >= 7 and 2 or 1.3
+		l.Brightness = cinematic and .45 or (tier>=7 and 2 or 1.3)
 		l.Color = b.EdgeColor
 		l.Shadows = false
 		l.Parent = core
@@ -119,7 +120,7 @@ local function tierFx(core, b, tier, idx, isLocal, lowGfx)
 		local e = Instance.new("ParticleEmitter")
 		e.Name = "TierHalo"
 		e.Texture = AURA_TEX
-		e.Rate = tier >= 7 and 14 or 8
+		e.Rate = cinematic and (tier>=7 and 7 or 4) or (tier>=7 and 14 or 8)
 		e.Lifetime = NumberRange.new(0.8, 1.4)
 		e.Speed = NumberRange.new(1, 2.5)
 		e.Acceleration = Vector3.new(0, 3, 0)
@@ -133,7 +134,10 @@ end
 
 local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 	idx = idx or 1
-	local lowGfx = player:GetAttribute("Pref_Graphics") == "Low"
+	local cinematic=ForestFX.Enabled()
+	local lowGfx=player:GetAttribute("Pref_Graphics") == "Low"
+	local quiet=cinematic and ForestFX.Reduced()
+	local detail=not lowGfx and not quiet and (not cinematic or isLocal and idx==1)
 	local tier = bladeType.VfxTier or 0
 	local b = bladeType
 	local len = b.Length * scale
@@ -149,7 +153,7 @@ local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 			d:Destroy()
 		elseif d:IsA("ParticleEmitter") or d:IsA("Fire") or d:IsA("Sparkles") or d:IsA("Smoke") then
 			kept += 1
-			if idx > 1 or kept > 2 or lowGfx then d:Destroy() end
+			if idx > 1 or kept > 2 or lowGfx or cinematic and (not detail or kept>1) then d:Destroy() end
 		end
 	end
 
@@ -184,16 +188,30 @@ local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 	trail.Transparency = NumberSequence.new(math.max(0.45 - 0.04 * tier, 0.15), 1)
 	trail.LightEmission = tier >= 4 and 1 or 0.8
 	trail.WidthScale = NumberSequence.new(1, tier >= 6 and 0.35 or 0)
+	if cinematic then
+		trail.Lifetime=quiet and .08 or .105+.013*tier
+		trail.Transparency=NumberSequence.new({
+			NumberSequenceKeypoint.new(0,tier>=6 and .36 or .51),
+			NumberSequenceKeypoint.new(.26,.43),
+			NumberSequenceKeypoint.new(1,1),
+		})
+		trail.WidthScale=NumberSequence.new(idx==1 and .78 or .49,0)
+		trail.LightEmission=tier>=5 and .74 or .33
+		if tier==7 then trail.Color=ColorSequence.new(Color3.fromRGB(255,235,179),b.EdgeColor) end
+		if lowGfx and idx>1 then trail.Enabled=false end
+	end
 	trail.Parent = core
 
 	local particlesOk = not lowGfx and ((isLocal and idx <= 3) or (not isLocal and idx == 1))
-	if b.Particle and particlesOk then addParticles(core, b.Particle, b.EdgeColor, idx == 1 and tier < 5) end
-	tierFx(core, b, tier, idx, isLocal, lowGfx)
-	if shiny and not lowGfx then
+	if b.Particle and particlesOk and (not cinematic or detail and tier<4) then
+		addParticles(core,b.Particle,b.EdgeColor,idx==1 and tier<5 and not cinematic)
+	end
+	tierFx(core,b,tier,idx,isLocal,lowGfx or quiet,cinematic)
+	if shiny and not lowGfx and (not cinematic or detail) then
 		-- crafted SHINY weapon: gold glitter + warm glow
 		local e = Instance.new("ParticleEmitter")
 		e.Texture = SPARKLE_TEX
-		e.Rate = 14
+		e.Rate = cinematic and 5 or 14
 		e.Lifetime = NumberRange.new(0.4, 0.9)
 		e.Speed = NumberRange.new(0.5, 1.5)
 		e.SpreadAngle = Vector2.new(180, 180)
@@ -201,7 +219,7 @@ local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 		e.LightEmission = 1
 		e.Color = ColorSequence.new(Color3.fromRGB(255, 225, 90))
 		e.Parent = core
-		if idx == 1 and tier < 5 then -- M2: Mythic+ already carries the wielder's one light
+		if idx == 1 and tier < 5 and not cinematic then -- M2: Mythic+ already carries the wielder's one light
 			local l = Instance.new("PointLight")
 			l.Range = 7
 			l.Brightness = 1.2
@@ -214,8 +232,8 @@ local function makeBlade(bladeType, scale, shiny, idx, isLocal, stage)
 	if stage>0 and idx==1 then
 		local spectral=({Color3.fromRGB(142,221,255),Color3.fromRGB(196,159,255),Color3.fromRGB(255,218,146)})[stage]
 		trail.Color=ColorSequence.new(spectral,b.EdgeColor or spectral)
-		trail.Lifetime+=.04*stage
-		if not lowGfx then
+		trail.Lifetime+=(cinematic and .014 or .04)*stage
+		if not lowGfx and (not cinematic or detail) then
 			aura=Instance.new("Highlight")
 			aura.Name="AwakeningAura"
 			aura.Adornee=model aura.DepthMode=Enum.HighlightDepthMode.Occluded
@@ -238,7 +256,7 @@ local visuals = {} -- [wielder] = { Key = string, List = {...} }
 
 local function setBlades(wielder, stats)
 	local stage=stats.Awakening or 0
-	local key = stats.Blade.Id .. "_" .. stage .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "") .. "_" .. tostring(player:GetAttribute("Pref_Graphics"))
+	local key = stats.Blade.Id .. "_" .. stage .. "_" .. stats.Scale .. (stats.Shiny and "_S" or "") .. "_" .. tostring(player:GetAttribute("Pref_Graphics")) .. (ForestFX.Enabled() and tostring(ForestFX.Reduced()) or "")
 	local v = visuals[wielder]
 	if v and v.Key ~= key then
 		for _, b in ipairs(v.List) do b.Model:Destroy() end
@@ -270,7 +288,7 @@ local function drawWielder(wielder, char, now)
 		clearBlades(wielder)
 		return
 	end
-	if (root.Position - camera.CFrame.Position).Magnitude > 400 then
+	if (root.Position - camera.CFrame.Position).Magnitude > (ForestFX.Enabled() and (wielder==player and 400 or 180) or 400) then
 		clearBlades(wielder)
 		return
 	end
@@ -285,7 +303,7 @@ local function drawWielder(wielder, char, now)
 	for i, bl in ipairs(blades) do
 		local v = list[i]
 		-- slight tilt so the flat of the blade catches the light as it sweeps
-		local cf = bl.CFrame * CFrame.Angles(0, 0, 0.35 + math.sin(now * 3 + i) * 0.15)
+		local cf = bl.CFrame * CFrame.Angles(0, 0, 0.35 + (ForestFX.Enabled() and ForestFX.Reduced() and 0 or math.sin(now * 3 + i) * 0.15))
 		for j, part in ipairs(v.Parts) do
 			table.insert(movedParts, part)
 			table.insert(movedCFrames, cf * v.Offsets[j])
@@ -359,7 +377,7 @@ local function flash(target)
 	if flashing[target] or not target.Parent then return end
 	local h = Instance.new("Highlight")
 	h.FillColor = Color3.new(1, 1, 1)
-	h.FillTransparency = 0.35
+	h.FillTransparency = ForestFX.Enabled() and .76 or .35
 	h.OutlineTransparency = 1
 	h.DepthMode = Enum.HighlightDepthMode.Occluded
 	h.Adornee = target
@@ -398,23 +416,40 @@ local function sparks(pos, color, count)
 	Debris:AddItem(att, 0.6)
 end
 
+local recentNumbers=setmetatable({},{__mode="k"})
+local numberBudget,numberTime=9,0
+
 Remotes.Hits.OnClientEvent:Connect(function(hits)
+	local polished=ForestFX.Enabled()
+	local tick=os.clock()
+	if polished then
+		numberBudget=math.min(9,numberBudget+(tick-numberTime)*12)
+		numberTime=tick
+	end
 	for _, h in ipairs(hits) do
 		local pos, dmg, target, weak = h[1], h[2], h[3], h[4]
 		local isMe = target == player.Character
+		if polished and not isMe and not ForestFX.Near(pos,95) then continue end
 		if target then
-			flash(target)
-			if player:GetAttribute("Pref_Graphics") ~= "Low" then
+			if not polished or not ForestFX.Reduced() then flash(target) end
+			if ForestFX.Enabled() then
+				if not target:GetAttribute("IsTree") then ForestFX.Burst("Glint",pos,targetColor(target),weak and 2 or 4) end
+			elseif player:GetAttribute("Pref_Graphics") ~= "Low" then
 				sparks(pos, targetColor(target), weak and 2 or 6)
 			end
 		end
 		if player:GetAttribute("Pref_DamageNumbers") == false and not isMe then continue end
-		local jitter = Vector3.new(math.random(-8, 8) / 10, 1.2, math.random(-8, 8) / 10)
+		if polished and target and not isMe then
+			if numberBudget<1 or tick-(recentNumbers[target] or -math.huge)<.52 then continue end
+			recentNumbers[target]=tick
+			numberBudget-=1
+		end
+		local jitter = polished and Vector3.new(0,1.4,0) or Vector3.new(math.random(-8, 8) / 10, 1.2, math.random(-8, 8) / 10)
 		local text = "-" .. (dmg < 10 and string.format("%.1f", dmg):gsub("%.0$", "") or Config.FormatNumber(dmg))
 		if weak then
-			floatText(pos + jitter, text, Color3.fromRGB(150, 150, 160), 18, 2, 0.5)
+			floatText(pos + jitter, text, Color3.fromRGB(150, 150, 160), 18, polished and ForestFX.Reduced() and 0 or 2, 0.5)
 		else
-			floatText(pos + jitter, text, isMe and Color3.fromRGB(255, 70, 70) or Color3.fromRGB(255, 240, 120), isMe and 34 or 26, 3, 0.7)
+			floatText(pos + jitter, text, isMe and Color3.fromRGB(255, 70, 70) or Color3.fromRGB(255, 240, 120), isMe and 34 or polished and 22 or 26, polished and ForestFX.Reduced() and 0 or 3, polished and .52 or .7)
 		end
 	end
 end)
@@ -460,11 +495,15 @@ end
 
 Remotes.Shatter.OnClientEvent:Connect(function(pos, parts, kind, info)
 	if info and info.Tree then return end -- trees get the falling animation in ChopEffects
+	if ForestFX.Enabled() and not ForestFX.Near(pos,100) then return end
 	-- small "poof"
 	local first = parts[1]
-	if first then sparks(pos, first[3], 18) end
+	if first then
+		if ForestFX.Enabled() then ForestFX.Burst("Glint",pos,first[3],9)
+		else sparks(pos,first[3],18) end
+	end
 
-	local budget = math.min(40, MAX_DEBRIS - liveDebris)
+	local budget = ForestFX.Enabled() and math.min(ForestFX.Quality()==1 and 8 or 23,90-liveDebris) or math.min(40,MAX_DEBRIS-liveDebris)
 	if budget <= 0 then return end
 	local perPart = math.max(1, math.floor(budget / math.max(#parts, 1)))
 

@@ -31,12 +31,14 @@ function K.Mutate(m, mutId)
 	if not mut or not tt then return end
 	Config.ApplyMutationLook(m, mutId)
 	m:SetAttribute("Mutation", mutId)
+	local polished=workspace:GetAttribute("BladeForestArt")=="v1"
+	if polished then m:AddTag("ForestMutation") end
 	m:SetAttribute("Health", math.floor(tt.Health * mut.HealthMult))
 	m:SetAttribute("MaxHealth", math.floor(tt.Health * mut.HealthMult))
 	m:SetAttribute("Reward", math.floor(tt.Logs * mut.LogMult))
 	m:SetAttribute("TreeName", mut.Name .. " " .. tt.Name)
 	local pp = m.PrimaryPart
-	if pp and not pp:FindFirstChild("MutationFX") then
+	if not polished and pp and not pp:FindFirstChild("MutationFX") then
 		local _, ext = m:GetBoundingBox()
 		local att = Instance.new("Attachment")
 		att.Name = "MutationFX"

@@ -359,6 +359,14 @@ local function spawnBoss()
 	model.HumanoidRootPart:SetNetworkOwner(nil)
 	CollectionService:AddTag(model, "BladeNPC")
 	CollectionService:AddTag(model, "Boss")
+	if workspace:GetAttribute("BladeForestArt")=="v1" then
+		model:SetAttribute("ForestBossId","BladeKing")
+		model:AddTag("ForestBoss")
+		model:GetAttributeChangedSignal("Frenzy"):Connect(function()
+			if model:GetAttribute("Frenzy") and hum.Health>0 then model:SetAttribute("ForestBossPhase","Frenzy") end
+		end)
+		hum.Died:Connect(function() model:SetAttribute("ForestBossPhase","Victory") end)
+	end
 
 	NotifyRemote:FireAllClients("☠ The Blade King has appeared in the arena! ☠", "boss")
 

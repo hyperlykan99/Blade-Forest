@@ -14,6 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local Breakables = workspace:WaitForChild("Breakables")
 local TreeModels = ReplicatedStorage:WaitForChild("TreeModels")
+local ForestFX = require(script.Parent:WaitForChild("ForestEffects"))
 
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -559,7 +560,7 @@ local function onMyChop(pos, weak, tree)
 	local now = os.clock()
 	combo = (now - lastChop < 2.5) and combo + 1 or 1
 	lastChop = now
-	if now - lastSound > 0.05 then
+	if now - lastSound > (ForestFX.Enabled() and .11 or .05) then
 		lastSound = now
 		if weak then
 			sound3D(CHOP_SOUND, pos, 0.3, 0.6)
@@ -582,7 +583,8 @@ Remotes.Hits.OnClientEvent:Connect(function(hits)
 	for _, h in ipairs(hits) do
 		local pos, target, weak, attackerId = h[1], h[3], h[4], h[5]
 		if target and target.Parent and target:GetAttribute("IsTree") then
-			startShake(target, pos, weak)
+			if not ForestFX.Enabled() or not ForestFX.Reduced() then startShake(target, pos, weak) end
+			ForestFX.TreeHit(pos,target,weak,attackerId==player.UserId)
 			if attackerId == player.UserId then
 				lastStruck[target] = os.clock()
 				onMyChop(pos, weak, target)
@@ -664,6 +666,7 @@ end
 
 Remotes.Shatter.OnClientEvent:Connect(function(pos, partsData, kind, info)
 	if not (info and info.Tree) then return end
+	if ForestFX.Enabled() and not ForestFX.Near(pos,130) then return end
 
 	-- clone the real tree model locally so it can fall
 	local tpl = info.Template and TreeModels:FindFirstChild(info.Template)
@@ -696,11 +699,13 @@ Remotes.Shatter.OnClientEvent:Connect(function(pos, partsData, kind, info)
 	local base = info.Base
 
 	local duration = math.clamp(0.45 + height * 0.025, 0.5, 1.1)
+	local still = ForestFX.Enabled() and ForestFX.Reduced()
+	if still then duration=.24 end
 	local t0 = os.clock()
 	local conn
 	conn = RunService.RenderStepped:Connect(function()
 		local a = math.min((os.clock() - t0) / duration, 1)
-		local ang = (math.pi / 2) * 0.92 * a * a -- accelerate like a real fall
+		local ang = still and math.pi*.46 or (math.pi / 2) * 0.92 * a * a -- accelerate like a real fall
 		local rot = CFrame.new(base) * CFrame.fromAxisAngle(axis, ang) * CFrame.new(-base)
 		tree:PivotTo(rot * origPivot)
 		if a < 1 then return end
@@ -709,8 +714,12 @@ Remotes.Shatter.OnClientEvent:Connect(function(pos, partsData, kind, info)
 		-- impact
 		local impact = base + away * height * 0.6
 		sound3D(FALL_SOUND, impact, 0.6, math.clamp(1.3 - height / 40, 0.7, 1.2))
-		dust(impact, Color3.fromRGB(190, 170, 140), 12)
-		if leafColor then dust(base + away * height * 0.9, leafColor, 10) end
+		if ForestFX.Enabled() then
+			ForestFX.TreeFall(impact,info,leafColor)
+		else
+			dust(impact, Color3.fromRGB(190, 170, 140), 12)
+			if leafColor then dust(base + away * height * 0.9, leafColor, 10) end
+		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if player:GetAttribute("Pref_ScreenShake") ~= false and not player:GetAttribute("Pref_ReducedMotion") and root and (root.Position - impact).Magnitude < 30 and height > 14 then
 			local hum = player.Character:FindFirstChildOfClass("Humanoid")
@@ -734,7 +743,7 @@ Remotes.Shatter.OnClientEvent:Connect(function(pos, partsData, kind, info)
 			local p = base + away * (height * i / (n + 1)) + Vector3.new(0, 0.8 * scale, 0)
 			table.insert(logs, makeLog(CFrame.lookAt(p, p + away) * CFrame.Angles(0, math.pi / 2, 0), scale))
 		end
-		if info.Killer == player.UserId then
+		if info.Killer == player.UserId and not still then
 			flyLogsToMe(logs, info.Logs or 0)
 		else
 			for _, l in ipairs(logs) do
