@@ -20,10 +20,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | Timber Haven art. Cloud update `2026-11-22T06:02:10.093Z`. Final numeric version unverified. QA baseline v75, art checkpoint v76. |
-| Active AI editor | None. Studio in Edit mode. |
+| Active AI editor | Codex, Project Wow Factor. |
 | Last handoff author / time | Codex, Timber Haven visual overhaul, November 21 at 10:02 p.m. PST. |
 | Last confirmed gameplay edit | QA v75. Timber art added new tree visuals, moved tree slots away from trails and re-housed the existing leaderboards. |
-| Current task | None claimed. Timber Haven art saved. Release is on hold. |
+| Current task | Owner-authorized art, lighting and effects overhaul across the three private development biomes. |
 | Next action | Review Timber Haven on a physical mobile device in the next owner-authorized QA session. |
 | Code source of truth | `art/timber-haven-tree-overhaul` implementation `85167c9acecadf205f6f62907839442fdd2a38b3`, recorded in `Workspace.TimberArtDevBuild`. QA baseline branch `qa/full-game-validation` at `0903e765cde5e43481906e0ba10705f5a159b558`. |
 | Documentation source of truth | GitHub `docs/` |
