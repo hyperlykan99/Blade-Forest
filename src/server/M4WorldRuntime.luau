@@ -20,20 +20,34 @@ local builder=require(ServerStorage:WaitForChild("M4Construction"))
 local architecture=require(ServerStorage:WaitForChild("M4Architecture"))
 local config=require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local landscape, visuals, artPlan, artStyle, artStats
+local professional, professionalModule
 if workspace:GetAttribute("BladeTimberArt")=="v1" then
 	local ok,reason=pcall(function()
 		local planner=require(ServerStorage.TimberLandscape)
 		local plan,stats=planner.Plan(timber,layout)
 		assert(plan,("Could not replant %s at %s"):format(tostring(stats.Unplaced),tostring(stats.At)))
+		if workspace:GetAttribute("BladeForestAssetArt")=="v1" then
+			local available,pack=pcall(function()
+				professionalModule=require(ServerStorage.ProfessionalForest)
+				return professionalModule.Prepare(ServerStorage:FindFirstChild("ProfessionalArtAssets"))
+			end)
+			if available and pack then professional=pack end
+			if not available then warn("Keeping recorded art build:",pack) end
+		end
 		local treeArt=require(ServerStorage.TimberVisuals)
 		local assets=ServerStorage:FindFirstChild("TimberArtAssets")
 		local crowns={}
-		for id in pairs(treeArt.Recipes) do
-			local visual=treeArt.Visual(id,assets)
-			visual.Name="TimberArt_"..id
-			crowns[id]=visual
+		if professional then
+			crowns=professional.Templates
+			artStyle=professional.Apply
+		else
+			for id in pairs(treeArt.Recipes) do
+				local visual=treeArt.Visual(id,assets)
+				visual.Name="TimberArt_"..id
+				crowns[id]=visual
+			end
+			artStyle=function(tree) treeArt.Apply(tree,assets,crowns) end
 		end
-		artStyle=function(tree) treeArt.Apply(tree,assets,crowns) end
 		landscape,visuals,artPlan,artStats=planner,crowns,plan,stats
 	end)
 	if not ok then warn("Keeping staged Timber art:",reason) end
@@ -68,7 +82,7 @@ if artPlan then
 		artStyle(entry.Tree)
 		if i%120==0 then task.wait() end
 	end
-	builder.SetTimberStyle(artStyle)
+	builder.SetTreeStyle(artStyle,professional~=nil)
 	for key,value in pairs(artStats) do active:SetAttribute("TimberArt"..key,value) end
 end
 for _,package in ipairs({timber,frost}) do
@@ -78,6 +92,7 @@ for _,package in ipairs({timber,frost}) do
 	local n=0
 	for _,plot in ipairs(container:GetChildren()) do
 		for _,tree in ipairs(plot:GetChildren()) do
+			if professional and package==frost then artStyle(tree) end
 			tree.Parent=breakables n+=1
 			if n%220==0 then task.wait() end
 		end
@@ -130,7 +145,14 @@ for name,id in pairs({M4TimberTree="Grove_Common",M4SnowTree="Frost_Common"}) do
 end
 if workspace:GetAttribute("BladeForestArt")=="v1" then
 	local ok,err=pcall(function()
-		require(ServerStorage.ForestScenery).Build(active,timber.TimberHaven,frost.FrostboundReach,layout,breakables)
+		if professional then
+			professionalModule.Dress(professional,active,timber.TimberHaven,frost.FrostboundReach)
+			for channel,value in pairs(professional.Textures) do
+				ReplicatedStorage:SetAttribute("ProfessionalForestVFX"..channel,value)
+			end
+		else
+			require(ServerStorage.ForestScenery).Build(active,timber.TimberHaven,frost.FrostboundReach,layout,breakables)
+		end
 		for _,tree in ipairs(breakables:GetChildren()) do
 			if tree:GetAttribute("Mutation") then
 				tree:AddTag("ForestMutation")

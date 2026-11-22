@@ -1,5 +1,6 @@
 -- Client cosmetics shared by blade, forest and encounter presentation.
 local Players=game:GetService("Players")
+local ReplicatedStorage=game:GetService("ReplicatedStorage")
 local TweenService=game:GetService("TweenService")
 local player=Players.LocalPlayer
 local V=Vector3.new
@@ -98,7 +99,7 @@ function FX.Burst(kind,pos,color,count,distance)
 	local d=pop[kind]
 	local e=entry.Emitter
 	entry.Marker.CFrame=CF(pos)
-	e.Texture="rbxasset://textures/particles/"..d[1]
+	e.Texture=ReplicatedStorage:GetAttribute("ProfessionalForestVFX"..kind) or "rbxasset://textures/particles/"..d[1]
 	e.Lifetime=NumberRange.new(d[2],d[3])
 	e.Speed=NumberRange.new(d[4],d[5])
 	e.Size=NumberSequence.new(d[6],0)

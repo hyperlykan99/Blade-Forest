@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Sapling",
+    "source": "tree_small",
+    "triangles": 62,
+    "metres": [
+      0.895,
+      2.8,
+      1.033
+    ]
+  },
+  {
+    "name": "GoldenOak",
+    "source": "tree_oak_fall",
+    "triangles": 194,
+    "metres": [
+      2.821,
+      5.4,
+      3.257
+    ]
+  },
+  {
+    "name": "TallPine",
+    "source": "tree_pineTallB_detailed",
+    "triangles": 166,
+    "metres": [
+      1.158,
+      5.8,
+      1.175
+    ]
+  },
+  {
+    "name": "SnowPine",
+    "source": "tree_pineRoundB",
+    "triangles": 262,
+    "metres": [
+      2.225,
+      5.0,
+      2.564
+    ]
+  },
+  {
+    "name": "Bridge",
+    "source": "bridge_woodRound",
+    "triangles": 335,
+    "metres": [
+      1.04,
+      0.45,
+      1.04
+    ]
+  },
+  {
+    "name": "Boulder",
+    "source": "rock_largeC",
+    "triangles": 72,
+    "metres": [
+      1.064,
+      0.321,
+      1.016
+    ]
+  },
+  {
+    "name": "Crystal",
+    "source": "rock_tallF",
+    "triangles": 46,
+    "metres": [
+      0.444,
+      0.574,
+      0.512
+    ]
+  },
+  {
+    "name": "Lantern",
+    "source": "lantern",
+    "triangles": 158,
+    "metres": [
+      0.216,
+      1.556,
+      0.224
+    ]
+  },
+  {
+    "name": "MarketStall",
+    "source": "stall-green",
+    "triangles": 320,
+    "metres": [
+      1.0,
+      1.237,
+      1.0
+    ]
+  },
+  {
+    "name": "GateArch",
+    "source": "wall-doorway-round",
+    "triangles": 344,
+    "metres": [
+      1.98,
+      1.0,
+      0.1
+    ]
+  },
+  {
+    "name": "Cottage",
+    "source": "Fantasy Town Kit wall, roof and gable modules",
+    "triangles": 1312,
+    "metres": [
+      6.4,
+      4.922,
+      5.35
+    ]
+  }
+]

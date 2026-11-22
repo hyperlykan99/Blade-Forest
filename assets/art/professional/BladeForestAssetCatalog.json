@@ -1,0 +1,442 @@
+[
+  {
+    "name": "Sapling",
+    "source": "tree_small",
+    "triangles": 62,
+    "metres": [
+      0.895,
+      2.8,
+      1.033
+    ]
+  },
+  {
+    "name": "Blossom",
+    "source": "tree_detailed",
+    "triangles": 402,
+    "metres": [
+      2.416,
+      3.8,
+      2.172
+    ]
+  },
+  {
+    "name": "AutumnMaple",
+    "source": "tree_default_fall",
+    "triangles": 228,
+    "metres": [
+      1.945,
+      4.4,
+      1.684
+    ]
+  },
+  {
+    "name": "RubyMaple",
+    "source": "tree_detailed_fall",
+    "triangles": 402,
+    "metres": [
+      3.052,
+      4.8,
+      2.744
+    ]
+  },
+  {
+    "name": "GoldenOak",
+    "source": "tree_oak_fall",
+    "triangles": 194,
+    "metres": [
+      2.821,
+      5.4,
+      3.257
+    ]
+  },
+  {
+    "name": "Sakura",
+    "source": "tree_fat",
+    "triangles": 50,
+    "metres": [
+      3.872,
+      5.9,
+      3.353
+    ]
+  },
+  {
+    "name": "AncientCrown",
+    "source": "tree_plateau",
+    "triangles": 215,
+    "metres": [
+      3.134,
+      6.4,
+      3.355
+    ]
+  },
+  {
+    "name": "Spruce",
+    "source": "tree_pineDefaultA",
+    "triangles": 230,
+    "metres": [
+      1.48,
+      4.3,
+      1.48
+    ]
+  },
+  {
+    "name": "TallPine",
+    "source": "tree_pineTallB_detailed",
+    "triangles": 166,
+    "metres": [
+      1.158,
+      5.8,
+      1.175
+    ]
+  },
+  {
+    "name": "FrostSpruce",
+    "source": "tree_pineRoundC",
+    "triangles": 206,
+    "metres": [
+      1.917,
+      5.0,
+      2.214
+    ]
+  },
+  {
+    "name": "EmberPine",
+    "source": "tree_pineTallC_detailed",
+    "triangles": 154,
+    "metres": [
+      1.754,
+      6.1,
+      2.026
+    ]
+  },
+  {
+    "name": "GoldenPine",
+    "source": "tree_pineGroundA",
+    "triangles": 82,
+    "metres": [
+      3.467,
+      6.6,
+      4.003
+    ]
+  },
+  {
+    "name": "GiantMushroom",
+    "source": "mushroom_tanGroup",
+    "triangles": 144,
+    "metres": [
+      4.736,
+      4.4,
+      4.465
+    ]
+  },
+  {
+    "name": "MoonlitBonsai",
+    "source": "tree_plateau_dark",
+    "triangles": 215,
+    "metres": [
+      3.183,
+      6.5,
+      3.407
+    ]
+  },
+  {
+    "name": "SnowPine",
+    "source": "tree_pineRoundB",
+    "triangles": 262,
+    "metres": [
+      2.225,
+      5.0,
+      2.564
+    ]
+  },
+  {
+    "name": "GlacierPine",
+    "source": "tree_pineTallD_detailed",
+    "triangles": 170,
+    "metres": [
+      1.435,
+      6.2,
+      1.657
+    ]
+  },
+  {
+    "name": "Frostwood",
+    "source": "tree_pineSmallD",
+    "triangles": 54,
+    "metres": [
+      2.129,
+      5.7,
+      2.129
+    ]
+  },
+  {
+    "name": "AuroraPine",
+    "source": "tree_pineRoundF",
+    "triangles": 214,
+    "metres": [
+      2.799,
+      6.6,
+      2.799
+    ]
+  },
+  {
+    "name": "Starfrost",
+    "source": "tree_pineRoundD",
+    "triangles": 170,
+    "metres": [
+      3.109,
+      7.0,
+      3.59
+    ]
+  },
+  {
+    "name": "Frostleaf",
+    "source": "tree_pineGroundB",
+    "triangles": 82,
+    "metres": [
+      3.412,
+      7.4,
+      3.939
+    ]
+  },
+  {
+    "name": "FrostGiant",
+    "source": "tree_pineTallA_detailed",
+    "triangles": 134,
+    "metres": [
+      2.02,
+      8.0,
+      2.05
+    ]
+  },
+  {
+    "name": "Bridge",
+    "source": "bridge_woodRound",
+    "triangles": 335,
+    "metres": [
+      1.04,
+      0.45,
+      1.04
+    ]
+  },
+  {
+    "name": "Trail",
+    "source": "path_stone",
+    "triangles": 136,
+    "metres": [
+      1.0,
+      0.05,
+      0.577
+    ]
+  },
+  {
+    "name": "River",
+    "source": "ground_riverStraight",
+    "triangles": 54,
+    "metres": [
+      1.0,
+      0.05,
+      1.0
+    ]
+  },
+  {
+    "name": "Waterfall",
+    "source": "cliff_waterfall_rock",
+    "triangles": 34,
+    "metres": [
+      1.0,
+      1.0,
+      0.169
+    ]
+  },
+  {
+    "name": "Boulder",
+    "source": "rock_largeC",
+    "triangles": 72,
+    "metres": [
+      1.064,
+      0.321,
+      1.016
+    ]
+  },
+  {
+    "name": "Cliff",
+    "source": "cliff_blockSlope_rock",
+    "triangles": 70,
+    "metres": [
+      1.2,
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "name": "Crystal",
+    "source": "rock_tallF",
+    "triangles": 46,
+    "metres": [
+      0.444,
+      0.574,
+      0.512
+    ]
+  },
+  {
+    "name": "CrystalSpine",
+    "source": "rock_tallA",
+    "triangles": 136,
+    "metres": [
+      0.983,
+      0.996,
+      0.683
+    ]
+  },
+  {
+    "name": "Fern",
+    "source": "plant_flatTall",
+    "triangles": 32,
+    "metres": [
+      0.272,
+      0.284,
+      0.272
+    ]
+  },
+  {
+    "name": "Foxglove",
+    "source": "flower_purpleA",
+    "triangles": 73,
+    "metres": [
+      0.159,
+      0.242,
+      0.181
+    ]
+  },
+  {
+    "name": "Fence",
+    "source": "fence_planksDouble",
+    "triangles": 120,
+    "metres": [
+      1.0,
+      0.345,
+      0.06
+    ]
+  },
+  {
+    "name": "NurseLog",
+    "source": "log_large",
+    "triangles": 96,
+    "metres": [
+      1.0,
+      0.417,
+      0.549
+    ]
+  },
+  {
+    "name": "Cart",
+    "source": "cart-high",
+    "triangles": 1013,
+    "metres": [
+      0.65,
+      0.861,
+      1.39
+    ]
+  },
+  {
+    "name": "Lantern",
+    "source": "lantern",
+    "triangles": 158,
+    "metres": [
+      0.216,
+      1.556,
+      0.224
+    ]
+  },
+  {
+    "name": "MarketStall",
+    "source": "stall-green",
+    "triangles": 320,
+    "metres": [
+      1.0,
+      1.237,
+      1.0
+    ]
+  },
+  {
+    "name": "GateArch",
+    "source": "wall-doorway-round",
+    "triangles": 344,
+    "metres": [
+      1.98,
+      1.0,
+      0.1
+    ]
+  },
+  {
+    "name": "RuinedWall",
+    "source": "wall-broken",
+    "triangles": 166,
+    "metres": [
+      0.117,
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "name": "WinterArch",
+    "source": "wall-wood-doorway-round",
+    "triangles": 344,
+    "metres": [
+      1.98,
+      1.0,
+      0.1
+    ]
+  },
+  {
+    "name": "Pavers",
+    "source": "path_stoneCircle",
+    "triangles": 164,
+    "metres": [
+      0.932,
+      0.05,
+      0.877
+    ]
+  },
+  {
+    "name": "TimberSign",
+    "source": "banner-green",
+    "triangles": 100,
+    "metres": [
+      0.05,
+      0.839,
+      0.5
+    ]
+  },
+  {
+    "name": "Cottage",
+    "source": "Fantasy Town Kit wall, roof and gable modules",
+    "triangles": 1312,
+    "metres": [
+      6.4,
+      4.922,
+      5.35
+    ]
+  },
+  {
+    "name": "Workshop",
+    "source": "Fantasy Town Kit wall, roof and gable modules",
+    "triangles": 1244,
+    "metres": [
+      7.4,
+      5.852,
+      6.25
+    ]
+  },
+  {
+    "name": "RecordsHall",
+    "source": "Fantasy Town Kit wall, roof and gable modules",
+    "triangles": 1348,
+    "metres": [
+      14.2,
+      6.968,
+      4.55
+    ]
+  }
+]
