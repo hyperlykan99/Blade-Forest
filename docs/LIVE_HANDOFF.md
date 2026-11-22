@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **Codex full game QA.** Private development saved as **v75**. Release is on hold for physical devices, multi-client load and independent server persistence. Studio editor released. See the [QA results](qa/FULL_GAME_QA_RESULTS.md).
 > **Codex M8 final content.** Private development saved as **v69**. Studio is in Edit mode and the editor is released. See the [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md).
 > **Codex M7 social systems.** Private development cloud save confirmed. Studio is in Edit mode and the editor is released. See the [M7 results](m7/M7_SOCIAL_SYSTEMS_RESULTS.md).
 > **2026-11-20 PST · Codex M6 endgame.** The private dev place is saved as **v60**. The editor is released in Edit mode. See the [M6 results](m6/M6_ENDGAME_RESULTS.md).
@@ -17,16 +18,16 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | **M8 v69**, Team Create confirmed. Cloud update `2026-11-21T23:37:41.438Z`. |
-| Active AI editor | Codex, owner-authorized QA |
-| Last handoff author / time | Codex, M8 Final Content. Cloud update `2026-11-21T23:37:41.438Z`. |
-| Last confirmed gameplay edit | Eight-week Verdant Oath season, permanent collection edition, 28 achievements and skippable onboarding. |
-| Current task | None claimed. M8 source, private save and essential checks are recorded. |
-| Next action | Await owner direction for comprehensive testing. M7 trading and paid gifting stay disabled. |
-| Code source of truth | Private dev v69 and `m8/seasons-collection-final-content`, implementation `2d719aa97093481a719c23f1c625811132b830f9`. |
+| Most recent documented place version | **QA v75**, Studio Version History confirmed. Cloud update `2026-11-22T00:23:31.521Z`. |
+| Active AI editor | None. Studio is in Edit mode. |
+| Last handoff author / time | Codex, Full Game QA. Cloud update `2026-11-22T00:23:31.521Z`. |
+| Last confirmed gameplay edit | Replaced the inaccessible Silvershore mesh, fixed UTC countdowns and boss phase/payout checks, fenced legacy remotes during handoff, and reduced blade/Auto Chop allocations. |
+| Current task | None claimed. Private QA candidate saved. Release is on hold. |
+| Next action | Run the documented physical-device, multi-client and independent-server validation before release. |
+| Code source of truth | Private dev v75 and `qa/full-game-validation`, implementation `5248c6d94b2d5125b5bbb1d4857819dc89484df7`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
-| Blockers | Comprehensive device and gameplay testing, seasonal dashboard telemetry, and existing Silvershore Saber mesh permission remain unverified or unresolved. |
+| Blockers | Physical iPhone and Android, 20-player load, genuinely separate server sessions for saves and escrow, and full natural balance remain unverified. |
 
 ## Who is responsible
 
@@ -86,14 +87,20 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Started | M8 started from the confirmed private M7 cloud save |
-| Task / owner approval | Owner-authorized M8 final content, essential checks and private save |
-| Studio place ID and saved version checked | `103379930563763` / `10777797608`, v2 world, Edit mode, v69, cloud update `2026-11-21T23:37:41.438Z` |
-| Git branch / baseline | `m8/seasons-collection-final-content`, M7 implementation `34ef2e9a101b3a3c8ed40f24c04c5f48666f4c11` |
+| Started | From the verified private M8 build v69 |
+| Task / owner approval | Owner-authorized full game QA, recoverable fixes and private save |
+| Studio place ID and saved version checked | `103379930563763` / `10777797608`, v2, Edit mode, v75, cloud update `2026-11-22T00:23:31.521Z` |
+| Git branch / baseline | `qa/full-game-validation`, M8 implementation `2d719aa97093481a719c23f1c625811132b830f9` |
 | Scripts or objects being edited | None |
-| Work in progress / unsaved changes | M8 save confirmed by Team Create |
-| Tests and results | [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md) records the 17 source checks, profile fixture, UI smoke and economy projection |
-| Risks / blockers | Rollback checkpoint cloud update `2026-11-21T23:25:31.493Z`. `ServerStorage.M8Rollback` holds 13 source copies. Full device testing and live reward checks remain open. |
+| Work in progress / unsaved changes | No unsaved changes reported. Sandbox profile mode cleared and temporary multiplayer driver removed. |
+| Tests and results | [QA matrix](qa/FULL_GAME_QA_RESULTS.md) and [Studio measurements](qa/STUDIO_EVIDENCE.json) |
+| Risks / blockers | Private QA rollback v70 and `ServerStorage.QARollback` with 25 source and two model records. Physical-device, client-load and hosted persistence gates remain open. |
+
+## Codex → next editor (QA)
+
+- Private dev v75 contains the QA implementation at `5248c6d94b2d5125b5bbb1d4857819dc89484df7`, recorded as `Workspace.QADevBuild`.
+- Keep trading and gifting disabled. Use the standalone QA namespace for test accounts and keep the sandbox toggle off in the saved handoff.
+- The [release checklist](qa/RELEASE_READINESS.md) gives the remaining tests, migration rehearsal and rollback steps.
 
 ## Codex → next editor (M8)
 

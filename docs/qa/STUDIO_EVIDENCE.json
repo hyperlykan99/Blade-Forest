@@ -1,0 +1,371 @@
+{
+  "scope": "Private Studio sandbox. Device preset and long-run economy model are distinct from physical-device or independent hosted testing.",
+  "results": {
+    "freshJourney": {
+      "to": 1,
+      "upgrade": "Speed",
+      "rolled": "FarmhandScythe",
+      "logs": 140,
+      "tutorialAck": true,
+      "from": 0,
+      "frostDenied": true,
+      "chops": 19,
+      "equipped": "FarmhandScythe"
+    },
+    "m0": {
+      "Migration": {
+        "pass": 64,
+        "fail": 0
+      },
+      "Locking": {
+        "pass": 15,
+        "fail": 0
+      },
+      "Receipts": {
+        "pass": 13,
+        "fail": 0
+      }
+    },
+    "m01": {
+      "pass": 64,
+      "fail": 0
+    },
+    "m2": {
+      "pass": 46,
+      "fail": 0
+    },
+    "m3": {
+      "Models": {
+        "FrostSeal": 8,
+        "Dragon_G": 3,
+        "Cat_R": 13,
+        "Fox_G": 3,
+        "Owl": 48,
+        "Penguin_G": 3,
+        "Owl_R": 51,
+        "QuartzHare_G": 13,
+        "Penguin": 2,
+        "JadeMantis": 12,
+        "Dragon_R": 5,
+        "PrismStag": 14,
+        "GeodeTortoise_G": 13,
+        "AuroraRay_R": 11,
+        "Penguin_R": 5,
+        "TundraMammoth_G": 14,
+        "Bunny_R": 10,
+        "Cat_G": 11,
+        "Bunny": 7,
+        "AuroraRay_G": 9,
+        "SnowPika_G": 13,
+        "QuartzHare": 12,
+        "Owl_G": 49,
+        "BorealLindwyrm_G": 13,
+        "CrystalWyvern": 12,
+        "GeodeTortoise_R": 15,
+        "QuartzHare_R": 15,
+        "CrystalWyvern_R": 15,
+        "Fox_R": 5,
+        "CrystalWyvern_G": 13,
+        "PrismStag_G": 15,
+        "GlacierWolf": 12,
+        "Bear_R": 12,
+        "AmethystBat": 10,
+        "Fox": 2,
+        "AuroraRay": 8,
+        "Bunny_G": 8,
+        "GlacierWolf_G": 13,
+        "GlacierWolf_R": 15,
+        "Dragon": 2,
+        "FrostSeal_G": 9,
+        "Cat": 10,
+        "CitrineRam_R": 17,
+        "SnowPika": 12,
+        "AmethystBat_G": 11,
+        "IcePhoenix_G": 11,
+        "GeodeTortoise": 12,
+        "SnowPika_R": 15,
+        "Bear": 9,
+        "BorealLindwyrm": 12,
+        "TundraMammoth_R": 16,
+        "JadeMantis_R": 15,
+        "PrismStag_R": 17,
+        "BorealLindwyrm_R": 15,
+        "IcePhoenix": 10,
+        "CitrineRam": 14,
+        "AmethystBat_R": 13,
+        "FrostSeal_R": 11,
+        "JadeMantis_G": 13,
+        "Bear_G": 10,
+        "IcePhoenix_R": 13,
+        "TundraMammoth": 13,
+        "CitrineRam_G": 15
+      },
+      "Mastery": 100,
+      "TP": 240,
+      "Traits": 12,
+      "Nodes": 72,
+      "Weapons": 120,
+      "Pets": 21,
+      "Capstones": 6
+    },
+    "m1GateRetest": {
+      "failed": 0,
+      "passed": 11,
+      "ready": true
+    },
+    "realStoreLockSuite": {
+      "pass": 11,
+      "summary": "== T3 session locking (real DataStore, single process): 11 pass, 0 fail\n  PASS T3.1 new profile acquire - ok\n  PASS T3.2 duplicate session refused while lease fresh - locked\n  PASS T3.3 owner write while locked\n  PASS T3.4 lease not yet expired -> still locked\n  PASS T3.5 lease refresh by autosave\n  PASS T3.6 stale lock recovery - ok\n  PASS T3.7 stale session write rejected - lost\n  PASS T3.8 release clears lock\n  PASS T3.9 acquire after release\n  PASS T3.10 released session cannot write\n  PASS T3.15 5 sequential handoffs, no lost/duplicated write (simulated) - 5/5",
+      "fail": 0
+    },
+    "tradeAndPhaseFixture": {
+      "1": {
+        "Passed": true,
+        "Case": "Disconnect before escrow"
+      },
+      "2": {
+        "Passed": true,
+        "Case": "One escrow saved, second untouched"
+      },
+      "3": {
+        "Passed": true,
+        "Case": "Both escrows, first acknowledged twice, then abort"
+      },
+      "4": {
+        "Passed": true,
+        "Case": "Both saves and commit, restart before either settlement"
+      },
+      "5": {
+        "Passed": true,
+        "Case": "Journal expiry and absent journal"
+      },
+      "6": {
+        "Passed": true,
+        "Case": "Large Heart hits preserve both transitions"
+      },
+      "7": {
+        "Passed": true,
+        "Case": "Vault and favorites block eligible weapon serial"
+      }
+    },
+    "trial": {
+      "trial": 1,
+      "time": 1795305568,
+      "token": 4,
+      "best": 9,
+      "pos": "-20.000009536743164, 3.796876907348633, -2999.99951171875"
+    },
+    "dailyContract": {
+      "goal": 45,
+      "progress": 45,
+      "claim": true,
+      "time": 1795240871.468146,
+      "reason": "awarded"
+    },
+    "story": {
+      "trial": 9,
+      "objective": "Timber work",
+      "tokens": 4,
+      "selected": true,
+      "quest": true,
+      "reason": "claimed"
+    },
+    "firstRejoin": {
+      "p": true,
+      "guild": "QA Fern Circle",
+      "legacyDelta": 0.46483898162841797,
+      "tech": true,
+      "loaded": true,
+      "clockDelta": 0.3766801357269287,
+      "trait": "Sapling",
+      "trial": 9,
+      "island": "TimberHaven",
+      "tokens": 4,
+      "trade": false,
+      "vault": "FarmhandScythe",
+      "tutorial": true,
+      "chops": 701,
+      "pet": "Cat"
+    },
+    "lateRejoin": {
+      "socket": "Edge1",
+      "loaded": true,
+      "eternal": true,
+      "multiReadable": true,
+      "island": "FrostboundReach",
+      "week": 2968,
+      "key": 0,
+      "heart": 1,
+      "clock": 1795306889,
+      "raid": "Crystal Hydra",
+      "stage": 3,
+      "ready": true
+    },
+    "crystalTravel": {
+      "island": "CrystalWilds",
+      "accepted": true,
+      "reason": "CrystalWilds"
+    },
+    "frostTravel": {
+      "ok": true,
+      "island": "FrostboundReach",
+      "result": "FrostboundReach"
+    },
+    "colossus": {
+      "island": "CrystalWilds",
+      "credit": true,
+      "power": 19905,
+      "seeded": true,
+      "frost": true,
+      "colossus": 1
+    },
+    "expedition": {
+      "island": "FrostboundReach",
+      "returned": true,
+      "phase": "DepthClear",
+      "left": 0,
+      "next": true
+    },
+    "forge": {
+      "power": 79620,
+      "mastery": 49,
+      "keys": 1,
+      "stage": 3,
+      "slot": "Edge1"
+    },
+    "heart": {
+      "phases": {
+        "II": true,
+        "Victory": true,
+        "III": true,
+        "I": true
+      },
+      "island": "FrostboundReach",
+      "life": 23.32758331298828
+    },
+    "heartPayout": {
+      "rolls": 8,
+      "monarch": 1,
+      "eternal": true,
+      "island": "FrostboundReach",
+      "key": 0,
+      "heart": 1,
+      "depth": 1,
+      "saved": true,
+      "week": 2968
+    },
+    "hydra": {
+      "clears": 1,
+      "ledger": 1795306800,
+      "clock": 1795306946,
+      "guard": 1,
+      "hp": 100,
+      "weapon": true
+    },
+    "sandboxHandoff": {
+      "meta": "Profile unavailable",
+      "shop": "Profile unavailable",
+      "roll": "Profile unavailable",
+      "handoff": true
+    },
+    "season": {
+      "metaReason": "Invalid setting",
+      "claimed": true,
+      "active": "VerdantOath01",
+      "duplicate": true,
+      "level": 1,
+      "nonfiniteRejected": true,
+      "reason": "Already claimed"
+    },
+    "collection": {
+      "achievement": true,
+      "repeatRejected": true,
+      "collection": true,
+      "points": 244,
+      "reason": "Already claimed"
+    },
+    "social": {
+      "party": true,
+      "guild": true,
+      "vaulted": true
+    },
+    "serverMetrics": {
+      "players": 1,
+      "trees": {
+        "StarterGrove": 300,
+        "FrostPeaks": 830,
+        "PineForest": 900,
+        "CrystalCanyon": 620
+      },
+      "mean": 17.41710406728089,
+      "max": 39.9363711476326,
+      "studio": true,
+      "crystalPositionHash": "620:1325136453",
+      "island": "TimberHaven",
+      "p95": 28.248729184269905,
+      "p50": 16.744468361139297,
+      "memoryMb": 6400.70703125,
+      "n": 100
+    },
+    "desktopMetrics": {
+      "p50": 173.07515442371368,
+      "streaming": true,
+      "screen": "957, 532",
+      "sample": 100,
+      "max": 342.08863973617554,
+      "memoryMb": 6386.1328125,
+      "sentKbps": 0.3982659876346588,
+      "fps": 5.486997271651326,
+      "island": "TimberHaven",
+      "mobile": false,
+      "p95": 255.40277361869812,
+      "reduced": false,
+      "receivedKbps": 0,
+      "graphics": "High",
+      "ui": true,
+      "meanMs": 182.24904268980026
+    },
+    "iphonePresetMetrics": {
+      "p50": 190.57457149028778,
+      "streaming": true,
+      "screen": "401, 778",
+      "sample": 100,
+      "max": 386.7325782775879,
+      "memoryMb": 6440.21484375,
+      "sentKbps": 3.2324485778808594,
+      "fps": 5.1130983626742275,
+      "island": "TimberHaven",
+      "mobile": true,
+      "p95": 319.66233253479004,
+      "reduced": true,
+      "receivedKbps": 0,
+      "graphics": "Low",
+      "ui": true,
+      "meanMs": 195.576131939888
+    },
+    "candidateFrostMetrics": {
+      "p50": 134.47995483875275,
+      "streaming": true,
+      "screen": "957, 532",
+      "sample": 100,
+      "max": 4757.260799407959,
+      "memoryMb": 6581.1640625,
+      "sentKbps": 0.4281634986400604,
+      "fps": 4.097195547606691,
+      "island": "FrostboundReach",
+      "mobile": false,
+      "p95": 628.9379000663757,
+      "reduced": true,
+      "receivedKbps": 0,
+      "graphics": "Low",
+      "ui": true,
+      "meanMs": 244.06938560307026
+    },
+    "iphoneBounds": {
+      "height": 580,
+      "onScreen": true,
+      "open": false,
+      "width": 372.92999267578125
+    }
+  }
+}
