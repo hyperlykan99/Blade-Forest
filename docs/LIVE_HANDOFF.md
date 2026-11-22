@@ -21,10 +21,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | Private development **v87**. Cloud update `2026-11-22T06:37:43.778Z`. |
-| Active AI editor | None. Studio in Edit mode. |
+| Active AI editor | Codex, Professional Asset Rebuild. |
 | Last handoff author / time | Codex, Project Wow Factor, November 21 at 10:37 p.m. PST. |
 | Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
-| Current task | None claimed. Three-biome visual pass saved. Release is on hold. |
+| Current task | Owner-authorized asset-led rebuild, with imported assets reviewed in quarantine before installation. |
 | Next action | Continue physical-device and multiplayer performance validation in the next owner-authorized QA session. |
 | Code source of truth | `art/ultimate-visual-overhaul` implementation `56c23ffb1ca70ea15b45457af045a770bf4cdba9`, recorded in `Workspace.UltimateVisualDevBuild`. |
 | Documentation source of truth | GitHub `docs/` |
