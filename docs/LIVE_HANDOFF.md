@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **Codex Project Wow Factor.** The three-biome visual pass is saved as private **v87**. Studio is in Edit mode and the editor is released. See the [art direction, test evidence and performance report](art/ULTIMATE_VISUAL_OVERHAUL.md).
 > **Codex Timber Haven art.** Private development saved at `2026-11-22T06:02:10.093Z`. The Studio editor is released. See the [tree and visual overhaul](art/TIMBER_HAVEN_TREE_OVERHAUL.md).
 > **Codex full game QA.** Private development saved as **v75**. Release is on hold for physical devices, multi-client load and independent server persistence. Studio editor released. See the [QA results](qa/FULL_GAME_QA_RESULTS.md).
 > **Codex M8 final content.** Private development saved as **v69**. Studio is in Edit mode and the editor is released. See the [M8 results](m8/M8_FINAL_CONTENT_RESULTS.md).
@@ -19,13 +20,13 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | Timber Haven art. Cloud update `2026-11-22T06:02:10.093Z`. Final numeric version unverified. QA baseline v75, art checkpoint v76. |
-| Active AI editor | Codex, Project Wow Factor. |
-| Last handoff author / time | Codex, Timber Haven visual overhaul, November 21 at 10:02 p.m. PST. |
-| Last confirmed gameplay edit | QA v75. Timber art added new tree visuals, moved tree slots away from trails and re-housed the existing leaderboards. |
-| Current task | Owner-authorized art, lighting and effects overhaul across the three private development biomes. |
-| Next action | Review Timber Haven on a physical mobile device in the next owner-authorized QA session. |
-| Code source of truth | `art/timber-haven-tree-overhaul` implementation `85167c9acecadf205f6f62907839442fdd2a38b3`, recorded in `Workspace.TimberArtDevBuild`. QA baseline branch `qa/full-game-validation` at `0903e765cde5e43481906e0ba10705f5a159b558`. |
+| Most recent documented place version | Private development **v87**. Cloud update `2026-11-22T06:37:43.778Z`. |
+| Active AI editor | None. Studio in Edit mode. |
+| Last handoff author / time | Codex, Project Wow Factor, November 21 at 10:37 p.m. PST. |
+| Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
+| Current task | None claimed. Three-biome visual pass saved. Release is on hold. |
+| Next action | Continue physical-device and multiplayer performance validation in the next owner-authorized QA session. |
+| Code source of truth | `art/ultimate-visual-overhaul` implementation `56c23ffb1ca70ea15b45457af045a770bf4cdba9`, recorded in `Workspace.UltimateVisualDevBuild`. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
 | Blockers | Physical iPhone and Android, 20-player load, genuinely separate server sessions for saves and escrow, and full natural balance remain unverified. |
@@ -88,12 +89,12 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Task / owner approval | Timber Haven visual overhaul and private save |
-| Studio place and saved state | `103379930563763` / `10777797608`, v2, Edit mode. Verified cloud timestamp `2026-11-22T06:02:10.093Z`. |
-| Git branch / baseline | `art/timber-haven-tree-overhaul`, QA baseline `0903e765cde5e43481906e0ba10705f5a159b558` |
-| Work in progress / unsaved changes | None reported by Team Create. Isolated QA profile switch cleared. |
-| Tests and results | [Timber Haven report](art/TIMBER_HAVEN_TREE_OVERHAUL.md). Private Studio play confirmed 1,200 Timber trees, the original Crystal position checksum, and all three leaderboard rows. |
-| Art rollback | Clear `Workspace.BladeTimberArt` and start a fresh private session. Checkpoint v76 and `ServerStorage.TimberArtRollback` contain the recoverable baseline. |
+| Task / owner approval | Project Wow Factor, private three-biome art, lighting, effects and visual review |
+| Studio place and saved state | `103379930563763` / `10777797608`, V2, Edit mode, **v87**. Cloud update `2026-11-22T06:37:43.778Z`. |
+| Git branch / baseline | `art/ultimate-visual-overhaul`, Timber art handoff `ab9d9969abafa6a722a553b586015c6ec33bbea1` |
+| Work in progress / unsaved changes | None. Isolated QA profile switch cleared. |
+| Tests and results | [Ultimate visual overhaul](art/ULTIMATE_VISUAL_OVERHAUL.md). Verified Crystal position checksum and all tree counts, isolated Timber chopping, three progression bosses, 120 weapon model records, and desktop frame-time samples. |
+| Rollback | Clear `Workspace.BladeForestArt` and restart the private session. The pre-pass checkpoint was cloud-saved at `2026-11-22T06:12:52.630Z`. `ServerStorage.UltimateVisualRollback` holds the source backups. |
 
 ## Codex → next editor (QA)
 
