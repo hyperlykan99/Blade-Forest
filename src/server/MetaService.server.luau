@@ -66,14 +66,17 @@ end
 local lastAction = {}
 Meta.OnServerInvoke = function(player, action, a, b)
 	local d = DataService.Get(player)
-	if not d then return false, "Loading..." end
+	if not d or not player:GetAttribute("Loaded") or player:GetAttribute("Handoff") then return false, "Profile unavailable" end
 	if os.clock() - (lastAction[player] or 0) < 0.15 then return false, "Slow down" end
 	lastAction[player] = os.clock()
 
 	if action == "SetPref" then
 		local want = PREF_TYPES[a]
 		if not want or type(b) ~= want then return false, "?" end
-		if want == "number" then b = math.clamp(b, 0, 1) end
+		if want == "number" then
+			if b ~= b or math.abs(b)==math.huge then return false, "Invalid setting" end
+			b = math.clamp(b, 0, 1)
+		end
 		if a == "Graphics" and not table.find({ "Low", "Medium", "High" }, b) then return false, "?" end
 		d.Prefs[a] = b
 		player:SetAttribute("Pref_" .. a, b)

@@ -59,7 +59,7 @@ end
 -- Shop
 --------------------------------------------------------------------
 ShopAction.OnServerInvoke = function(player, action, id, value)
-	if not DataService.Get(player) then return false, "Loading..." end
+	if not DataService.Get(player) or not player:GetAttribute("Loaded") or player:GetAttribute("Handoff") then return false, "Profile unavailable" end
 
 	if action == "Upgrade" then
 		local u = Config.ById[id]

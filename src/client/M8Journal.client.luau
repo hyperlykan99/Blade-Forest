@@ -1,5 +1,6 @@
 local Players=game:GetService("Players")
 local RS=game:GetService("ReplicatedStorage")
+local Clock=require(RS:WaitForChild("CalendarClock"))
 local Prompts=game:GetService("ProximityPromptService")
 local Tween=game:GetService("TweenService")
 local T=require(RS:WaitForChild("UITheme"))
@@ -131,7 +132,7 @@ end
 local function season()
 	local s=D.Seasons[selected]
 	local ledger=state.Seasons[s.Id]
-	local now=workspace:GetServerTimeNow()
+	local now=Clock.UTC()
 	local canClaim=now>=s.Start and now<s.Finish+s.ClaimGrace
 	if #D.Seasons>1 then
 		row("Season history",s.Name,"Next season",function() selected=selected%#D.Seasons+1 render() end)
@@ -235,7 +236,7 @@ task.spawn(function()
 	while layer.Parent do
 		task.wait(1)
 		if panel.Visible then
-			if clockLabel then clockLabel.Text=seasonStatus(D.Seasons[selected],workspace:GetServerTimeNow()) end
+			if clockLabel then clockLabel.Text=seasonStatus(D.Seasons[selected],Clock.UTC()) end
 			ticks+=1
 			if ticks%18==0 and not running then call("Read") end
 		end

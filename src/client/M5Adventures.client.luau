@@ -47,8 +47,9 @@ local section,island,period="Story",1,"Daily"
 local state,board,message,busy
 local rowNumber=0
 local render
-local function seconds(untilAt)
-	local n=math.max(0,math.floor((untilAt or 0)-workspace:GetServerTimeNow()))
+local Clock=require(game.ReplicatedStorage:WaitForChild("CalendarClock"))
+local function seconds(untilAt,utc)
+	local n=math.max(0,math.floor((untilAt or 0)-(utc and Clock.UTC() or workspace:GetServerTimeNow())))
 	local h=math.floor(n/3600)
 	if h>=24 then return string.format("%dd %dh",math.floor(h/24),h%24) end
 	if h>0 then return string.format("%dh %02dm",h,math.floor(n/60)%60) end
@@ -116,7 +117,7 @@ end
 
 local function showContracts()
 	local group=state.Contracts[period]
-	row(period.." contracts",string.format("%d / %d selected  ·  resets in %s  ·  streak %d",group.Picked,M.Periods[period].Pick,seconds(group.Ends),state.Streak),{
+	row(period.." contracts",string.format("%d / %d selected  ·  resets in %s  ·  streak %d",group.Picked,M.Periods[period].Pick,seconds(group.Ends,true),state.Streak),{
 		{period=="Daily" and "Weekly" or "Daily",function() period=period=="Daily" and "Weekly" or "Daily" render(true) end},
 	},gold)
 	for i,offer in ipairs(group.Offers) do
@@ -157,7 +158,7 @@ local function showTrials()
 	local ranks={}
 	for i,label in ipairs(M.Trial.Ranks) do table.insert(ranks,label.." "..M.Trial.Goals[state.Tier][i]) end
 	row("Trees needed by rank",table.concat(ranks,"  ·  "),nil,nil,60)
-	row("Weekly leaderboard","Resets in "..seconds(state.WeekEnd),{{"View ranks",function() request("Board","Trial") end}},gold)
+	row("Weekly leaderboard","Resets in "..seconds(state.WeekEnd,true),{{"View ranks",function() request("Board","Trial") end}},gold)
 	boardRows()
 	head("Trial reward shop","Earn Tokens from ranked Trials")
 	for _,key in ipairs({"Logs","Souls","Seal"}) do
@@ -172,7 +173,7 @@ local function showExpeditions()
 	if not runControls("Expedition") then head("Endless Expeditions","Use the Expedition Gate in Frostbound Reach to enter the solo forest.") end
 	head("Depth record",string.format("All-time depth %d  ·  weekly best %d  ·  %d/%d rewards today",state.DepthEver,state.DepthBest,state.DepthClaims,M.Expedition.RewardClaimsPerDay))
 	row("Frost Core stash",tostring(state.Materials[M.Expedition.Material] or 0).." earned from eligible depth clears",nil,nil,53)
-	row("Weekly depth leaderboard","Resets in "..seconds(state.WeekEnd),{{"View ranks",function() request("Board","Depth") end}},gold)
+	row("Weekly depth leaderboard","Resets in "..seconds(state.WeekEnd,true),{{"View ranks",function() request("Board","Depth") end}},gold)
 	boardRows()
 end
 local function showEvents()
@@ -180,11 +181,11 @@ local function showEvents()
 	local islandId=workspace:GetAttribute("M5EventIsland")
 	if active then
 		head(workspace:GetAttribute("M5EventName") or active,
-			(M.Names[islandId] or "").." · ends in "..seconds(workspace:GetAttribute("M5EventEnd")))
+			(M.Names[islandId] or "").." · ends in "..seconds(workspace:GetAttribute("M5EventEnd"),true))
 	else
 		local nextName=workspace:GetAttribute("M5EventNextName") or "Regional event"
 		local nextIsland=M.Names[workspace:GetAttribute("M5EventNextIsland")] or "Forest"
-		head(nextName,nextIsland.." · opens in "..seconds(workspace:GetAttribute("M5EventNext")))
+		head(nextName,nextIsland.." · opens in "..seconds(workspace:GetAttribute("M5EventNext"),true))
 	end
 	for _,event in ipairs(M.Events) do
 		row(event.Name,(M.Names[event.Island] or "Rotating island")..string.format(" · ×%g Logs · ×%g Luck",event.Logs,event.Luck),nil,
@@ -248,7 +249,7 @@ task.spawn(function()
 			local detail=active=="Trial" and string.format("%d trees",player:GetAttribute("M5RunScore") or 0)
 				or string.format("Depth %d · %d left",player:GetAttribute("M5RunDepth") or 1,player:GetAttribute("M5RunTrees") or 0)
 			hudLine.Text=active.."   ·   "..detail.."   ·   "..seconds(player:GetAttribute("M5RunEnds"))
-		elseif regional then hudLine.Text=regional.." · "..seconds(workspace:GetAttribute("M5EventEnd")) end
+		elseif regional then hudLine.Text=regional.." · "..seconds(workspace:GetAttribute("M5EventEnd"),true) end
 	end
 end)
 task.spawn(function()

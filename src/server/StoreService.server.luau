@@ -1,3 +1,4 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 -- StoreService: Robux game passes + developer products.
 -- IDs live in BladeConfig (Config.GamePasses / Config.DevProducts).
 --   * passes are checked on join and applied as Pass_<Id> attributes
@@ -202,6 +203,7 @@ giftDeps.processor=Gifting.Processor(giftDeps)
 local giftReceipt=Gifting.New(giftDeps)
 
 local function processReceipt(receipt)
+	if QA.Enabled then return Enum.ProductPurchaseDecision.NotProcessedYet end
 	local decision,why
 	if Gifting.CanOffer(receipt.ProductId) then
 		local buyer=Players:GetPlayerByUserId(receipt.PlayerId)

@@ -12,6 +12,7 @@ local H=require(script.Parent:WaitForChild("M6Hits"))
 local Guard=require(script.Parent:WaitForChild("MovementGuard")).shared
 local World=require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Parties=require(script.Parent:WaitForChild("M7Parties"))
+local PhaseRules=require(script.Parent:WaitForChild("HeartPhaseRules"))
 local Rules=require(script.Parent:WaitForChild("BossRules"))
 local Progress=require(script.Parent:WaitForChild("Progress"))
 local A=require(Storage:WaitForChild("M4Architecture"))
@@ -144,7 +145,7 @@ local function payout(job)
 		local p=Players:GetPlayerByUserId(row[1])
 		local d=p and Data.Get(p)
 		local recent=job.Recent[row[1]]
-		local onsite=p and (job.Heart and job.Members[p] or not job.Heart and p:GetAttribute("CurrentIsland")==job.Spec.Island)
+		local onsite=p and eligible(job,p)
 		if d and onsite and recent and os.clock()-recent<=70 and row[2]>0 and not p:GetAttribute("Handoff") then
 			local budget=I.Day(d,now)
 			local spec=job.Spec
@@ -242,7 +243,8 @@ local function mount(job,amount)
 	display(job)
 	H.Register(job.Boss,function(p,dmg)
 		if job.Closed or job.Ending or job.WardCount>0 or not eligible(job,p) then return end
-		local damage=math.min(job.HP,dmg)
+		local damage=job.Heart and PhaseRules.Damage(job.HP,job.Max,job.Phase,dmg) or math.min(job.HP,dmg)
+		if damage<=0 then return end
 		job.HP-=damage
 		local hp=job.HP/job.Max
 		job.Damage[p.UserId]=(job.Damage[p.UserId] or 0)+damage

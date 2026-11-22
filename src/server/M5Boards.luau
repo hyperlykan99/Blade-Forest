@@ -1,10 +1,11 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 -- Ordered stores are week-scoped. A current-server fallback is available when Studio APIs are off.
 local DataStoreService=game:GetService("DataStoreService")
 local B={}
 local servers={}
 local cache={}
 local function store(week,kind)
-	return DataStoreService:GetOrderedDataStore("BladeForest_M5_"..kind,"UTC_"..week)
+	return DataStoreService:GetOrderedDataStore(QA.StoreName("BladeForest_M5_"..kind),"UTC_"..week)
 end
 function B.Record(week,kind,uid,value,canPublish)
 	if (kind~="Trial" and kind~="Depth") or uid<=0 or value<=0 then return end

@@ -1,3 +1,4 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 -- DataService: the one place player data lives on the server.
 -- M0 (save format v4): session-locked persistence (SessionStore), numbered
 -- migrations (SaveMigrations), confirmed saves for receipts (SaveNow),
@@ -32,7 +33,7 @@ local RewardRemote = Remotes:WaitForChild("Reward")
 local STORE_NAME = "BladeForest_v3"
 local store
 pcall(function()
-	store = DataStoreService:GetDataStore(STORE_NAME)
+	store = DataStoreService:GetDataStore(QA.StoreName(STORE_NAME))
 end)
 
 local DataService = {}
@@ -1071,6 +1072,7 @@ function DataService.Load(player, ss)
 	data._WriteSeq = info and info.Seq or tonumber(data._WriteSeq) or 0
 	if ss then return "ok", data end -- test drive: never register stand-in players
 	writers[player] = ProfileWriter.new({ sessions = sessions, key = profileKey(player), data = data, seq = data._WriteSeq })
+	player:SetAttribute("QASandbox",QA.Enabled or nil)
 	player:SetAttribute("SaveFormat", how) -- "new" | "migrated" | "current" (diagnostics)
 	finishLoad(player, data)
 	return "ok"
@@ -1224,6 +1226,42 @@ if RunService:IsStudio() then
 		return DataService[fn](player, ...)
 	end
 	dev.Parent = game:GetService("ServerStorage")
+	if QA.Enabled then
+		local fixture=Instance.new("BindableFunction")
+		fixture.Name="QAStageFixture"
+		fixture.OnInvoke=function(player,step)
+			local d=profiles[player]
+			if not d or not player:GetAttribute("QASandbox") or not DataService.CanPersist(player) or player:GetAttribute("Handoff") then return false end
+			if step=="TimberTrees" and (d.BossKills.BladeKing or 0)>0 then
+				d.Trees.Grove_Common=math.max(d.Trees.Grove_Common or 0,600)
+			elseif step=="CrystalTrees" and (d.BossKills.CrystalColossus or 0)>0 then
+				d.Trees.Crystal_Common=math.max(d.Trees.Crystal_Common or 0,6000)
+			elseif step=="SeasonReward" then
+				local season=require(ReplicatedStorage.M8Design).Active(os.time())
+				if not season then return false end
+				local ledger=FinalState.Season(d,season)
+				ledger.XP=math.max(ledger.XP,season.XPPerLevel)
+			elseif step=="Workshop" and d.UnlockedIslands.FrostboundReach then
+				local w=d.Weapons.FrostboundReaper
+				if not w then return false end
+				w.Star=5
+				d.Souls=math.max(d.Souls,10000)
+				d.Essence.Total=math.max(d.Essence.Total,50000)
+				for _,kind in ipairs({"Bark","Crystal","Frost"}) do
+					d.M6.Materials[kind]=math.max(d.M6.Materials[kind] or 0,200)
+				end
+				d.M5.Materials.ExpeditionFrostCore=math.max(d.M5.Materials.ExpeditionFrostCore or 0,20)
+				-- Preserve real boss credits. Only the fixture's third key ingredient is filled in.
+				d.BossSigils.Frost=math.max(d.BossSigils.Frost or 0,1)
+				DataService.RefreshM6(player)
+			else
+				return false
+			end
+			DataService.Sync(player)
+			return true
+		end
+		fixture.Parent=game:GetService("ServerStorage")
+	end
 end
 
 -- Logs is the main currency (functions kept their old names too)

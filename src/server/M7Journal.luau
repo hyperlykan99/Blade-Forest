@@ -1,5 +1,6 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 -- The journal owns the only global decision. M0 owns profile session fencing.
-local Store=game:GetService("DataStoreService"):GetDataStore("BladeForest_M7_Trades_v1")
+local Store=game:GetService("DataStoreService"):GetDataStore(QA.StoreName("BladeForest_M7_Trades_v1"))
 local Items=require(script.Parent:WaitForChild("M7Items"))
 local J={}
 local function update(id,fn)

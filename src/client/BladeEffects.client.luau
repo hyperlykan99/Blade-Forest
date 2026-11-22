@@ -262,7 +262,8 @@ local function clearBlades(wielder)
 	end
 end
 
-local function drawWielder(wielder, char, now, seen)
+local movedParts, movedCFrames, seen = {}, {}, {}
+local function drawWielder(wielder, char, now)
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	if not (root and hum and hum.Health > 0) then
@@ -281,7 +282,6 @@ local function drawWielder(wielder, char, now, seen)
 	if first and first.Aura and first.Stage==3 then
 		first.Aura.FillTransparency=player:GetAttribute("Pref_ReducedMotion") and .86 or .86+math.sin(now*3)*.07
 	end
-	local movedParts, movedCFrames = {}, {}
 	for i, bl in ipairs(blades) do
 		local v = list[i]
 		-- slight tilt so the flat of the blade catches the light as it sweeps
@@ -291,12 +291,12 @@ local function drawWielder(wielder, char, now, seen)
 			table.insert(movedCFrames, cf * v.Offsets[j])
 		end
 	end
-	if #movedParts > 0 then
-		workspace:BulkMoveTo(movedParts, movedCFrames, Enum.BulkMoveMode.FireCFrameChanged)
-	end
 end
 
 RunService.RenderStepped:Connect(function()
+	table.clear(movedParts)
+	table.clear(movedCFrames)
+	table.clear(seen)
 	local now = workspace:GetServerTimeNow()
 	-- M2: Divine aura breathes (rate pulse); Reduced Motion keeps it steady
 	if next(pulsing) then
@@ -305,16 +305,18 @@ RunService.RenderStepped:Connect(function()
 			if e.Parent then e.Rate = base * k else pulsing[e] = nil end
 		end
 	end
-	local seen = {}
 	for _, p in ipairs(Players:GetPlayers()) do
 		if p:GetAttribute("Loaded") then
-			drawWielder(p, p.Character, now, seen)
+			drawWielder(p, p.Character, now)
 		end
 	end
 	for _, npc in ipairs(CollectionService:GetTagged("BladeNPC")) do
 		if npc:IsDescendantOf(workspace) then
-			drawWielder(npc, npc, now, seen)
+			drawWielder(npc, npc, now)
 		end
+	end
+	if #movedParts > 0 then
+		workspace:BulkMoveTo(movedParts, movedCFrames, Enum.BulkMoveMode.FireCFrameChanged)
 	end
 	for w in pairs(visuals) do
 		if not seen[w] then clearBlades(w) end

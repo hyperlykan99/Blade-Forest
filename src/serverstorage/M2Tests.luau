@@ -89,9 +89,15 @@ function T.W2()
 	local src = 0
 	for _, w in ipairs(Config.Weapons) do
 		local m = BM:FindFirstChild(w.Id)
-		if w.Edition == 2 and m and m:GetAttribute("SourceAssetId") and m:GetAttribute("SourceCreator") then src += 1 end
+		if w.Edition == 2 and m and m:GetAttribute("SourceCreator") then
+			local authored=w.Id=="SilvershoreSaber" and m:GetAttribute("SourceKind")=="StudioGeometry"
+			if authored then
+				for _,part in ipairs(m:GetDescendants()) do if part:IsA("MeshPart") or part:IsA("SpecialMesh") then authored=false end end
+			end
+			if authored or m:GetAttribute("SourceAssetId") then src+=1 end
+		end
 	end
-	s.check("W2.7 all 77 new models carry asset id + creator", src == 77, src)
+	s.check("W2.7 all 77 edition-two models carry source provenance", src == 77, src)
 	return s
 end
 

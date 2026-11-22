@@ -1,3 +1,4 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 -- LeaderboardService: global top lists (OrderedDataStores).
 --   Logs (total ever earned), Hours played, Rolls, Rarest pull, Kills, Souls earned
 -- Fills the plaza boards and answers the in-game TOP menu.
@@ -23,7 +24,7 @@ local TOP = 50
 
 local stores = {}
 for _, b in ipairs(BOARDS) do
-	local ok, s = pcall(function() return DataStoreService:GetOrderedDataStore("LB_v1_" .. b.Id) end)
+	local ok, s = pcall(function() return DataStoreService:GetOrderedDataStore(QA.StoreName("LB_v1_" .. b.Id)) end)
 	if ok then stores[b.Id] = s end
 end
 

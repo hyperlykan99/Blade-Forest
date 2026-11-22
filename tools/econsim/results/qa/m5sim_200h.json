@@ -1,0 +1,86 @@
+{
+  "method": "M2 median-anchored issuance overlay",
+  "hours": 200.0,
+  "runs": {
+    "free-active": {
+      "baseline_logs": 969205153438.6411,
+      "m5_net_logs": {
+        "contracts": 7760856944.444445,
+        "trials": -4974151072.283575,
+        "expedition": -10560166538.33445,
+        "events": 36810894744.241264,
+        "story": 285747222.2222222
+      },
+      "m5_souls": 1596.0,
+      "m5_tokens": 596,
+      "m5_materials": 41,
+      "m5_depth": 5,
+      "total_logs_overlay": 998528334738.931,
+      "relative_net_issuance": 0.030254875550603758,
+      "regional_raw_luck_exposure": 0.02036005089058525,
+      "anchor_crystal_unlock_h": 0.21666666666666667,
+      "anchor_frost_unlock_h": 6.316666666666666,
+      "anchor_end_power": 6725.5
+    },
+    "free-afk": {
+      "baseline_logs": 540337704582.43335,
+      "m5_net_logs": {
+        "contracts": 1247518359.375,
+        "trials": 0.0,
+        "expedition": 0.0,
+        "events": 20528064480.65274,
+        "story": 302500694.4444444
+      },
+      "m5_souls": 412.0,
+      "m5_tokens": 0,
+      "m5_materials": 0,
+      "m5_depth": 0,
+      "total_logs_overlay": 562415788116.9055,
+      "relative_net_issuance": 0.04085978703176723,
+      "regional_raw_luck_exposure": 0.02036005089058525,
+      "anchor_crystal_unlock_h": 0.37083333333333335,
+      "anchor_frost_unlock_h": 6.4,
+      "anchor_end_power": 4923.0
+    },
+    "paid-active": {
+      "baseline_logs": 2364381672283.959,
+      "m5_net_logs": {
+        "contracts": 8994408333.333332,
+        "trials": -14887194628.091433,
+        "expedition": -36922322504.4002,
+        "events": 89715151976.03415,
+        "story": 152925694.44444442
+      },
+      "m5_souls": 1688.0,
+      "m5_tokens": 596,
+      "m5_materials": 51,
+      "m5_depth": 6,
+      "total_logs_overlay": 2411434641155.2793,
+      "relative_net_issuance": 0.019900750129680962,
+      "regional_raw_luck_exposure": 0.01956615776081426,
+      "anchor_crystal_unlock_h": 0.10416666666666667,
+      "anchor_frost_unlock_h": 3.4,
+      "anchor_end_power": 8476.0
+    },
+    "paid-afk": {
+      "baseline_logs": 1495339376902.5146,
+      "m5_net_logs": {
+        "contracts": 1425022656.25,
+        "trials": 0.0,
+        "expedition": 0.0,
+        "events": 56753289208.893715,
+        "story": 140059027.77777776
+      },
+      "m5_souls": 412.0,
+      "m5_tokens": 0,
+      "m5_materials": 0,
+      "m5_depth": 0,
+      "total_logs_overlay": 1553657747795.436,
+      "relative_net_issuance": 0.039000090410060424,
+      "regional_raw_luck_exposure": 0.01956615776081426,
+      "anchor_crystal_unlock_h": 0.075,
+      "anchor_frost_unlock_h": 3.3833333333333333,
+      "anchor_end_power": 8111.2
+    }
+  }
+}

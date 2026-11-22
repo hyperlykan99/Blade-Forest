@@ -107,7 +107,7 @@ end
 -- M2: Roll("Favorite", weaponId, on) / Roll("Attune", islandId)
 RollRemote.OnServerInvoke = function(player, action, arg, arg2)
 	local d = DataService.Get(player)
-	if not d then return false, "Loading..." end
+	if not d or not player:GetAttribute("Loaded") or player:GetAttribute("Handoff") then return false, "Profile unavailable" end
 	if action == "Favorite" then -- M2: Roll("Favorite", weaponId, on)
 		return DataService.SetFavorite(player, arg, arg2 == true)
 	elseif action == "Attune" then -- M2: Roll("Attune", islandId) -> claim that island's Attunement Divine once

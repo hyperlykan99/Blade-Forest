@@ -1,10 +1,11 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 local Stores=game:GetService("DataStoreService")
 local Http=game:GetService("HttpService")
 local Text=game:GetService("TextService")
 local RS=game:GetService("ReplicatedStorage")
 local D=require(RS:WaitForChild("M7Design"))
-local store=Stores:GetDataStore("BladeForest_M7_Guilds_v1")
-local board=Stores:GetOrderedDataStore("BladeForest_M7_GuildXP_v1")
+local store=Stores:GetDataStore(QA.StoreName("BladeForest_M7_Guilds_v1"))
+local board=Stores:GetOrderedDataStore(QA.StoreName("BladeForest_M7_GuildXP_v1"))
 local G={}
 local function read(key)
 	return pcall(store.GetAsync,store,key)

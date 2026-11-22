@@ -1,3 +1,4 @@
+local QA=require(script.Parent:WaitForChild("QAIsolation"))
 local Players=game:GetService("Players")
 local RS=game:GetService("ReplicatedStorage")
 local Storage=game:GetService("ServerStorage")
@@ -13,7 +14,7 @@ local Trade=require(script.Parent:WaitForChild("M7Trade"))
 local Gifts=require(script.Parent:WaitForChild("M7Gifting"))
 local Runs=require(script.Parent:WaitForChild("M5Runs"))
 local Layout=require(script.Parent:WaitForChild("M4WorldRuntime"))
-local profiles=DSS:GetDataStore("BladeForest_M7_PublicCards_v1")
+local profiles=DSS:GetDataStore(QA.StoreName("BladeForest_M7_PublicCards_v1"))
 local remotes=RS:WaitForChild("Remotes")
 local rf=Instance.new("RemoteFunction")
 rf.Name="M7Social"

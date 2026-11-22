@@ -1,5 +1,6 @@
 local Players=game:GetService("Players")
 local RS=game:GetService("ReplicatedStorage")
+local Clock=require(RS:WaitForChild("CalendarClock"))
 local ServerStorage=game:GetService("ServerStorage")
 local BadgeService=game:GetService("BadgeService")
 local D=require(RS:WaitForChild("M8Design"))
@@ -14,6 +15,17 @@ local Notify=Remotes:WaitForChild("Notify")
 local Season=Instance.new("RemoteFunction")
 Season.Name="M8Progression"
 local last={}
+task.spawn(function()
+	local offset
+	while true do
+		local observed=os.time()-workspace:GetServerTimeNow()
+		if not offset or math.abs(observed-offset)>1.25 then
+			offset=observed
+			workspace:SetAttribute(Clock.OffsetAttribute,offset)
+		end
+		task.wait(5)
+	end
+end)
 local guide={}
 for _,q in ipairs(D.Guide) do guide[q.Id]=q end
 local function trackLevel(p,s,ledger)

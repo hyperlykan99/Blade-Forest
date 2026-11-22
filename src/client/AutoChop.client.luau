@@ -19,7 +19,7 @@ local BLACKLIST_TIME = 12
 
 local enabled = false
 local currentTarget = nil
-local blacklist = {} -- [tree] = until (os.clock)
+local blacklist = setmetatable({}, {__mode = "k"}) -- [tree] = until (os.clock)
 local runId = 0
 
 --------------------------------------------------------------------
@@ -322,6 +322,7 @@ local function setEnabled(on)
 	if on and player:GetAttribute("M5Run") then return end
 	if on == enabled then return end
 	enabled = on
+	player:SetAttribute("AutoChop", enabled)
 	runId += 1
 	refreshButton()
 	TweenService:Create(button, TweenInfo.new(0.12, Enum.EasingStyle.Back), { Size = UDim2.fromOffset(150, 58) }):Play()
@@ -362,14 +363,6 @@ end)
 
 -- expose for other scripts / testing
 player:SetAttribute("AutoChop", false)
-local lastSent = false
-RunService.Heartbeat:Connect(function()
-	if lastSent ~= enabled then
-		lastSent = enabled
-		player:SetAttribute("AutoChop", enabled)
-	end
-end)
-
 local bindable = Instance.new("BindableFunction")
 bindable.Name = "AutoChopToggle"
 bindable.OnInvoke = function(on)

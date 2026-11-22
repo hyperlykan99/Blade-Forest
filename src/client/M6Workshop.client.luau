@@ -65,8 +65,9 @@ local function cost(costs)
 	table.sort(rows)
 	return table.concat(rows," · ")
 end
-local function clock(untilAt)
-	local n=math.max(0,math.floor((untilAt or 0)-workspace:GetServerTimeNow()))
+local Clock=require(game.ReplicatedStorage:WaitForChild("CalendarClock"))
+local function clock(untilAt,utc)
+	local n=math.max(0,math.floor((untilAt or 0)-(utc and Clock.UTC() or workspace:GetServerTimeNow())))
 	return string.format("%d:%02d",math.floor(n/60),n%60)
 end
 local function actionLabel(op,id,arg,title)
@@ -156,12 +157,12 @@ local function encounterScreen()
 	local raid=workspace:GetAttribute("M6RaidName")
 	if raid then
 		local stop=workspace:GetAttribute("M6RaidEnd")
-		local active=(stop or 0)>workspace:GetServerTimeNow()
+		local active=(stop or 0)>Clock.UTC()
 		local point
 		for _,r in ipairs(D.Raids) do if r.Name==raid then point=r.Position break end end
 		row(raid,(workspace:GetAttribute("M6RaidIsland") or "")..
 			(point and string.format(" · (%d, %d)",point.X,point.Z) or "")..
-			" · "..(active and "window "..clock(stop) or "next rotation "..clock(workspace:GetAttribute("M6RaidNext"))),nil,nil,ice)
+			" · "..(active and "window "..clock(stop,true) or "next rotation "..clock(workspace:GetAttribute("M6RaidNext"),true)),nil,nil,ice)
 	end
 	if p:GetAttribute("M5Run")=="Heart" then
 		row("Heart of Winter · "..(p:GetAttribute("M6HeartPhase") or "Gathering"),
@@ -246,7 +247,7 @@ task.spawn(function()
 			local endAt=workspace:GetAttribute("M6RaidEnd")
 			local hp=workspace:GetAttribute("M6RaidHP")
 			hudText.Text=raid.." · "..(hp and C.FormatNumber(hp).." HP · " or "")..
-				((endAt or 0)>workspace:GetServerTimeNow() and clock(endAt) or "next "..clock(workspace:GetAttribute("M6RaidNext")))
+				((endAt or 0)>Clock.UTC() and clock(endAt,true) or "next "..clock(workspace:GetAttribute("M6RaidNext"),true))
 		end
 		if panel.Visible and page=="Raids" then render() end
 	end

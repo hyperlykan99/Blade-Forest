@@ -156,7 +156,10 @@ function T.E3()
 	local okF, lF = E.GateStatus("FrostboundReach", { BestPower = 2100, BossKills = {}, TreesByArea = { CrystalCanyon = 6000 } })
 	local planned
 	for _, r in ipairs(lF) do if r.Id == "colossus" then planned = r end end
-	s.check("E3.7 Frostbound gate: unbuilt Crystal Colossus is 'planned' and never blocks", okF and planned and planned.Stage == "planned" and not planned.Met)
+	local active = workspace:GetAttribute("M4ColossusReady") == true
+	local credited = E.GateStatus("FrostboundReach", { BestPower = 2100, BossKills = { CrystalColossus = 1 }, TreesByArea = { CrystalCanyon = 6000 } })
+	s.check("E3.7 Frostbound gate: require Colossus credit when the encounter is ready",
+		planned and not planned.Met and planned.Stage == (active and "active" or "planned") and okF == not active and credited)
 	s.check("E3.8 walk speed 16 -> 24 over 25 levels, future mobility capped +4",
 		E.WalkSpeed({}, 0) == 16 and near(E.WalkSpeed({ WalkSpeed = 10 }, 0), 19.2) and E.WalkSpeed({ WalkSpeed = 25 }, 0) == 24
 		and E.WalkSpeed({ WalkSpeed = 99 }, 0) == 24 and E.WalkSpeed({ WalkSpeed = 25 }, 10) == 28 and E.MaxLegitWalkSpeed() == 28)
