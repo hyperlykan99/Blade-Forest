@@ -15,6 +15,29 @@ end
 if not layout.Enabled() then return runtime end
 local timber, frost=staged:FindFirstChild("TimberHaven"),staged:FindFirstChild("FrostboundReach")
 assert(timber and frost and runtime.Crystal,"Incomplete M4 package; keep legacy layout")
+local templates=ReplicatedStorage:WaitForChild("TreeModels")
+local builder=require(ServerStorage:WaitForChild("M4Construction"))
+local architecture=require(ServerStorage:WaitForChild("M4Architecture"))
+local config=require(ReplicatedStorage:WaitForChild("BladeConfig"))
+local landscape, visuals, artPlan, artStyle, artStats
+if workspace:GetAttribute("BladeTimberArt")=="v1" then
+	local ok,reason=pcall(function()
+		local planner=require(ServerStorage.TimberLandscape)
+		local plan,stats=planner.Plan(timber,layout)
+		assert(plan,("Could not replant %s at %s"):format(tostring(stats.Unplaced),tostring(stats.At)))
+		local treeArt=require(ServerStorage.TimberVisuals)
+		local assets=ServerStorage:FindFirstChild("TimberArtAssets")
+		local crowns={}
+		for id in pairs(treeArt.Recipes) do
+			local visual=treeArt.Visual(id,assets)
+			visual.Name="TimberArt_"..id
+			crowns[id]=visual
+		end
+		artStyle=function(tree) treeArt.Apply(tree,assets,crowns) end
+		landscape,visuals,artPlan,artStats=planner,crowns,plan,stats
+	end)
+	if not ok then warn("Keeping staged Timber art:",reason) end
+end
 local archived=Instance.new("Folder") archived.Name="M4RuntimeLegacyArchive" archived.Parent=ServerStorage
 local function archive(name)
 	local f=Instance.new("Folder") f.Name=name f.Parent=archived return f
@@ -37,6 +60,17 @@ for _,id in ipairs({"TimberHaven","FrostboundReach"}) do
 	local obj=islands:FindFirstChild(id)
 	if obj then obj.Parent=oldIslands end
 end
+if artPlan then
+	for _,visual in pairs(visuals) do visual.Parent=templates end
+	for i,entry in ipairs(artPlan) do
+		local frame=entry.Tree:GetPivot()
+		entry.Tree:PivotTo(CFrame.new(entry.New.X,frame.Position.Y,entry.New.Z)*frame.Rotation)
+		artStyle(entry.Tree)
+		if i%120==0 then task.wait() end
+	end
+	builder.SetTimberStyle(artStyle)
+	for key,value in pairs(artStats) do active:SetAttribute("TimberArt"..key,value) end
+end
 for _,package in ipairs({timber,frost}) do
 	local container=package:FindFirstChild("Trees")
 	assert(container)
@@ -58,7 +92,9 @@ for _,obj in ipairs(map:GetChildren()) do
 	if obj.Name~="Leaderboards" then obj.Parent=oldMap end
 end
 local boardFolder=map:FindFirstChild("Leaderboards")
-if boardFolder then
+if landscape then
+	landscape.Dress(timber,boardFolder,architecture,visuals)
+elseif boardFolder then
 	local boards=boardFolder:GetChildren()
 	table.sort(boards,function(a,b) return a.Name<b.Name end)
 	for i,board in ipairs(boards) do
@@ -77,10 +113,6 @@ for _,offset in ipairs({Vector3.new(-10,0,0),Vector3.new(10,0,0),Vector3.new(0,0
 	p.Neutral=true p.Transparency=1 p.Size=Vector3.new(5,.5,5)
 	p.Position=layout.Timber.Arrival+offset-Vector3.new(0,4.75,0) p.Parent=active
 end
-local templates=ReplicatedStorage:WaitForChild("TreeModels")
-local builder=require(ServerStorage:WaitForChild("M4Construction"))
-local architecture=require(ServerStorage:WaitForChild("M4Architecture"))
-local config=require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local oldMythic=templates:FindFirstChild("Frost_Mythic_1")
 if oldMythic then oldMythic.Parent=oldTemplates end
 local optimized=builder.Tree("Frost_Mythic",CFrame.new(),1,config,architecture,1.35)

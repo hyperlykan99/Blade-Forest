@@ -56,10 +56,17 @@ function W.Tree(id, at, scale, config, A, boost)
 	return m
 end
 
+local timberStyle
+
+function W.SetTimberStyle(style)
+	timberStyle=style
+end
+
 function W.Regrow(area,at,config,architecture,treekit)
 	local treeType=config.PickTreeType(area)
 	local boost=area=="FrostPeaks" and 1.35 or 1
 	local tree=W.Tree(treeType.Id,at,0.86+math.random()*.24,config,architecture,boost)
+	if timberStyle and area~="FrostPeaks" then timberStyle(tree) end
 	local mutation=config.RollMutation()
 	if mutation then
 		treekit.Mutate(tree,mutation.Id)
