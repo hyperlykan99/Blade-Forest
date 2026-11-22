@@ -19,7 +19,7 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | **QA v75**, Studio Version History confirmed. Cloud update `2026-11-22T00:23:31.521Z`. |
-| Active AI editor | None. Studio is in Edit mode. |
+| Active AI editor | Codex, Timber Haven visual pass |
 | Last handoff author / time | Codex, Full Game QA. Cloud update `2026-11-22T00:23:31.521Z`. |
 | Last confirmed gameplay edit | Replaced the inaccessible Silvershore mesh, fixed UTC countdowns and boss phase/payout checks, fenced legacy remotes during handoff, and reduced blade/Auto Chop allocations. |
 | Current task | None claimed. Private QA candidate saved. Release is on hold. |
