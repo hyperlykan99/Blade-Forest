@@ -59,27 +59,25 @@ local function buildBiome(root, bank, plan, biome)
 			local width = span*(.57 + (i%3)*.14)
 			local relief = i%2==0 and "Boulder" or "Cliff"
 			sculpt(reach,bank,relief,"Near escarpment",at-V(0,34,0),V(width,height,138+(i%3)*27),turn,inks[1])
-			if i%2==1 then
-				sculpt(reach,bank,"Boulder","Outer shelf",at-forward*37-V(0,27,0),V(width*.7,47,92),turn+.6,inks[2])
+			if i==2 or i==4 then
+				sculpt(reach,bank,"Boulder","Lower watershed slope",at-forward*56-V(0,29,0),V(width*.96,41,129),turn+.6,inks[2])
 			end
 			if biome == 1 and i%2==0 then
-				for j = 1, 3 do
-					local treeAt = at - forward*(49+j*3) + across*((j-2)*21)
-					sculpt(reach,bank,"Spruce","Pine silhouette",treeAt+V(0,height*.18,0),
-						V(18+j*2,38+j*6,17+j*2),turn+j,inks[1]:Lerp(R(32,59,38),.53))
-				end
-			elseif biome == 2 and i%2==0 then
+				local treeAt = at - forward*51 + across*(i==2 and 10 or -12)
+				sculpt(reach,bank,"Spruce","Pine silhouette",treeAt+V(0,height*.17,0),
+					V(25,46+i*3,24),turn+i,inks[1]:Lerp(R(32,59,38),.53))
+			elseif biome == 2 and i==2 then
 				sculpt(reach,bank,"CrystalSpine","Mineral face",at-forward*46+V(0,4,0),
 					V(25,52,20),turn+.38,inks[2])
 			end
 		end
-		for i = 1, 3 do
-			local lateral = (i-2)*span*.94 + (side%2==0 and 75 or -52)
+		for i = 1, 2 do
+			local lateral = (i-1.5)*span*1.48 + (side%2==0 and 75 or -52)
 			local at = center + forward*(depth+405+i*31) + across*lateral
 			local height = high + ((side*23+i*37)%95)
 			if biome==1 and side==1 and i==2 then height *= .67 end
 			sculpt(reach,bank,i==2 and "Boulder" or "Cliff","Distant ridge",at-V(0,68,0),
-				V(span*1.36,height,255),yaw+(i-2)*.34,inks[3])
+				V(span*1.69,height,247),yaw+(i-1.5)*.57,inks[3])
 		end
 	end
 end
