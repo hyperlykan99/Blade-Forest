@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **Codex Teleport Validation and Island Horizons.** Private **v105** is cloud-saved. The editor is released in Edit mode. All eight single-client routes and the isolated rejoin passed. Two-client arrival and streaming disconnect remain unverified. See the [world handoff](world/WORLD_EDGE_RESULTS.md).
 > **Codex Professional Asset Rebuild.** The imported Kenney rebuild is active in private **v98**. Studio is in Edit mode and the editor is released. See the [rebuild results and Play captures](art/ART_REBUILD_RESULTS.md).
 > **Codex Project Wow Factor.** The three-biome visual pass is saved as private **v87**. Studio is in Edit mode and the editor is released. See the [art direction, test evidence and performance report](art/ULTIMATE_VISUAL_OVERHAUL.md).
 > **Codex Timber Haven art.** Private development saved at `2026-11-22T06:02:10.093Z`. The Studio editor is released. See the [tree and visual overhaul](art/TIMBER_HAVEN_TREE_OVERHAUL.md).
@@ -21,13 +22,13 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | Private **v98**, cloud update `2026-11-22T23:37:17.200Z`. |
+| Most recent documented place version | Private **v105**, cloud update `2026-11-23T00:40:15.182Z`. |
 | Active AI editor | None. Studio in Edit mode. |
-| Last handoff author / time | Codex, Professional Asset Rebuild, November 22 at 3:37 p.m. PST. |
+| Last handoff author / time | Codex, Teleport Validation and Island Horizons, November 22 at 4:40 p.m. PST. |
 | Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
-| Current task | None claimed. The professional art bank is installed. |
-| Next action | Review private v98 in Play using the [art report and screenshots](art/ART_REBUILD_RESULTS.md). |
-| Code source of truth | Private v98 uses `art/professional-asset-rebuild` implementation `862bb5b50b09a1df04aa5eebffd9564db4694c64`, recorded as `Workspace.ProfessionalArtDevBuild`. |
+| Current task | None claimed. v105 includes the travel integration and the layered horizon. |
+| Next action | Reproduce the two-client arrival and disconnect checks from the [travel matrix](world/TELEPORT_VALIDATION.md). |
+| Code source of truth | Private v105 uses `world/teleports-and-infinite-horizons` implementation `429f541e199a4cf85f4ecd618b6afaae4c876caf`, recorded as `Workspace.WorldHorizonDevBuild`. The v98 professional art build remains installed. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |
 | Blockers | Physical iPhone and Android, 20-player load, genuinely separate server sessions for saves and escrow, and full natural balance remain unverified. |
@@ -90,12 +91,13 @@
 | Item | Entry |
 | --- | --- |
 | AI | None, editor released |
-| Task | Professional Asset Rebuild. Imported assets are active across the three biomes. |
-| Private place | `103379930563763` / `10777797608`. **v98**, Edit mode. QA profile switch cleared. |
-| Git branch | `art/professional-asset-rebuild` |
-| Rollback | Clear `Workspace.BladeForestAssetArt` and restart the private runtime. Full checkpoint `2026-11-22T06:49:28.114Z` and baseline source copies in `ServerStorage.ProfessionalArtRollback`. |
-| Open checks | Studio performance remains poor in matched samples, with higher observed memory. Physical mobile performance, full navigation and extended gameplay remain unverified. |
-| Evidence | [Studio Play captures, counts, asset IDs and performance](art/ART_REBUILD_RESULTS.md) |
+| Task | Teleport validation and island horizons |
+| Private place | `103379930563763` / `10777797608`. **v105**, Edit mode, cloud update `2026-11-23T00:40:15.182Z`. Both QA flags cleared and temporary Studio test scripts removed. |
+| Git branch | `world/teleports-and-infinite-horizons` |
+| Rollback | Private cloud **v99** checkpoint and original source copies in `ServerStorage.WorldHorizonRollback`. Clear `Workspace.BladeForestHorizons` and restart for a scenery-only rollback. |
+| Validation | Eight real prompts, exact-threshold prepared tests, safe returns, isolated rejoin and 620 Crystal coordinates verified. |
+| Open checks | Two-client arrival separation, a disconnect during streaming, physical devices and Studio frame-time regression. |
+| Evidence | [World results](world/WORLD_EDGE_RESULTS.md) · [Teleport matrix](world/TELEPORT_VALIDATION.md) · [Visual design and asset sources](world/INFINITE_HORIZON_DESIGN.md) |
 
 ## Codex → next editor (Project Wow Factor)
 
