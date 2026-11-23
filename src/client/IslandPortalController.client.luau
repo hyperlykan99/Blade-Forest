@@ -139,7 +139,22 @@ task.spawn(function()
 end)
 
 remotes:WaitForChild("IslandArrivalEffect").OnClientEvent:Connect(function(point)
-	local color = Color3.fromRGB(155,218,206)
-	effects.Burst("Glint",point,color,8,100)
-	effects.Ring(point - Vector3.new(0,4,0),color,6,.4)
+	if effects.Quality() < 2 then return end
+	local deadline = os.clock() + 2
+	repeat
+		local char = player.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if root and (root.Position - point).Magnitude < 16 and effects.Near(point,100) then
+			local color = Color3.fromRGB(155,218,206)
+			local params = RaycastParams.new()
+			params.FilterType = Enum.RaycastFilterType.Exclude
+			params.FilterDescendantsInstances = {char}
+			params.RespectCanCollide = true
+			local floor = workspace:Raycast(point + Vector3.new(0,1,0),Vector3.new(0,-12,0),params)
+			effects.Burst("Glint",point,color,8,100)
+			effects.Ring(floor and floor.Position or point - Vector3.new(0,4,0),color,6,.4)
+			return
+		end
+		task.wait(.07)
+	until os.clock() >= deadline
 end)
