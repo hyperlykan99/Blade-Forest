@@ -169,5 +169,10 @@ if professional and workspace:GetAttribute("BladeForestHorizons")=="v1" then
 	end)
 	if not success then warn("World horizons:", reason) end
 end
+-- Claude issue #1 makeover (visual only, reversible): clear Workspace.BladeHavenMakeover to disable.
+if workspace:GetAttribute("BladeHavenMakeover") then
+	local ok,reason=pcall(function() require(ServerStorage.HavenMakeover).Apply(active) end)
+	if not ok then warn("Haven makeover:",reason) end
+end
 runtime.Active=true
 return runtime

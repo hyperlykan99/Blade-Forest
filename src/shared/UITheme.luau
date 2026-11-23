@@ -26,6 +26,28 @@ T.Color = {
 	Grey = Color3.fromRGB(120, 112, 104),
 }
 
+-- Claude issue #1 "Haven Guild" palette: richer walnut, emerald instead of lime, warmer gold.
+-- Same keys and roles, so every existing panel/button keeps its bindings. Reversible via the flag.
+if workspace:GetAttribute("BladeHavenMakeover") then
+	local c, rgb = T.Color, Color3.fromRGB
+	c.Ink = rgb(30, 21, 15)
+	c.WoodDark = rgb(56, 35, 22)
+	c.Wood = rgb(112, 72, 43)
+	c.WoodLight = rgb(170, 118, 70)
+	c.Plank = rgb(88, 56, 33)
+	c.Cream = rgb(255, 246, 228)
+	c.Gold = rgb(255, 200, 84)
+	c.GoldDark = rgb(184, 122, 34)
+	c.Leaf = rgb(70, 172, 96)
+	c.LeafDark = rgb(30, 104, 60)
+	c.Red = rgb(212, 72, 62)
+	c.Blue = rgb(66, 140, 220)
+	c.Purple = rgb(146, 96, 222)
+	c.Teal = rgb(44, 170, 178)
+	c.Orange = rgb(238, 146, 50)
+	c.Grey = rgb(110, 102, 96)
+end
+
 -- Player scripts can start before StarterGui has been copied into PlayerGui.
 -- Mount passive HUD items when their shared layout becomes available.
 function T.AttachToHud(widget, containerName)

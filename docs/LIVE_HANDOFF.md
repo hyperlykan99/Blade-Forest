@@ -1,7 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
-> **🔒 CLAIMED — Claude, issue #1 premium visual makeover (M0 → M1), started 2026-11-22 23:50 PST.** Do not edit the private place in parallel. Checkpoint before work: private **v107** (v106 was an undocumented save after v105). Branch `art/claude-premium-makeover`.
+> **Claude — issue #1 premium makeover, M0 + first M1 slice (2026-11-23 00:30 PST).** Private **v113** saved; rollback checkpoint **v107**. Everything new is behind `Workspace.BladeHavenMakeover = "m1"`. Editor **released** in Edit mode. Upload batch **M1-A awaits owner approval**. See [M0/M1 results](makeover/M0_M1_RESULTS.md).
 > **Codex Teleport Validation and Island Horizons.** Private **v105** is cloud-saved. The editor is released in Edit mode. All eight single-client routes and the isolated rejoin passed. Two-client arrival and streaming disconnect remain unverified. See the [world handoff](world/WORLD_EDGE_RESULTS.md).
 > **Codex Professional Asset Rebuild.** The imported Kenney rebuild is active in private **v98**. Studio is in Edit mode and the editor is released. See the [rebuild results and Play captures](art/ART_REBUILD_RESULTS.md).
 > **Codex Project Wow Factor.** The three-biome visual pass is saved as private **v87**. Studio is in Edit mode and the editor is released. See the [art direction, test evidence and performance report](art/ULTIMATE_VISUAL_OVERHAUL.md).
@@ -23,12 +23,12 @@
 | Project | Blade Forest |
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
-| Most recent documented place version | Private **v105**, cloud update `2026-11-23T00:40:15.182Z`. |
-| Active AI editor | **Claude** (issue #1 makeover, claimed 2026-11-22 23:50 PST) |
-| Last handoff author / time | Codex, Teleport Validation and Island Horizons, November 22 at 4:40 p.m. PST. |
+| Most recent documented place version | Private **v113** (Claude M1 slice). Rollback checkpoint v107. v106 was undocumented (cloud update `2026-11-23T00:57:54Z`). |
+| Active AI editor | None. Claude released after the M1 slice (2026-11-23 00:30 PST). Studio in Edit mode. |
+| Last handoff author / time | Claude, issue #1 M0/M1 slice, 2026-11-23 00:30 PST. |
 | Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
-| Current task | Issue #1: M0 baseline + M1 Timber Haven vertical slice (private dev only). Rollback checkpoint v107. |
-| Next action | Reproduce the two-client arrival and disconnect checks from the [travel matrix](world/TELEPORT_VALIDATION.md). |
+| Current task | None claimed. Issue #1 M1 is partly done; the Style A tree and building swap waits for owner approval of upload batch M1-A. |
+| Next action | Owner: approve or decline upload batch M1-A on issue #1. Then Claude finishes M1 (KayKit trees and stations) per [M0/M1 results §10](makeover/M0_M1_RESULTS.md). |
 | Code source of truth | Private v105 uses `world/teleports-and-infinite-horizons` implementation `429f541e199a4cf85f4ecd618b6afaae4c876caf`, recorded as `Workspace.WorldHorizonDevBuild`. The v98 professional art build remains installed. |
 | Documentation source of truth | GitHub `docs/` |
 | Working scripts in GitHub? | **Yes, on branches, not `main`.** `p0/script-export` (34-script baseline) → `p1a/island-prototype` → `p1a/m1-arrival-slot-fix` → `p1b2/crystal-wilds` @ `0fc997d` (35 scripts; BladeConfig + WorldServer changed) → `p1b2r/dense-forest` @ `a893300` (no script changes) → `p1b2r/camera-visibility-fix` (ChopEffects changed). Design branches: `proposal/p1b2-dense-forest` @ `63937f9`, `proposal/p1b2r-camera-visibility` @ `49e6e81` |

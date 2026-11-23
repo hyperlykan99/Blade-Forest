@@ -2,6 +2,12 @@
 
 Newest first. Place versions refer to Roblox saved versions.
 
+## 2026-11-23 — Claude: issue #1 M0 baseline + M1 Timber Haven slice (private dev v113)
+- New `ServerStorage.HavenMakeover`: terrain lawn and meadow patches, earth/rut paths, cobbled plazas and pads, Ranger Wren (Trail Guide) NPC, custom station prompts.
+- New `StarterPlayerScripts.HavenStationCards`: premium station interaction card with a fallback to the default prompt.
+- `ForestPresentation`: Timber Haven golden-hour grade. `UITheme`: Haven Guild palette. `M4WorldRuntime`: guarded hook. All gated by `Workspace.BladeHavenMakeover`.
+- No gameplay, economy, save or production changes. Details: `docs/makeover/M0_M1_RESULTS.md`.
+
 ## 2026-11-20 — M2 Complete Weapon Collection (DEV PLACE ONLY, v45)
 - Checkpoint **v35** "M2 PRE-WEAPONS"; result **v45**. Branch `m2/complete-weapon-collection` (not merged). Backups in `ServerStorage.M2Backups`. Details: `docs/m2/M2_COMPLETE_WEAPON_COLLECTION_RESULTS.md`.
 - 120 weapons: 43 originals unchanged plus 77 new (Timber Haven 15, Crystal Wilds 28, Frostbound Reach 34; Common through Divine). Altar pools 39/77/115. Power by the legacy formula.

@@ -15,6 +15,11 @@ local palette={
 	CrystalWilds={16.1,R(119,124,158),R(121,154,181),R(225,239,255),R(153,184,209),R(108,100,166),.17,.62,.09,.065,-.10},
 	FrostboundReach={17.86,R(120,148,179),R(126,153,184),R(226,241,255),R(185,213,239),R(106,119,179),.22,.85,.10,.08,-.10},
 }
+-- Claude issue #1: Timber Haven golden-hour grade (warm key light, cool shadow fill, gentle haze).
+local haven=workspace:GetAttribute("BladeHavenMakeover")~=nil
+if haven then
+	palette.TimberHaven={16.85,R(96,104,132),R(140,132,146),R(255,236,206),R(236,212,178),R(132,146,120),.26,.62,.34,.14,.0}
+end
 local atmosphere=Lighting:FindFirstChildOfClass("Atmosphere")
 if not atmosphere then
 	atmosphere=Instance.new("Atmosphere")
@@ -107,7 +112,10 @@ local function refresh()
 	local storm=winterStorm()
 	local inHeart=player:GetAttribute("M5Run")=="Heart"
 	Lighting.ClockTime=p[1]
-	grade(Lighting,{Ambient=p[2],OutdoorAmbient=p[3],Brightness=frosty and 2.1 or 2.45,ExposureCompensation=frosty and -.06 or .05})
+	local havenHere=haven and island=="TimberHaven"
+	grade(Lighting,{Ambient=p[2],OutdoorAmbient=p[3],Brightness=frosty and 2.1 or havenHere and 2.75 or 2.45,ExposureCompensation=frosty and -.06 or havenHere and -.03 or .05})
+	if havenHere then Lighting.ShadowSoftness=.18 Lighting.EnvironmentDiffuseScale=.55 Lighting.EnvironmentSpecularScale=.4 end
+	rays.Intensity=havenHere and .11 or .075
 	grade(tone,{TintColor=inHeart and R(222,225,255) or p[4],Contrast=p[10],Saturation=p[11]-(storm and .06 or 0)})
 	grade(atmosphere,{Color=p[5],Decay=p[6],Density=p[7]+(storm and .08 or 0),Haze=p[8]+(storm and .5 or 0),Glare=q==3 and p[9] or 0,Offset=.10})
 	rays.Enabled=island=="TimberHaven" and q==3 and not FX.Reduced()
