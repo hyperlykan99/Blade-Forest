@@ -163,5 +163,11 @@ if workspace:GetAttribute("BladeForestArt")=="v1" then
 	end)
 	if not ok then warn("Forest scenery:",err) end
 end
+if professional and workspace:GetAttribute("BladeForestHorizons")=="v1" then
+	local success, reason = pcall(function()
+		require(ServerStorage.WorldHorizon).Build(active, ServerStorage.ProfessionalArtAssets)
+	end)
+	if not success then warn("World horizons:", reason) end
+end
 runtime.Active=true
 return runtime

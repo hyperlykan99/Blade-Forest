@@ -5,7 +5,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-require(script.Parent:WaitForChild("M4WorldRuntime"))
+local runtime = require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local guard = require(script.Parent:WaitForChild("MovementGuard")).shared -- M0.1: sanctioned push-back
@@ -19,7 +19,23 @@ while true do
 	task.wait(0.5)
 	for _, player in ipairs(Players:GetPlayers()) do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if root and player:GetAttribute("Loaded") and player:GetAttribute("CurrentIsland") and not player:GetAttribute("IslandArrivalPending") and not player:GetAttribute("M5Run") then
+		if root and player:GetAttribute("Loaded") and player:GetAttribute("CurrentIsland") and not player:GetAttribute("IslandArrivalPending") and not player:GetAttribute("IslandTravelling")
+			and not player:GetAttribute("Handoff") and not player:GetAttribute("M5Run") then
+			local current = player:GetAttribute("CurrentIsland")
+			-- Exterior relief is decorative. Recover falls before the kill plane, using the current
+			-- island's real arrival and the normal movement authorization.
+			if runtime.Active and workspace:GetAttribute("BladeForestHorizons")=="v1" and root.Position.Y < -24 then
+				local hum = player.Character:FindFirstChildOfClass("Humanoid")
+				local island = Config.IslandById[current]
+				if island and hum and hum.Health > 0 then
+					local back = Config.GetArrival(island)
+					guard:Allow(player, 2, nil, back, root.Position)
+					root.AssemblyLinearVelocity = Vector3.zero
+					root.AssemblyAngularVelocity = Vector3.zero
+					player.Character:PivotTo(CFrame.new(back))
+				end
+				continue
+			end
 			local areaId = Config.GetAreaAt(root.Position)
 			local area = Config.AreaById[areaId]
 			local power = player:GetAttribute("Power") or 0
@@ -32,14 +48,14 @@ while true do
 			end
 			if power < (area.RequiredPower or 0) or not gateOk then
 				-- not allowed here: send back
-				local isl = Config.IslandById[player:GetAttribute("CurrentIsland")] or Config.IslandById.TimberHaven
+				local isl = Config.IslandById[current] or Config.IslandById.TimberHaven
 				local safe=lastSafe[player]
 				local back = (safe and safe.Island==isl.Id and safe.Frame) or CFrame.new(Config.GetArrival(isl))
 				guard:Allow(player, 2, nil, back.Position, player.Character:GetPivot().Position) -- M0.1 (H1): server-sanctioned push-back
 				player.Character:PivotTo(back)
 				NotifyRemote:FireClient(player, gateMsg or string.format("🔒 %s needs %d Power", area.Name, area.RequiredPower), "death")
 			else
-				lastSafe[player] = { Island=player:GetAttribute("CurrentIsland"), Frame=root.CFrame }
+				lastSafe[player] = { Island=current, Frame=root.CFrame }
 				if player:GetAttribute("CurrentArea") ~= areaId then
 					player:SetAttribute("CurrentArea", areaId)
 					local d = DataService.Get(player)

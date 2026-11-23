@@ -11,7 +11,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local RunService = game:GetService("RunService")
 
-local runtime=require(script.Parent:WaitForChild("M4WorldRuntime"))
 local Layout=require(ReplicatedStorage:WaitForChild("M4Layout"))
 local Config = require(ReplicatedStorage:WaitForChild("BladeConfig"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
@@ -22,6 +21,10 @@ local NotifyRemote = Remotes:WaitForChild("Notify")
 local TravelRemote = Remotes:FindFirstChild("Travel") or Instance.new("RemoteFunction")
 TravelRemote.Name = "Travel"
 TravelRemote.Parent = Remotes
+local ArrivalEffect = Remotes:FindFirstChild("IslandArrivalEffect") or Instance.new("RemoteEvent")
+ArrivalEffect.Name = "IslandArrivalEffect"
+ArrivalEffect.Parent = Remotes
+local runtime = require(script.Parent:WaitForChild("M4WorldRuntime"))
 
 local STREAM_TIMEOUT = 8
 local lastTravel = {} -- [player] = os.clock()
@@ -31,12 +34,11 @@ local spawned = {} -- authoritative initialized character, never inferred from i
 
 local function home() return Config.IslandById[Config.HomeIsland] end
 
-local function isUnlocked(player, isl)
+local function isUnlocked(player, isl, checkOnly)
 	if isl.ReleaseState ~= "available" then return false, isl.Name .. " is not open yet" end
 	if isl.Id == Config.HomeIsland then return true end
 	local d = DataService.Get(player)
 	if not d then return false, "Loading..." end
-	d.UnlockedIslands = d.UnlockedIslands or {}
 	-- P1a: AreaService still enforces the legacy area Power gate on every island,
 	-- so travel must meet it too (a saved unlock alone would just bounce the player back)
 	local need = Config.GetIslandRequiredPower(isl)
@@ -45,7 +47,17 @@ local function isUnlocked(player, isl)
 	end
 	-- M1.6 staged gate: Power + active requirements (Blade King, tree counts); planned
 	-- requirements (unbuilt bosses) never block. Unlocked once = unlocked for good.
-	return DataService.TryUnlockIsland(player, isl.Id)
+	if not checkOnly then return DataService.TryUnlockIsland(player, isl.Id) end
+	local ok, requirements = DataService.IslandGate(player, isl.Id)
+	if ok then return true end
+	local missing = {}
+	for _, requirement in ipairs(requirements) do
+		if requirement.Stage == "active" and not requirement.Met then
+			table.insert(missing, string.format("%s (%s/%s)", requirement.Text,
+				Config.FormatNumber(requirement.Have), Config.FormatNumber(requirement.Need)))
+		end
+	end
+	return false, "🔒 " .. isl.Name .. ": " .. table.concat(missing, " • ")
 end
 
 -- arrival spot: center first, then a ring of 8 so players don't stack.
@@ -103,7 +115,7 @@ local function setIsland(player, isl)
 end
 
 -- stream the destination in, then move the character (yields)
-local function place(player, isl)
+local function place(player, isl, beforeLanding)
 	local char = player.Character
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
@@ -115,16 +127,47 @@ local function place(player, isl)
 		warn("[Travel] stream request failed for", player.Name, isl.Id, streamErr)
 		return false, "Couldn't load " .. isl.Name .. " - try again"
 	end
-	if player.Character ~= char or not root.Parent or hum.Health <= 0 then return false, "Character changed during travel" end
+	if player.Parent ~= Players or player.Character ~= char or not root:IsDescendantOf(char) or hum.Health <= 0 then
+		return false, "Character changed during travel"
+	end
 	-- M-1: choose the landing slot and move in one step; nothing from here to PivotTo yields
 	local cf, slot = freeSpot(isl, player)
 	if not cf then return false, "Arrival is busy. Try again." end
+	if beforeLanding then
+		local allowed, reason = beforeLanding()
+		if not allowed then return false, reason end
+	end
 	guard:Allow(player, 3, nil, cf.Position, root.Position) -- M0.1 (H1): server-sanctioned teleport to cf
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
 	char:PivotTo(cf)
 	reserve(isl, slot, player)
 	return true
+end
+
+local function blocked(player)
+	if player:GetAttribute("M5Run") then return "Exit your run to travel" end
+	if player:GetAttribute("Handoff") then return "Profile is moving servers" end
+	if (player:GetAttribute("CombatUntil") or 0) > workspace:GetServerTimeNow() then return "You're in combat!" end
+	return nil
+end
+
+local function moveFromPortal(player, island, beforeLanding)
+	local character = player.Character
+	busy[player] = character
+	player:SetAttribute("IslandTravelling", true)
+	local success, message = place(player, island, function()
+		local reason = blocked(player)
+		if reason then return false, reason end
+		if beforeLanding then return beforeLanding() end
+		return true
+	end)
+	if busy[player] == character then
+		busy[player] = nil
+		player:SetAttribute("IslandTravelling", nil)
+	end
+	if success then ArrivalEffect:FireClient(player, island.ArrivalOverride or Config.GetArrival(island)) end
+	return success, message
 end
 
 -- bypass is only ever passed by the Studio-only DevTravel hook below
@@ -148,15 +191,14 @@ local function travel(player, islandId, bypass)
 		return false, "You're already on " .. isl.Name
 	end
 	if not (bypass and bypass.unlock) then
-		local ok, why = isUnlocked(player, isl)
+		local ok, why = isUnlocked(player, isl, true)
 		if not ok then return false, why end
 	end
 	lastTravel[player] = now
-	local character=player.Character
-	busy[player] = character
-	player:SetAttribute("IslandTravelling",true)
-	local ok, why = place(player, isl)
-	if busy[player]==character then busy[player]=nil player:SetAttribute("IslandTravelling",nil) end
+	local ok, why = moveFromPortal(player, isl, function()
+		if bypass and bypass.unlock then return true end
+		return isUnlocked(player, isl)
+	end)
 	if not ok then return false, why end
 	setIsland(player, isl)
 	NotifyRemote:FireClient(player, "🧭 Arrived at " .. isl.Name, "kill")
@@ -171,29 +213,27 @@ end
 
 ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
 	local waypoint = prompt:GetAttribute("M4Waypoint")
+	local to = prompt:GetAttribute("TravelTo")
+	if not waypoint and type(to) ~= "string" then return end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local anchor = prompt.Parent
+	if not prompt.Enabled or not prompt:IsDescendantOf(workspace) or not root or not anchor or not anchor:IsA("BasePart")
+		or (root.Position-anchor.Position).Magnitude > prompt.MaxActivationDistance + 4 then return end
 	if waypoint then
-		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		local anchor = prompt.Parent
 		local annex = workspace:FindFirstChild("M4ActiveWorld")
-		if not runtime.Crystal or not annex or not prompt:IsDescendantOf(annex) or not root or not anchor or not anchor:IsA("BasePart")
-			or (root.Position-anchor.Position).Magnitude>14 or spawned[player]~=player.Character
-			or player:GetAttribute("CurrentIsland")~="CrystalWilds" or player:GetAttribute("Handoff") or player:GetAttribute("M5Run") or busy[player]
-			or (player:GetAttribute("CombatUntil") or 0)>workspace:GetServerTimeNow() then return end
+		if not runtime.Crystal or not annex or not prompt:IsDescendantOf(annex) or spawned[player]~=player.Character
+			or player:GetAttribute("CurrentIsland")~="CrystalWilds" or busy[player] then return end
+		local reason = blocked(player)
+		if reason then NotifyRemote:FireClient(player, reason, "death") return end
 		local arena = waypoint=="ColossusArena"
 		if not arena and waypoint~="CrystalPlaza" then return end
 		local island = table.clone(Config.IslandById.CrystalWilds)
 		island.ArrivalOverride = arena and Layout.Crystal.Arrival or Layout.Crystal.Return
 		island.ReserveKey = waypoint
-		local character=player.Character
-		busy[player]=character
-		player:SetAttribute("IslandTravelling",true)
-		local ok, why=place(player,island)
-		if busy[player]==character then busy[player]=nil player:SetAttribute("IslandTravelling",nil) end
+		local ok, why=moveFromPortal(player,island)
 		if not ok then NotifyRemote:FireClient(player,tostring(why),"death") end
 		return
 	end
-	local to = prompt:GetAttribute("TravelTo")
-	if type(to) ~= "string" then return end
 	local ok, res = travel(player, to)
 	if not ok then NotifyRemote:FireClient(player, tostring(res), "death") end
 end)
