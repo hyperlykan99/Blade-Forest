@@ -1,6 +1,7 @@
 # Blade Forest — Live AI Handoff
 
 > **START HERE WHEN SWITCHING BETWEEN CLAUDE AND CODEX.**
+> **🔒 CLAIMED — Claude, issue #1 premium visual makeover (M0 → M1), started 2026-11-22 23:50 PST.** Do not edit the private place in parallel. Checkpoint before work: private **v107** (v106 was an undocumented save after v105). Branch `art/claude-premium-makeover`.
 > **Codex Teleport Validation and Island Horizons.** Private **v105** is cloud-saved. The editor is released in Edit mode. All eight single-client routes and the isolated rejoin passed. Two-client arrival and streaming disconnect remain unverified. See the [world handoff](world/WORLD_EDGE_RESULTS.md).
 > **Codex Professional Asset Rebuild.** The imported Kenney rebuild is active in private **v98**. Studio is in Edit mode and the editor is released. See the [rebuild results and Play captures](art/ART_REBUILD_RESULTS.md).
 > **Codex Project Wow Factor.** The three-biome visual pass is saved as private **v87**. Studio is in Edit mode and the editor is released. See the [art direction, test evidence and performance report](art/ULTIMATE_VISUAL_OVERHAUL.md).
@@ -23,10 +24,10 @@
 | Repository | `hyperlykan99/Blade-Forest` (`main`) |
 | Roblox place | **Production:** `73142469975141` / universe `10777481912` (Team Create, group 76836496, PUBLIC). **Dev:** `103379930563763` / universe `10777797608` (PRIVATE, personal) |
 | Most recent documented place version | Private **v105**, cloud update `2026-11-23T00:40:15.182Z`. |
-| Active AI editor | None. Studio in Edit mode. |
+| Active AI editor | **Claude** (issue #1 makeover, claimed 2026-11-22 23:50 PST) |
 | Last handoff author / time | Codex, Teleport Validation and Island Horizons, November 22 at 4:40 p.m. PST. |
 | Last confirmed gameplay edit | QA v75. The visual overhaul retained M0–M8 gameplay and existing travel, damage and reward rules. |
-| Current task | None claimed. v105 includes the travel integration and the layered horizon. |
+| Current task | Issue #1: M0 baseline + M1 Timber Haven vertical slice (private dev only). Rollback checkpoint v107. |
 | Next action | Reproduce the two-client arrival and disconnect checks from the [travel matrix](world/TELEPORT_VALIDATION.md). |
 | Code source of truth | Private v105 uses `world/teleports-and-infinite-horizons` implementation `429f541e199a4cf85f4ecd618b6afaae4c876caf`, recorded as `Workspace.WorldHorizonDevBuild`. The v98 professional art build remains installed. |
 | Documentation source of truth | GitHub `docs/` |
